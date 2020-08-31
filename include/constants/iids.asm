@@ -1,0 +1,27 @@
+
+    IID_MERCURIUS  = $07
+    IID_LEVINSWORD = $08
+    IID_DEVILSWORD = $09
+
+    IID_FALCHION   = $0A
+
+    IID_JAVELIN    = $0E
+
+    IID_DEVILAXE   = $1D
+
+    IID_2A         = $2A
+
+    IID_STARLIGHT  = $34
+    IID_HEAL       = $35
+
+    IID_VULNERARY  = $3F
+
+    IID_GEOSPHERE  = $44
+
+    IID_DARKSPHERE = $58
+
+    IID_FIREEMBLEM = $5B
+
+    IID_FIRST_MAGIC  = IID_2A
+    IID_FIRST_EFFECT = IID_HEAL
+    IID_FIRST_ITEM   = IID_VULNERARY
