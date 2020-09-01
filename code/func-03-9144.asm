@@ -68,22 +68,22 @@ LOC_9186:
 
 @begin:
     /* 9194 A0 00    */ ldy #Unit.pid
-    /* 9196 B1 9F    */ lda (zUnk9F), Y
+    /* 9196 B1 9F    */ lda (zUnitPtr9F), Y
     /* 9198 C9 00    */ cmp #0
     /* 919A F0 19    */ beq @end
 
     /* 919C A0 12    */ ldy #Unit.unk_12
-    /* 919E B1 9F    */ lda (zUnk9F), Y
+    /* 919E B1 9F    */ lda (zUnitPtr9F), Y
     /* 91A0 C9 FF    */ cmp #$FF
     /* 91A2 F0 EA    */ beq @lop
 
     /* 91A4 A0 10    */ ldy #Unit.y
-    /* 91A6 B1 9F    */ lda (zUnk9F), Y
+    /* 91A6 B1 9F    */ lda (zUnitPtr9F), Y
     /* 91A8 C5 B3    */ cmp zUnkB3
     /* 91AA D0 E2    */ bne @lop
 
     /* 91AC A0 11    */ ldy #Unit.x
-    /* 91AE B1 9F    */ lda (zUnk9F), Y
+    /* 91AE B1 9F    */ lda (zUnitPtr9F), Y
     /* 91B0 C5 B2    */ cmp zUnkB2
     /* 91B2 D0 DA    */ bne @lop
 
@@ -99,11 +99,11 @@ LOC_9186:
 
 @add_to_9F:
     /* 91BC 18       */ clc
-    /* 91BD 65 9F    */ adc zUnk9F
-    /* 91BF 85 9F    */ sta zUnk9F
+    /* 91BD 65 9F    */ adc zUnitPtr9F
+    /* 91BF 85 9F    */ sta zUnitPtr9F
     /* 91C1 90 02    */ bcc +
 
-    /* 91C3 E6 A0    */ inc zUnk9F+1
+    /* 91C3 E6 A0    */ inc zUnitPtr9F+1
 
 +:
     /* 91C5 60       */ rts

@@ -16,7 +16,7 @@
 
     IID_VULNERARY  = $3F
 
-    IID_GEOSPHERE  = $44
+    IID_44  = $44
 
     IID_DARKSPHERE = $58
 

@@ -1,16 +1,22 @@
 
-    LOC_85A4 = $85A4
-    LOC_8CCE = $8CCE
+    LOC_8F54 = $8F54
     LOC_8FD2 = $8FD2
     LOC_8FDB = $8FDB
     LOC_8FE4 = $8FE4
+    LOC_9080 = $9080
     LOC_9144 = $9144
     LOC_914A = $914A
     LOC_91BC = $91BC
     LOC_91C6 = $91C6
     LOC_91D0 = $91D0
     LOC_99E6 = $99E6
+    LOC_9A81 = $9A81
+    LOC_9E5D = $9E5D
+    LOC_9EA0 = $9EA0
     LOC_9EEE = $9EEE
+
+    DAT_A3C1 = $A3C1
+    DAT_A3DA = $A3DA
 
 CODE_03_8000:
     /* 8000 4C 0C 80 */ jmp FUNC_03_800C
@@ -112,21 +118,21 @@ FUNC_03_806F:
 
 @lop:
     /* 8079 A0 00    */ ldy #Unit.pid
-    /* 807B B1 9F    */ lda (zUnk9F), Y
+    /* 807B B1 9F    */ lda (zUnitPtr9F), Y
     /* 807D F0 28    */ beq @end
 
     /* 807F A0 12    */ ldy #Unit.unk_12
-    /* 8081 B1 9F    */ lda (zUnk9F), Y
+    /* 8081 B1 9F    */ lda (zUnitPtr9F), Y
 
     /* 8083 C9 FF    */ cmp #-1
     /* 8085 F0 13    */ beq @LOC_809A
 
     /* 8087 A0 10    */ ldy #Unit.y
-    /* 8089 B1 9F    */ lda (zUnk9F), Y
+    /* 8089 B1 9F    */ lda (zUnitPtr9F), Y
     /* 808B 8D 39 05 */ sta wUnk0539
 
     /* 808E C8       */ iny ; Unit.x
-    /* 808F B1 9F    */ lda (zUnk9F), Y
+    /* 808F B1 9F    */ lda (zUnitPtr9F), Y
     /* 8091 8D 38 05 */ sta wUnk0538
 
     /* 8094 20 CA 80 */ jsr FUNC_03_80CA
@@ -262,11 +268,11 @@ FUNC_03_812B:
     /* 812B 20 0D C7 */ jsr WaitFrame
 
     /* 812E A0 07    */ ldy #Unit.str
-    /* 8130 B1 9F    */ lda (zUnk9F), Y
+    /* 8130 B1 9F    */ lda (zUnitPtr9F), Y
     /* 8132 85 B5    */ sta zUnkB5
 
     /* 8134 A0 13    */ ldy #Unit.item
-    /* 8136 B1 9F    */ lda (zUnk9F), Y
+    /* 8136 B1 9F    */ lda (zUnitPtr9F), Y
     /* 8138 A8       */ tay
     /* 8139 88       */ dey
     /* 813A B9 C3 D9 */ lda ItemInfo.Unk_D9C3, Y
@@ -288,7 +294,7 @@ FUNC_03_812B:
     /* 8150 85 A7    */ sta zUnkA7
 
     /* 8152 A0 0D    */ ldy #Unit.mov
-    /* 8154 B1 9F    */ lda (zUnk9F), Y
+    /* 8154 B1 9F    */ lda (zUnitPtr9F), Y
     /* 8156 85 BF    */ sta zUnkBF
 
     /* 8158 AD 38 05 */ lda wUnk0538
@@ -523,9 +529,9 @@ GetMapRowInR04:
 
 GetPlayerUnitsIn9F:
     /* 8267 A9 90    */ lda #<sUnitsPlayer
-    /* 8269 85 9F    */ sta zUnk9F
+    /* 8269 85 9F    */ sta zUnitPtr9F
     /* 826B A9 6A    */ lda #>sUnitsPlayer
-    /* 826D 85 A0    */ sta zUnk9F+1
+    /* 826D 85 A0    */ sta zUnitPtr9F+1
     /* 826F 60       */ rts
 
 FUNC_03_8270:
@@ -544,14 +550,14 @@ FUNC_03_8270:
 
 CODE_03_8282:
     /* 8282 A0 00    */ ldy #Unit.pid
-    /* 8284 B1 9D    */ lda (zUnk9D), Y
+    /* 8284 B1 9D    */ lda (zUnitPtr9D), Y
     /* 8286 D0 03    */ bne +
 
     /* 8288 4C 2C 83 */ jmp CODE_03_832C
 
 +:
     /* 828B A0 12    */ ldy #Unit.unk_12
-    /* 828D B1 9D    */ lda (zUnk9D), Y
+    /* 828D B1 9D    */ lda (zUnitPtr9D), Y
     /* 828F C9 FF    */ cmp #-1
     /* 8291 D0 03    */ bne +
 
@@ -559,25 +565,25 @@ CODE_03_8282:
 
 +:
     /* 8296 A0 10    */ ldy #Unit.y
-    /* 8298 B1 9D    */ lda (zUnk9D), Y
+    /* 8298 B1 9D    */ lda (zUnitPtr9D), Y
     /* 829A 8D 39 05 */ sta wUnk0539
 
     /* 829D C8       */ iny ; Unit.x
-    /* 829E B1 9D    */ lda (zUnk9D), Y
+    /* 829E B1 9D    */ lda (zUnitPtr9D), Y
     /* 82A0 8D 38 05 */ sta wUnk0538
 
     /* 82A3 A0 17    */ ldy #Unit.uses
-    /* 82A5 B1 9D    */ lda (zUnk9D), Y
+    /* 82A5 B1 9D    */ lda (zUnitPtr9D), Y
     /* 82A7 85 AC    */ sta zUnkAC
 
     /* 82A9 8E C3 05 */ stx wUnk05C3
 
     /* 82AC 20 00 84 */ jsr FUNC_03_8400
 
-    /* 82AF 20 A4 85 */ jsr LOC_85A4
+    /* 82AF 20 A4 85 */ jsr FUNC_03_85A4
 
     /* 82B2 A0 12    */ ldy #Unit.unk_12
-    /* 82B4 B1 9D    */ lda (zUnk9D), Y
+    /* 82B4 B1 9D    */ lda (zUnitPtr9D), Y
     /* 82B6 C9 FF    */ cmp #-1
     /* 82B8 F0 03    */ beq FUNC_03_82BD
 
@@ -585,31 +591,31 @@ CODE_03_8282:
 
 FUNC_03_82BD:
     /* 82BD A0 12    */ ldy #Unit.unk_12
-    /* 82BF B1 9D    */ lda (zUnk9D), Y
+    /* 82BF B1 9D    */ lda (zUnitPtr9D), Y
     /* 82C1 C9 FF    */ cmp #-1
     /* 82C3 F0 52    */ beq CODE_03_8317
 
     /* 82C5 A0 01    */ ldy #Unit.jid
-    /* 82C7 B1 9D    */ lda (zUnk9D), Y
+    /* 82C7 B1 9D    */ lda (zUnitPtr9D), Y
     /* 82C9 C9 09    */ cmp #JID_THIEF
     /* 82CB D0 4A    */ bne CODE_03_8317
 
     /* 82CD A0 06    */ ldy #Unit.terrain
-    /* 82CF B1 9D    */ lda (zUnk9D), Y
+    /* 82CF B1 9D    */ lda (zUnitPtr9D), Y
     /* 82D1 48       */ pha
     /* 82D2 C9 A5    */ cmp #TERRAIN_VILLAGE_OPENED
     /* 82D4 D0 2B    */ bne @LOC_8301
 
     /* 82D6 A9 A9    */ lda #TERRAIN_VILLAGE_DESTROYED
-    /* 82D8 91 9D    */ sta (zUnk9D), Y
+    /* 82D8 91 9D    */ sta (zUnitPtr9D), Y
 
     /* 82DA A0 10    */ ldy #Unit.y
-    /* 82DC B1 9D    */ lda (zUnk9D), Y
+    /* 82DC B1 9D    */ lda (zUnitPtr9D), Y
     /* 82DE AA       */ tax
     /* 82DF CA       */ dex
     /* 82E0 20 50 82 */ jsr GetMapRowInR04
     /* 82E3 C8       */ iny ; Unit.x
-    /* 82E4 B1 9D    */ lda (zUnk9D), Y
+    /* 82E4 B1 9D    */ lda (zUnitPtr9D), Y
     /* 82E6 A8       */ tay
     /* 82E7 A9 AD    */ lda #TERRAIN_HOUSE_DESTROYED
     /* 82E9 91 04    */ sta (zR04), Y
@@ -633,7 +639,7 @@ FUNC_03_82BD:
     /* 8304 D0 11    */ bne CODE_03_8317
 
     /* 8306 A9 AC    */ lda #TERRAIN_CHEST_OPENED
-    /* 8308 91 9D    */ sta (zUnk9D), Y
+    /* 8308 91 9D    */ sta (zUnitPtr9D), Y
     /* 830A A9 80    */ lda #$80
     /* 830C 8D F0 06 */ sta wUnk06F0
     /* 830F A9 01    */ lda #1
@@ -645,7 +651,7 @@ FUNC_03_82BD:
     /* 8316 68       */ pla
 
 CODE_03_8317:
-    /* 8317 20 CE 8C */ jsr LOC_8CCE
+    /* 8317 20 CE 8C */ jsr FUNC_03_8CCE
 
     /* 831A AD 42 05 */ lda wUnk0542
     /* 831D D0 10    */ bne CODE_03_832F
@@ -678,12 +684,12 @@ FUNC_03_8334:
 
 @lop:
     /* 833D A0 12    */ ldy #Unit.unk_12
-    /* 833F B1 9D    */ lda (zUnk9D), Y
+    /* 833F B1 9D    */ lda (zUnitPtr9D), Y
     /* 8341 C9 FF    */ cmp #-1
     /* 8343 F0 06    */ beq +
 
     /* 8345 A0 00    */ ldy #Unit.pid
-    /* 8347 B1 9D    */ lda (zUnk9D), Y
+    /* 8347 B1 9D    */ lda (zUnitPtr9D), Y
     /* 8349 D0 3B    */ bne @continue
 
 +:
@@ -693,24 +699,24 @@ FUNC_03_8334:
     /* 8350 F0 34    */ beq @continue
 
     /* 8352 A0 17    */ ldy #Unit.uses
-    /* 8354 B1 9D    */ lda (zUnk9D), Y
+    /* 8354 B1 9D    */ lda (zUnitPtr9D), Y
     /* 8356 29 03    */ and #$03
     /* 8358 85 A3    */ sta zUnkA3
-    /* 835A B1 9D    */ lda (zUnk9D), Y
+    /* 835A B1 9D    */ lda (zUnitPtr9D), Y
     /* 835C 29 1C    */ and #$1C
     /* 835E 0A       */ asl A
     /* 835F 0A       */ asl A
     /* 8360 05 A3    */ ora zUnkA3
     /* 8362 A0 16    */ ldy #Unit.item+3
-    /* 8364 91 9D    */ sta (zUnk9D), Y
+    /* 8364 91 9D    */ sta (zUnitPtr9D), Y
 
     /* 8366 A0 00    */ ldy #0
 
     /* 8368 A0 11    */ ldy #Unit.x
-    /* 836A B1 9D    */ lda (zUnk9D), Y
+    /* 836A B1 9D    */ lda (zUnitPtr9D), Y
     /* 836C 8D 00 05 */ sta wUnk0500
     /* 836F 88       */ dey ; Unit.y
-    /* 8370 B1 9D    */ lda (zUnk9D), Y
+    /* 8370 B1 9D    */ lda (zUnitPtr9D), Y
     /* 8372 8D 01 05 */ sta wUnk0501
 
     /* 8375 A9 F4    */ lda #<sUnitBuf
@@ -753,7 +759,7 @@ FUNC_03_8398:
     /* 83AD D0 4C    */ bne @LOC_83FB
 
     /* 83AF A0 00    */ ldy #Unit.pid
-    /* 83B1 B1 9D    */ lda (zUnk9D), Y
+    /* 83B1 B1 9D    */ lda (zUnitPtr9D), Y
 
     /* 83B3 C9 A5    */ cmp #PID_A5
     /* 83B5 F0 44    */ beq @LOC_83FB
@@ -816,7 +822,7 @@ FUNC_03_8398:
 
 FUNC_03_8400:
     /* 8400 A0 16    */ ldy #Unit.item+3
-    /* 8402 B1 9D    */ lda (zUnk9D), Y
+    /* 8402 B1 9D    */ lda (zUnitPtr9D), Y
 
     /* 8404 29 0C    */ and #%00001100
     /* 8406 4A       */ lsr A
@@ -856,10 +862,10 @@ FUNC_03_8400:
 
 @CODE_03_8433:
     /* 8433 A0 04    */ ldy #Unit.hp_max
-    /* 8435 B1 9D    */ lda (zUnk9D), Y
+    /* 8435 B1 9D    */ lda (zUnitPtr9D), Y
     /* 8437 85 B0    */ sta zUnkB0
     /* 8439 88       */ dey ; Unit.hp_cur
-    /* 843A B1 9D    */ lda (zUnk9D), Y
+    /* 843A B1 9D    */ lda (zUnitPtr9D), Y
     /* 843C 0A       */ asl A
 
     /* 843D A6 A3    */ ldx zUnkA3
@@ -877,7 +883,7 @@ FUNC_03_8400:
     /* 8448 F0 08    */ beq @LOC_8452
 
     /* 844A A0 01    */ ldy #Unit.jid
-    /* 844C B1 9D    */ lda (zUnk9D), Y
+    /* 844C B1 9D    */ lda (zUnitPtr9D), Y
 
     /* 844E C9 13    */ cmp #JID_PRIEST
     /* 8450 D0 03    */ bne @LOC_8455
@@ -891,7 +897,7 @@ FUNC_03_8400:
     /* 8459 F0 18    */ beq @LOC_8473
 
     /* 845B A0 18    */ ldy #Unit.uses+1
-    /* 845D B1 9D    */ lda (zUnk9D), Y
+    /* 845D B1 9D    */ lda (zUnitPtr9D), Y
 
     /* 845F CD 75 76 */ cmp sUnk7675
     /* 8462 B0 0F    */ bcs @LOC_8473
@@ -927,19 +933,19 @@ FUNC_03_8400:
 
 @CODE_03_848B:
     /* 848B A0 00    */ ldy #Unit.pid
-    /* 848D B1 9F    */ lda (zUnk9F), Y
+    /* 848D B1 9F    */ lda (zUnitPtr9F), Y
     /* 848F D0 03    */ bne @CODE_03_8494
 
     /* 8491 4C 09 85 */ jmp @CODE_03_8509
 
 @CODE_03_8494:
     /* 8494 A0 12    */ ldy #Unit.unk_12
-    /* 8496 B1 9F    */ lda (zUnk9F), Y
+    /* 8496 B1 9F    */ lda (zUnitPtr9F), Y
     /* 8498 C9 FF    */ cmp #-1
     /* 849A F0 10    */ beq @CODE_03_84AC
 
     /* 849C A0 01    */ ldy #Unit.jid
-    /* 849E B1 9F    */ lda (zUnk9F), Y
+    /* 849E B1 9F    */ lda (zUnitPtr9F), Y
 
     /* 84A0 C9 13    */ cmp #JID_PRIEST
     /* 84A2 F0 11    */ beq @CODE_03_84B5
@@ -1039,7 +1045,7 @@ FUNC_03_8400:
     /* 851C 0A       */ asl A
     /* 851D 05 AA    */ ora zUnkAA
     /* 851F A0 16    */ ldy #Unit.item+3
-    /* 8521 91 9D    */ sta (zUnk9D), Y
+    /* 8521 91 9D    */ sta (zUnitPtr9D), Y
 
 @CODE_03_8523:
     /* 8523 60       */ rts
@@ -1076,20 +1082,20 @@ FUNC_03_8400:
 
 @CODE_03_8548:
     /* 8548 A0 00    */ ldy #Unit.pid
-    /* 854A B1 9D    */ lda (zUnk9D), Y
+    /* 854A B1 9D    */ lda (zUnitPtr9D), Y
 
     /* 854C C9 9C    */ cmp #PID_9C
-    /* 854E F0 53    */ beq @CODE_03_85A3
+    /* 854E F0 53    */ beq FUNC_03_8550@CODE_03_85A3
 
-@CODE_03_8550:
+FUNC_03_8550:
     /* 8550 A0 19    */ ldy #Unit.uses+2
-    /* 8552 B1 9D    */ lda (zUnk9D), Y
+    /* 8552 B1 9D    */ lda (zUnitPtr9D), Y
 
     /* 8554 CD 39 05 */ cmp wUnk0539
     /* 8557 D0 4A    */ bne @CODE_03_85A3
 
     /* 8559 C8       */ iny ; Unit.uses+3
-    /* 855A B1 9D    */ lda (zUnk9D), Y
+    /* 855A B1 9D    */ lda (zUnitPtr9D), Y
 
     /* 855C CD 38 05 */ cmp wUnk0538
     /* 855F D0 42    */ bne @CODE_03_85A3
@@ -1098,7 +1104,7 @@ FUNC_03_8400:
     /* 8564 20 50 82 */ jsr GetMapRowInR04
 
     /* 8567 A0 06    */ ldy #Unit.terrain
-    /* 8569 B1 9D    */ lda (zUnk9D), Y
+    /* 8569 B1 9D    */ lda (zUnitPtr9D), Y
 
     /* 856B AC 38 05 */ ldy wUnk0538
     /* 856E 91 04    */ sta (zR04), Y
@@ -1116,7 +1122,7 @@ FUNC_03_8400:
     /* 8582 20 50 82 */ jsr GetMapRowInR04
 
     /* 8585 A0 06    */ ldy #Unit.terrain
-    /* 8587 B1 9D    */ lda (zUnk9D), Y
+    /* 8587 B1 9D    */ lda (zUnitPtr9D), Y
     /* 8589 AC 38 05 */ ldy wUnk0538
     /* 858C 85 0B    */ sta zR0B
     /* 858E 84 05    */ sty zR05
@@ -1129,9 +1135,2010 @@ FUNC_03_8400:
 
     /* 859B A9 FF    */ lda #-1
     /* 859D A0 12    */ ldy #Unit.unk_12
-    /* 859F 91 9D    */ sta (zUnk9D), Y
+    /* 859F 91 9D    */ sta (zUnitPtr9D), Y
 
     /* 85A1 A9 00    */ lda #0
 
 @CODE_03_85A3:
     /* 85A3 60       */ rts
+
+FUNC_03_85A4:
+    /* 85A4 A0 16    */ ldy #Unit.item+3
+    /* 85A6 B1 9D    */ lda (zUnitPtr9D), Y
+    /* 85A8 85 AC    */ sta zUnkAC
+
+    /* 85AA 20 B4 85 */ jsr FUNC_03_85B4
+
+    /* 85AD 20 CC 8B */ jsr FUNC_03_8BCC
+
+    /* 85B0 20 54 8F */ jsr LOC_8F54
+
+    /* 85B3 60       */ rts
+
+FUNC_03_85B4:
+    /* 85B4 29 01    */ and #$1
+    /* 85B6 F0 0B    */ beq @CODE_03_85C3
+
+    /* 85B8 A0 01    */ ldy #Unit.jid
+    /* 85BA B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 85BC C9 13    */ cmp #JID_PRIEST
+    /* 85BE F0 03    */ beq @CODE_03_85C3
+
+    /* 85C0 4C C6 85 */ jmp @CODE_03_85C6
+
+@CODE_03_85C3:
+    /* 85C3 4C 90 88 */ jmp FUNC_03_8890
+
+@CODE_03_85C6:
+    /* 85C6 A9 00    */ lda #0
+    /* 85C8 85 BC    */ sta zUnkBC
+
+    /* 85CA A0 0C    */ ldy #Unit.def
+    /* 85CC B1 9D    */ lda (zUnitPtr9D), Y
+    /* 85CE 85 B1    */ sta zUnkB1
+
+    /* 85D0 A0 07    */ ldy #Unit.str
+    /* 85D2 B1 9D    */ lda (zUnitPtr9D), Y
+    /* 85D4 85 B5    */ sta zUnkB5
+
+    /* 85D6 A0 13    */ ldy #Unit.item+0
+    /* 85D8 B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 85DA A8       */ tay
+    /* 85DB 88       */ dey
+
+    /* 85DC B9 C3 D9 */ lda ItemInfo.Unk_D9C3, Y
+    /* 85DF 29 06    */ and #%00000110
+    /* 85E1 4A       */ lsr A
+    /* 85E2 85 AF    */ sta zUnkAF
+
+    /* 85E4 B9 57 D6 */ lda ItemInfo.might, Y
+    /* 85E7 18       */ clc
+    /* 85E8 65 B5    */ adc zUnkB5
+    /* 85EA 85 B5    */ sta zUnkB5
+
+    /* 85EC C9 20    */ cmp #32
+    /* 85EE 30 02    */ bmi +
+
+    /* 85F0 A9 20    */ lda #32
+
++:
+    /* 85F2 85 A8    */ sta zUnkA8
+
+    /* 85F4 AD 38 05 */ lda wUnk0538
+    /* 85F7 8D 00 05 */ sta wUnk0500
+
+    /* 85FA AD 39 05 */ lda wUnk0539
+    /* 85FD 8D 01 05 */ sta wUnk0501
+
+    /* 8600 A5 AD    */ lda zUnkAD
+    /* 8602 F0 04    */ beq @LOC_8608
+
+    /* 8604 A0 0D    */ ldy #Unit.mov
+    /* 8606 B1 9D    */ lda (zUnitPtr9D), Y
+
+@LOC_8608:
+    /* 8608 85 BF    */ sta zUnkBF
+
+    /* 860A A9 02    */ lda #2
+    /* 860C 85 B8    */ sta zUnkB8
+
+    /* 860E 20 37 80 */ jsr FUNC_03_8037
+
+    /* 8611 20 E4 8F */ jsr LOC_8FE4
+
+    /* 8614 A5 BC    */ lda zUnkBC
+    /* 8616 F0 0A    */ beq @LOC_8622
+
+    /* 8618 A5 AC    */ lda zUnkAC
+    /* 861A 29 02    */ and #$2
+    /* 861C F0 07    */ beq @end
+
+    /* 861E A5 B9    */ lda zUnkB9
+    /* 8620 F0 03    */ beq @end
+
+@LOC_8622:
+    /* 8622 4C 90 88 */ jmp FUNC_03_8890
+
+@end:
+    /* 8625 60       */ rts
+
+FUNC_03_8626:
+    /* 8626 8A       */ txa
+    /* 8627 48       */ pha
+    /* 8628 98       */ tya
+    /* 8629 48       */ pha
+
+    /* 862A A5 BE    */ lda zUnkBE
+    /* 862C F0 11    */ beq @LOC_863F
+
+    /* 862E A6 C1    */ ldx zUnkC1
+    /* 8630 20 50 82 */ jsr GetMapRowInR04
+
+    /* 8633 A4 C0    */ ldy zUnkC0
+    /* 8635 B1 04    */ lda (zR04), Y
+
+    /* 8637 A8       */ tay
+    /* 8638 B9 F8 E8 */ lda DAT_E8F8, Y
+
+    /* 863B C9 1F    */ cmp #UNK_E8F8_1F
+    /* 863D F0 2B    */ beq @end
+
+@LOC_863F:
+    /* 863F 20 39 82 */ jsr GetMapRow2In9B
+
+    /* 8642 A4 C0    */ ldy zUnkC0
+    /* 8644 B1 9B    */ lda (zUnk9B), Y
+    /* 8646 85 A5    */ sta zUnkA5
+
+    /* 8648 29 60    */ and #%01100000
+    /* 864A 4A       */ lsr A
+    /* 864B 4A       */ lsr A
+    /* 864C 4A       */ lsr A
+    /* 864D 4A       */ lsr A
+    /* 864E 4A       */ lsr A
+    /* 864F 25 AF    */ and zUnkAF
+    /* 8651 85 A6    */ sta zUnkA6
+    /* 8653 F0 15    */ beq @end
+
+    /* 8655 A5 A5    */ lda zUnkA5
+    /* 8657 29 1F    */ and #%00011111
+    /* 8659 85 A7    */ sta zUnkA7
+
+    /* 865B AE 76 76 */ ldx sMapHeight
+    /* 865E E8       */ inx
+    /* 865F 86 0A    */ stx zR0A
+
+    /* 8661 AE 77 76 */ ldx sMapWidth
+    /* 8664 E8       */ inx
+    /* 8665 86 0B    */ stx zR0B
+
+    /* 8667 20 6F 86 */ jsr FUNC_03_866F
+
+@end:
+    /* 866A 68       */ pla
+    /* 866B A8       */ tay
+    /* 866C 68       */ pla
+    /* 866D AA       */ tax
+
+    /* 866E 60       */ rts
+
+FUNC_03_866F:
+    /* 866F A4 C0    */ ldy zUnkC0
+    /* 8671 A6 C1    */ ldx zUnkC1
+    /* 8673 E8       */ inx
+
+    /* 8674 A9 01    */ lda #1
+    /* 8676 85 A5    */ sta zUnkA5
+
+    /* 8678 25 A6    */ and zUnkA6
+    /* 867A F0 03    */ beq +
+
+    /* 867C 20 1E 87 */ jsr FUNC_03_871E
+
++:
+    /* 867F A9 02    */ lda #2
+    /* 8681 85 A5    */ sta zUnkA5
+
+    /* 8683 25 A6    */ and zUnkA6
+    /* 8685 F0 15    */ beq @LOC_869C
+
+    /* 8687 C8       */ iny
+
+    /* 8688 20 1E 87 */ jsr FUNC_03_871E
+
+    /* 868B 88       */ dey
+    /* 868C A5 C1    */ lda zUnkC1
+    /* 868E 18       */ clc
+    /* 868F 69 02    */ adc #2
+
+    /* 8691 CD 76 76 */ cmp sMapHeight
+    /* 8694 B0 06    */ bcs @LOC_869C ; bhs
+
+    /* 8696 A4 C0    */ ldy zUnkC0
+    /* 8698 AA       */ tax
+
+    /* 8699 20 1E 87 */ jsr FUNC_03_871E
+
+@LOC_869C:
+    /* 869C A6 C1    */ ldx zUnkC1
+    /* 869E A4 C0    */ ldy zUnkC0
+    /* 86A0 C8       */ iny
+
+    /* 86A1 A9 01    */ lda #1
+    /* 86A3 85 A5    */ sta zUnkA5
+
+    /* 86A5 25 A6    */ and zUnkA6
+    /* 86A7 F0 03    */ beq +
+
+    /* 86A9 20 1E 87 */ jsr FUNC_03_871E
+
++:
+    /* 86AC A9 02    */ lda #2
+    /* 86AE 85 A5    */ sta zUnkA5
+
+    /* 86B0 25 A6    */ and zUnkA6
+    /* 86B2 F0 15    */ beq @LOC_86C9
+
+    /* 86B4 CA       */ dex
+
+    /* 86B5 20 1E 87 */ jsr FUNC_03_871E
+
+    /* 86B8 E8       */ inx
+    /* 86B9 A5 C0    */ lda zUnkC0
+    /* 86BB 18       */ clc
+    /* 86BC 69 02    */ adc #2
+
+    /* 86BE CD 77 76 */ cmp sMapWidth
+    /* 86C1 B0 06    */ bcs @LOC_86C9
+
+    /* 86C3 A6 C1    */ ldx zUnkC1
+    /* 86C5 A8       */ tay
+
+    /* 86C6 20 1E 87 */ jsr FUNC_03_871E
+
+@LOC_86C9:
+    /* 86C9 A4 C0    */ ldy zUnkC0
+    /* 86CB A6 C1    */ ldx zUnkC1
+    /* 86CD CA       */ dex
+
+    /* 86CE A9 01    */ lda #1
+    /* 86D0 85 A5    */ sta zUnkA5
+
+    /* 86D2 25 A6    */ and zUnkA6
+    /* 86D4 F0 03    */ beq @LOC_86D9
+
+    /* 86D6 20 1E 87 */ jsr FUNC_03_871E
+
+@LOC_86D9:
+    /* 86D9 A9 02    */ lda #2
+    /* 86DB 85 A5    */ sta zUnkA5
+
+    /* 86DD 25 A6    */ and zUnkA6
+    /* 86DF F0 12    */ beq @LOC_86F3
+
+    /* 86E1 88       */ dey
+    /* 86E2 20 1E 87 */ jsr FUNC_03_871E
+
+    /* 86E5 C8       */ iny
+
+    /* 86E6 A5 C1    */ lda zUnkC1
+    /* 86E8 38       */ sec
+    /* 86E9 E9 02    */ sbc #2
+
+    /* 86EB 90 06    */ bcc @LOC_86F3 ; blo
+
+    /* 86ED A4 C0    */ ldy zUnkC0
+    /* 86EF AA       */ tax
+
+    /* 86F0 20 1E 87 */ jsr FUNC_03_871E
+
+@LOC_86F3:
+    /* 86F3 A6 C1    */ ldx zUnkC1
+    /* 86F5 A4 C0    */ ldy zUnkC0
+    /* 86F7 88       */ dey
+
+    /* 86F8 A9 01    */ lda #1
+    /* 86FA 85 A5    */ sta zUnkA5
+
+    /* 86FC 25 A6    */ and zUnkA6
+    /* 86FE F0 03    */ beq @LOC_8703
+
+    /* 8700 20 1E 87 */ jsr FUNC_03_871E
+
+@LOC_8703:
+    /* 8703 A9 02    */ lda #2
+    /* 8705 85 A5    */ sta zUnkA5
+
+    /* 8707 25 A6    */ and zUnkA6
+    /* 8709 F0 12    */ beq @LOC_871D
+
+    /* 870B E8       */ inx
+    /* 870C 20 1E 87 */ jsr FUNC_03_871E
+
+    /* 870F CA       */ dex
+    /* 8710 A5 C0    */ lda zUnkC0
+    /* 8712 38       */ sec
+    /* 8713 E9 02    */ sbc #2
+
+    /* 8715 90 06    */ bcc @LOC_871D ; blo
+
+    /* 8717 A6 C1    */ ldx zUnkC1
+    /* 8719 A8       */ tay
+
+    /* 871A 20 1E 87 */ jsr FUNC_03_871E
+
+@LOC_871D:
+    /* 871D 60       */ rts
+
+FUNC_03_871E:
+    ; Input:
+    ; - X = X map position
+    ; - Y = Y map position
+
+    /* 871E 8A       */ txa
+    /* 871F 48       */ pha
+    /* 8720 98       */ tya
+    /* 8721 48       */ pha
+
+    /* 8722 86 B3    */ stx zUnkB3
+    /* 8724 84 B2    */ sty zUnkB2
+
+    /* 8726 8A       */ txa
+    /* 8727 0A       */ asl A
+    /* 8728 AA       */ tax
+
+    /* 8729 BD 3D ED */ lda MapRows.w, X
+    /* 872C 85 04    */ sta zR04
+    /* 872E BD 3E ED */ lda MapRows.w+1, X
+    /* 8731 85 05    */ sta zR04+1
+
+    /* 8733 B1 04    */ lda (zR04), Y
+    /* 8735 A8       */ tay
+    /* 8736 B9 F8 E8 */ lda DAT_E8F8.w, Y
+
+    /* 8739 C9 0E    */ cmp #UNK_E8F8_0E
+    /* 873B D0 05    */ bne @LOC_8742
+
+    /* 873D 20 44 91 */ jsr LOC_9144
+
+    /* 8740 90 03    */ bcc @LOC_8745
+
+@LOC_8742:
+    /* 8742 4C C5 87 */ jmp @LOC_87C5
+
+@LOC_8745:
+    /* 8745 A0 01    */ ldy #Unit.jid
+    /* 8747 B1 9F    */ lda (zUnitPtr9F), Y
+    /* 8749 85 A3    */ sta zUnkA3
+
+    /* 874B A0 13    */ ldy #Unit.item+0
+    /* 874D B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 874F A8       */ tay
+    /* 8750 88       */ dey
+    /* 8751 84 A4    */ sty zUnkA4
+
+    /* 8753 B9 DB D8 */ lda ItemInfo.effectiveness, Y
+    /* 8756 F0 32    */ beq @not_effective
+
+    /* 8758 0A       */ asl A
+    /* 8759 A8       */ tay
+
+    /* 875A B9 37 D9 */ lda EffectivenessInfo, Y
+    /* 875D 85 00    */ sta zR00
+    /* 875F B9 38 D9 */ lda EffectivenessInfo+1, Y
+    /* 8762 85 01    */ sta zR00+1
+
+    /* 8764 A0 00    */ ldy #0
+
+@lop_effectiveness:
+    /* 8766 B1 00    */ lda (zR00), Y
+
+    /* 8768 C9 FF    */ cmp #$FF
+    /* 876A F0 1E    */ beq @not_effective
+
+    /* 876C C5 A3    */ cmp zUnkA3
+    /* 876E F0 04    */ beq @is_effective
+
+    /* 8770 C8       */ iny
+    /* 8771 4C 66 87 */ jmp @lop_effectiveness
+
+@is_effective:
+    /* 8774 A4 A4    */ ldy zUnkA4
+    /* 8776 B9 57 D6 */ lda ItemInfo.might, Y
+
+    /* 8779 85 A3    */ sta zUnkA3
+
+    /* 877B 0A       */ asl A
+    /* 877C 18       */ clc
+    /* 877D 65 A3    */ adc zUnkA3
+    /* 877F 85 A3    */ sta zUnkA3
+
+    /* 8781 A0 07    */ ldy #Unit.str
+    /* 8783 B1 9D    */ lda (zUnitPtr9D), Y
+    /* 8785 18       */ clc
+    /* 8786 65 A3    */ adc zUnkA3
+    /* 8788 85 A8    */ sta zUnkA8
+
+@not_effective:
+    /* 878A A0 01    */ ldy #Unit.jid
+    /* 878C B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 878E C9 12    */ cmp #JID_MAGE
+    /* 8790 F0 0C    */ beq @magic
+
+    /* 8792 C9 14    */ cmp #JID_BISHOP
+    /* 8794 F0 08    */ beq @magic
+
+    /* 8796 A0 13    */ ldy #Unit.item+0
+    /* 8798 B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 879A C9 09    */ cmp #IID_LEVINSWORD+1
+    /* 879C D0 09    */ bne @not_magic
+
+@magic:
+    /* 879E A0 0F    */ ldy #Unit.res
+    /* 87A0 B1 9F    */ lda (zUnitPtr9F), Y
+    /* 87A2 85 A3    */ sta zUnkA3
+
+    /* 87A4 4C BC 87 */ jmp @LOC_87BC
+
+@not_magic:
+    /* 87A7 A0 0C    */ ldy #Unit.def
+    /* 87A9 B1 9F    */ lda (zUnitPtr9F), Y
+    /* 87AB 85 A3    */ sta zUnkA3
+
+    /* 87AD A0 01    */ ldy #Unit.jid
+    /* 87AF B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 87B1 C9 11    */ cmp #JID_MANAKETE
+    /* 87B3 D0 07    */ bne @LOC_87BC
+
+    ; manaketes have a 13 def bonus?
+    /* 87B5 A5 A3    */ lda zUnkA3
+    /* 87B7 18       */ clc
+    /* 87B8 69 0D    */ adc #13
+    /* 87BA 85 A3    */ sta zUnkA3
+
+@LOC_87BC:
+    /* 87BC A5 A8    */ lda zUnkA8
+    /* 87BE 38       */ sec
+    /* 87BF E5 A3    */ sbc zUnkA3
+    /* 87C1 85 BB    */ sta zUnkBB
+
+    /* 87C3 B0 03    */ bcs @LOC_87C8 ; bhs
+
+@LOC_87C5:
+    /* 87C5 4C 8B 88 */ jmp @LOC_888B
+
+@LOC_87C8:
+    /* 87C8 A0 01    */ ldy #Unit.jid
+    /* 87CA B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 87CC C9 15    */ cmp #JID_LORD
+    /* 87CE D0 04    */ bne @LOC_87D4
+
+    /* 87D0 A9 46    */ lda #70
+    /* 87D2 D0 1A    */ bne @LOC_87EE
+
+@LOC_87D4:
+    /* 87D4 C9 13    */ cmp #JID_PRIEST
+    /* 87D6 D0 04    */ bne @LOC_87DC
+
+    /* 87D8 A9 2D    */ lda #45
+    /* 87DA D0 12    */ bne @LOC_87EE
+
+@LOC_87DC:
+    /* 87DC C9 10    */ cmp #JID_COMMANDO
+    /* 87DE D0 04    */ bne @LOC_87E4
+
+    /* 87E0 A9 1E    */ lda #30
+    /* 87E2 D0 0A    */ bne @LOC_87EE
+
+@LOC_87E4:
+    /* 87E4 C9 09    */ cmp #JID_THIEF
+    /* 87E6 D0 04    */ bne @LOC_87EC
+
+    /* 87E8 A9 19    */ lda #25
+    /* 87EA D0 02    */ bne @LOC_87EE
+
+@LOC_87EC:
+    /* 87EC A9 00    */ lda #0
+
+@LOC_87EE:
+    /* 87EE 85 BD    */ sta zUnkBD
+
+    /* 87F0 A5 BE    */ lda zUnkBE
+    /* 87F2 D0 07    */ bne @LOC_87FB
+
+    /* 87F4 A0 06    */ ldy #Unit.terrain
+    /* 87F6 B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 87F8 4C 04 88 */ jmp @LOC_8804
+
+@LOC_87FB:
+    /* 87FB A6 C1    */ ldx zUnkC1
+    /* 87FD 20 50 82 */ jsr GetMapRowInR04
+    /* 8800 A4 C0    */ ldy zUnkC0
+    /* 8802 B1 04    */ lda (zR04), Y
+
+@LOC_8804:
+    /* 8804 A8       */ tay
+    /* 8805 B9 F8 E8 */ lda DAT_E8F8, Y
+
+    /* 8808 A8       */ tay
+    /* 8809 B9 D8 EB */ lda DAT_EBD8, Y
+
+    /* 880C 18       */ clc
+    /* 880D 65 BD    */ adc zUnkBD
+    /* 880F 85 BD    */ sta zUnkBD
+
+    /* 8811 A0 03    */ ldy #Unit.hp_cur
+    /* 8813 B1 9F    */ lda (zUnitPtr9F), Y
+    /* 8815 85 A3    */ sta zUnkA3
+
+    /* 8817 A9 0A    */ lda #10
+    /* 8819 38       */ sec
+    /* 881A E5 A3    */ sbc zUnkA3
+
+    /* 881C 90 08    */ bcc @LOC_8826 ; blo
+
+    /* 881E 69 06    */ adc #6
+    /* 8820 0A       */ asl A
+    /* 8821 18       */ clc
+    /* 8822 65 BD    */ adc zUnkBD
+    /* 8824 85 BD    */ sta zUnkBD
+
+@LOC_8826:
+    /* 8826 A0 13    */ ldy #Unit.item+0
+    /* 8828 B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 882A A8       */ tay
+    /* 882B 88       */ dey
+
+    /* 882C B9 C3 D9 */ lda ItemInfo.Unk_D9C3, Y
+    /* 882F 29 06    */ and #%00000110
+    /* 8831 4A       */ lsr A
+
+    /* 8832 48       */ pha
+
+    /* 8833 A5 AF    */ lda zUnkAF
+    /* 8835 C9 03    */ cmp #$03
+    /* 8837 D0 07    */ bne @LOC_8840
+
+    /* 8839 68       */ pla
+
+    /* 883A 25 A5    */ and zUnkA5
+
+    /* 883C D0 0D    */ bne @LOC_884B
+    /* 883E F0 05    */ beq @LOC_8845
+
+@LOC_8840:
+    /* 8840 68       */ pla
+
+    /* 8841 25 AF    */ and zUnkAF
+
+    /* 8843 D0 06    */ bne @LOC_884B
+
+@LOC_8845:
+    /* 8845 A9 32    */ lda #50
+    /* 8847 65 BD    */ adc zUnkBD
+    /* 8849 85 BD    */ sta zUnkBD
+
+@LOC_884B:
+    /* 884B A5 A7    */ lda zUnkA7
+    /* 884D 38       */ sec
+    /* 884E E5 B1    */ sbc zUnkB1
+
+    /* 8850 B0 08    */ bcs @LOC_885A ; bhs
+
+    /* 8852 A9 32    */ lda #50
+    /* 8854 65 BD    */ adc zUnkBD
+    /* 8856 85 BD    */ sta zUnkBD
+
+    /* 8858 A9 00    */ lda #0
+
+@LOC_885A:
+    /* 885A 85 BA    */ sta zUnkBA
+
+    ; A = zUnkBD + 32 + zUnkBB*3 - zUnkBA
+
+    /* 885C A5 BB    */ lda zUnkBB
+    /* 885E 0A       */ asl A
+    /* 885F 65 BB    */ adc zUnkBB
+
+    /* 8861 38       */ sec
+    /* 8862 E5 BA    */ sbc zUnkBA
+
+    /* 8864 18       */ clc
+    /* 8865 69 20    */ adc #$20
+
+    /* 8867 18       */ clc
+    /* 8868 65 BD    */ adc zUnkBD
+
+    ; if carry is set here, it means we overflowed and went past 255
+    /* 886A 90 04    */ bcc @LOC_8870
+
+    /* 886C A9 FF    */ lda #255
+    /* 886E D0 06    */ bne @LOC_8876
+
+@LOC_8870:
+    /* 8870 C5 BC    */ cmp zUnkBC
+
+    /* 8872 90 17    */ bcc @LOC_888B ; blo
+    /* 8874 F0 15    */ beq @LOC_888B
+
+@LOC_8876:
+    /* 8876 85 BC    */ sta zUnkBC
+
+    /* 8878 A5 C1    */ lda zUnkC1
+    /* 887A 8D C0 05 */ sta wUnk05C0
+
+    /* 887D A5 C0    */ lda zUnkC0
+    /* 887F 8D C1 05 */ sta wUnk05C1
+
+    /* 8882 A5 AE    */ lda zUnkAE
+    /* 8884 8D C2 05 */ sta wUnk05C2
+
+    /* 8887 A5 BA    */ lda zUnkBA
+    /* 8889 85 B9    */ sta zUnkB9
+
+@LOC_888B:
+    /* 888B 68       */ pla
+    /* 888C A8       */ tay
+    /* 888D 68       */ pla
+    /* 888E AA       */ tax
+
+    /* 888F 60       */ rts
+
+FUNC_03_8890:
+    /* 8890 A5 AC    */ lda zUnkAC
+    /* 8892 29 70    */ and #%01110000
+    /* 8894 4A       */ lsr A
+    /* 8895 4A       */ lsr A
+    /* 8896 4A       */ lsr A
+    /* 8897 4A       */ lsr A
+    /* 8898 85 AB    */ sta zUnkAB
+
+    /* 889A AD 38 05 */ lda wUnk0538
+    /* 889D 8D 00 05 */ sta wUnk0500
+
+    /* 88A0 AD 39 05 */ lda wUnk0539
+    /* 88A3 8D 01 05 */ sta wUnk0501
+
+    /* 88A6 A0 19    */ ldy #Unit.uses+2
+    /* 88A8 B1 9D    */ lda (zUnitPtr9D), Y
+    /* 88AA 85 C3    */ sta zUnkC3
+
+    /* 88AC C8       */ iny ; Unit.uses+3
+    /* 88AD B1 9D    */ lda (zUnitPtr9D), Y
+    /* 88AF 85 C2    */ sta zUnkC2
+
+    /* 88B1 A5 AB    */ lda zUnkAB
+    /* 88B3 C9 07    */ cmp #$07
+    /* 88B5 D0 22    */ bne @LOC_88D9
+
+    /* 88B7 A5 C2    */ lda zUnkC2
+    /* 88B9 CD 38 05 */ cmp wUnk0538
+    /* 88BC D0 1B    */ bne @LOC_88D9
+
+    /* 88BE A5 C3    */ lda zUnkC3
+    /* 88C0 CD 39 05 */ cmp wUnk0539
+    /* 88C3 D0 14    */ bne @LOC_88D9
+
+    /* 88C5 A9 FF    */ lda #$FF
+    /* 88C7 8D C2 05 */ sta wUnk05C2
+
+    /* 88CA AD 38 05 */ lda wUnk0538
+    /* 88CD 8D C1 05 */ sta wUnk05C1
+
+    /* 88D0 AD 39 05 */ lda wUnk0539
+    /* 88D3 8D C0 05 */ sta wUnk05C0
+
+    /* 88D6 4C 1C 89 */ jmp @LOC_891C
+
+@LOC_88D9:
+    /* 88D9 A9 3C    */ lda #$3C
+    /* 88DB 85 BF    */ sta zUnkBF
+
+    /* 88DD A9 00    */ lda #0
+    /* 88DF 85 B8    */ sta zUnkB8
+
+    /* 88E1 AD 3A 05 */ lda wUnk053A
+    /* 88E4 F0 06    */ beq @LOC_88EC
+
+    /* 88E6 20 83 8C */ jsr FUNC_03_8C83
+
+    /* 88E9 4C EF 88 */ jmp @LOC_88EF
+
+@LOC_88EC:
+    /* 88EC 20 37 80 */ jsr FUNC_03_8037
+
+@LOC_88EF:
+    /* 88EF 20 E4 8F */ jsr LOC_8FE4
+
+    /* 88F2 A5 BE    */ lda zUnkBE
+    /* 88F4 F0 04    */ beq @LOC_88FA
+
+    /* 88F6 A5 B8    */ lda zUnkB8
+    /* 88F8 D0 14    */ bne @LOC_890E
+
+@LOC_88FA:
+    /* 88FA AD 38 05 */ lda wUnk0538
+    /* 88FD 8D C1 05 */ sta wUnk05C1
+
+    /* 8900 AD 39 05 */ lda wUnk0539
+    /* 8903 8D C0 05 */ sta wUnk05C0
+
+    /* 8906 A9 FF    */ lda #$FF
+    /* 8908 8D C2 05 */ sta wUnk05C2
+
+    /* 890B 4C 1C 89 */ jmp @LOC_891C
+
+@LOC_890E:
+    /* 890E 20 82 8A */ jsr FUNC_03_8A82
+
+    /* 8911 20 E8 8A */ jsr FUNC_03_8AE8
+
+    /* 8914 AD 3A 05 */ lda wUnk053A
+    /* 8917 F0 03    */ beq @LOC_891C
+
+    /* 8919 4C 90 88 */ jmp FUNC_03_8890
+
+@LOC_891C:
+    /* 891C 60       */ rts
+
+FUNC_03_891D:
+    /* 891D 8A       */ txa
+    /* 891E 48       */ pha
+    /* 891F 98       */ tya
+    /* 8920 48       */ pha
+
+    /* 8921 A5 AB    */ lda zUnkAB
+
+    /* 8923 C9 07    */ cmp #$07
+    /* 8925 D0 0E    */ bne @LOC_8935
+
+    /* 8927 C4 C2    */ cpy zUnkC2
+    /* 8929 D0 07    */ bne @LOC_8932
+
+    /* 892B E4 C3    */ cpx zUnkC3
+    /* 892D D0 03    */ bne @LOC_8932
+
+    /* 892F 4C 79 8A */ jmp FUNC_03_89BB@LOC_8A79
+
+@LOC_8932:
+    /* 8932 4C 7D 8A */ jmp FUNC_03_89BB@LOC_8A7D
+
+@LOC_8935:
+    /* 8935 86 0A    */ stx zR0A
+    /* 8937 84 0B    */ sty zR0B
+
+    /* 8939 A9 00    */ lda #0
+    /* 893B 85 B7    */ sta zUnkB7
+
+    ; { +0, +0 }
+
+    /* 893D 20 6B 89 */ jsr FUNC_03_896B
+
+    /* 8940 E6 B7    */ inc zUnkB7
+
+    ; { +1, +0 }
+
+    /* 8942 A6 0A    */ ldx zR0A
+    /* 8944 A4 0B    */ ldy zR0B
+    /* 8946 E8       */ inx
+
+    /* 8947 20 6B 89 */ jsr FUNC_03_896B
+
+    /* 894A E6 B7    */ inc zUnkB7
+
+    ; { -1, +0 }
+
+    /* 894C A6 0A    */ ldx zR0A
+    /* 894E A4 0B    */ ldy zR0B
+    /* 8950 CA       */ dex
+
+    /* 8951 20 6B 89 */ jsr FUNC_03_896B
+
+    /* 8954 E6 B7    */ inc zUnkB7
+
+    ; { +0, -1 }
+
+    /* 8956 A6 0A    */ ldx zR0A
+    /* 8958 A4 0B    */ ldy zR0B
+    /* 895A 88       */ dey
+
+    /* 895B 20 6B 89 */ jsr FUNC_03_896B
+
+    /* 895E E6 B7    */ inc zUnkB7
+
+    ; { +0, +1 }
+
+    /* 8960 A6 0A    */ ldx zR0A
+    /* 8962 A4 0B    */ ldy zR0B
+    /* 8964 C8       */ iny
+
+    /* 8965 20 6B 89 */ jsr FUNC_03_896B
+
+    /* 8968 4C BB 89 */ jmp FUNC_03_89BB
+
+FUNC_03_896B:
+    /* 896B 84 B2    */ sty zUnkB2
+    /* 896D 86 B3    */ stx zUnkB3
+
+    /* 896F 20 50 82 */ jsr GetMapRowInR04
+    /* 8972 B1 04    */ lda (zR04), Y
+
+    /* 8974 A8       */ tay
+    /* 8975 B9 F8 E8 */ lda DAT_E8F8, Y
+
+    /* 8978 A6 B7    */ ldx zUnkB7
+    /* 897A 9D 2E 05 */ sta wUnk052E, X
+
+    /* 897D C9 0E    */ cmp #UNK_E8F8_0E
+    /* 897F D0 18    */ bne @LOC_8999
+
+    /* 8981 20 44 91 */ jsr LOC_9144
+
+    /* 8984 A0 01    */ ldy #Unit.jid
+    /* 8986 B1 9F    */ lda (zUnitPtr9F), Y
+    /* 8988 9D 33 05 */ sta wUnk0533, X
+
+    /* 898B A0 06    */ ldy #Unit.terrain
+    /* 898D B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 898F A8       */ tay
+    /* 8990 B9 F8 E8 */ lda DAT_E8F8, Y
+
+    /* 8993 9D 2E 05 */ sta wUnk052E, X
+
+    /* 8996 4C BA 89 */ jmp @LOC_89BA
+
+@LOC_8999:
+    /* 8999 C9 1F    */ cmp #UNK_E8F8_1F
+    /* 899B D0 18    */ bne @LOC_89B5
+
+    /* 899D E0 00    */ cpx #0
+    /* 899F D0 14    */ bne @LOC_89B5
+
+    /* 89A1 8D 33 05 */ sta wUnk0533
+
+    /* 89A4 20 4A 91 */ jsr LOC_914A
+
+    /* 89A7 A0 06    */ ldy #Unit.terrain
+    /* 89A9 B1 02    */ lda (zR02), Y
+
+    /* 89AB A8       */ tay
+
+    /* 89AC B9 F8 E8 */ lda DAT_E8F8, Y
+    /* 89AF 9D 2E 05 */ sta wUnk052E, X
+
+    /* 89B2 4C BA 89 */ jmp @LOC_89BA
+
+@LOC_89B5:
+    /* 89B5 A9 80    */ lda #JID_UNK_128
+    /* 89B7 9D 33 05 */ sta wUnk0533, X
+
+@LOC_89BA:
+    /* 89BA 60       */ rts
+
+FUNC_03_89BB:
+    /* 89BB A5 AB    */ lda zUnkAB
+    /* 89BD 20 4C C3 */ jsr Switch
+
+    .dw @case_0 ; 0
+    .dw @case_1 ; 1
+    .dw @case_2 ; 2
+    .dw @case_3 ; 3
+    .dw @case_4 ; 4
+    .dw @case_5 ; 5
+    .dw @case_6 ; 6
+
+@case_0:
+    /* 89CE AD 33 05 */ lda wUnk0533
+
+    /* 89D1 C9 1F    */ cmp #JID_UNK_1F
+    /* 89D3 D0 0B    */ bne @LOC_89E0
+
+    /* 89D5 A0 01    */ ldy #Unit.jid
+    /* 89D7 B1 02    */ lda (zR02), Y
+
+    /* 89D9 C9 13    */ cmp #JID_PRIEST
+    /* 89DB F0 63    */ beq @LOC_8A40
+
+    /* 89DD 4C 7D 8A */ jmp @LOC_8A7D
+
+@LOC_89E0:
+    /* 89E0 AD 2E 05 */ lda wUnk052E
+
+    /* 89E3 C9 03    */ cmp #$03
+    /* 89E5 F0 59    */ beq @LOC_8A40
+
+    /* 89E7 4C 7D 8A */ jmp @LOC_8A7D
+
+@case_1:
+    /* 89EA AD 34 05 */ lda wUnk0533+1
+    /* 89ED 2D 35 05 */ and wUnk0533+2
+    /* 89F0 2D 36 05 */ and wUnk0533+3
+    /* 89F3 2D 37 05 */ and wUnk0533+4
+
+    /* 89F6 D0 0C    */ bne @LOC_8A04
+
+    /* 89F8 A2 04    */ ldx #4
+
+@LOC_89FA:
+    /* 89FA BD 33 05 */ lda wUnk0533, X
+
+    /* 89FD C9 15    */ cmp #JID_LORD
+    /* 89FF F0 3F    */ beq @LOC_8A40
+
+    /* 8A01 CA       */ dex
+    /* 8A02 D0 F6    */ bne @LOC_89FA
+
+@LOC_8A04:
+    /* 8A04 4C 7D 8A */ jmp @LOC_8A7D
+
+@case_2:
+    /* 89EA AD 34 05 */ lda wUnk0533+1
+    /* 89ED 2D 35 05 */ and wUnk0533+2
+    /* 89F0 2D 36 05 */ and wUnk0533+3
+    /* 89F3 2D 37 05 */ and wUnk0533+4
+
+    /* 8A13 D0 14    */ bne @LOC_8A29
+
+    /* 8A15 A2 04    */ ldx #4
+
+@LOC_8A17:
+    /* 8A17 BD 33 05 */ lda wUnk0533, X
+
+    /* 8A1A C9 13    */ cmp #JID_PRIEST
+    /* 8A1C F0 22    */ beq @LOC_8A40
+
+    /* 8A1E C9 09    */ cmp #JID_THIEF
+    /* 8A20 F0 1E    */ beq @LOC_8A40
+
+    /* 8A22 C9 10    */ cmp #JID_COMMANDO
+    /* 8A24 F0 1A    */ beq @LOC_8A40
+
+    /* 8A26 CA       */ dex
+    /* 8A27 D0 EE    */ bne @LOC_8A17
+
+@LOC_8A29:
+    /* 8A29 4C 7D 8A */ jmp @LOC_8A7D
+
+@case_3:
+    /* 8A2C AD 33 05 */ lda wUnk0533
+
+    /* 8A2F C9 1F    */ cmp #JID_UNK_1F
+    /* 8A31 D0 0A    */ bne @LOC_8A3D
+
+    /* 8A33 A0 16    */ ldy #Unit.item+3
+    /* 8A35 B1 02    */ lda (zR02), Y
+
+    /* 8A37 29 0C    */ and #%00001100
+
+    /* 8A39 C9 04    */ cmp #%00000100
+    /* 8A3B F0 03    */ beq @LOC_8A40
+
+@LOC_8A3D:
+    /* 8A3D 4C 7D 8A */ jmp @LOC_8A7D
+
+@LOC_8A40:
+    /* 8A40 4C 79 8A */ jmp @LOC_8A79
+
+@case_4:
+    /* 8A43 AD 33 05 */ lda wUnk0533
+
+    /* 8A46 C9 1F    */ cmp #JID_UNK_1F
+    /* 8A48 D0 F3    */ bne @LOC_8A3D
+
+    /* 8A4A A0 01    */ ldy #Unit.jid
+    /* 8A4C B1 02    */ lda (zR02), Y
+
+    /* 8A4E C9 13    */ cmp #JID_PRIEST
+    /* 8A50 F0 EE    */ beq @LOC_8A40
+
+    /* 8A52 C9 10    */ cmp #JID_COMMANDO
+    /* 8A54 F0 EA    */ beq @LOC_8A40
+
+    /* 8A56 C9 09    */ cmp #JID_THIEF
+    /* 8A58 F0 E6    */ beq @LOC_8A40
+
+    /* 8A5A 4C 7D 8A */ jmp @LOC_8A7D
+
+@case_5:
+    /* 89EA AD 34 05 */ lda wUnk0533+1
+    /* 89ED 2D 35 05 */ and wUnk0533+2
+    /* 89F0 2D 36 05 */ and wUnk0533+3
+    /* 89F3 2D 37 05 */ and wUnk0533+4
+
+    /* 8A69 D0 12    */ bne @LOC_8A7D
+
+    /* 8A6B 4C 79 8A */ jmp @LOC_8A79
+
+@case_6:
+    /* 8A6E AD 2E 05 */ lda wUnk052E
+
+    /* 8A71 C9 02    */ cmp #$02
+    /* 8A73 F0 04    */ beq @LOC_8A79
+
+    /* 8A75 C9 12    */ cmp #$12
+    /* 8A77 D0 04    */ bne @LOC_8A7D
+
+@LOC_8A79:
+    /* 8A79 A9 FF    */ lda #$FF
+    /* 8A7B 85 B8    */ sta zUnkB8
+
+@LOC_8A7D:
+    /* 8A7D 68       */ pla
+    /* 8A7E A8       */ tay
+    /* 8A7F 68       */ pla
+    /* 8A80 AA       */ tax
+
+    /* 8A81 60       */ rts
+
+FUNC_03_8A82:
+    /* 8A82 A6 C1    */ ldx zUnkC1
+    /* 8A84 86 A2    */ stx zUnkA2
+
+    /* 8A86 20 22 82 */ jsr GetMapRow3In6C
+
+    /* 8A89 A4 C0    */ ldy zUnkC0
+    /* 8A8B 84 A1    */ sty zUnkA1
+
+    /* 8A8D B1 6C    */ lda (zUnk6C), Y
+    /* 8A8F 85 A3    */ sta zUnkA3
+
+@lop:
+    /* 8A91 A5 A3    */ lda zUnkA3
+    /* 8A93 2A       */ rol A
+    /* 8A94 2A       */ rol A
+    /* 8A95 2A       */ rol A
+    /* 8A96 29 03    */ and #$3
+    /* 8A98 85 09    */ sta zR09
+
+    /* 8A9A 0A       */ asl A
+    /* 8A9B AA       */ tax
+
+    /* 8A9C BD D8 8A */ lda DATA_03_8AD8.w, X
+    /* 8A9F 18       */ clc
+    /* 8AA0 65 C0    */ adc zUnkC0
+    /* 8AA2 85 C0    */ sta zUnkC0
+
+    /* 8AA4 BD D9 8A */ lda DATA_03_8AD8.w+1, X
+    /* 8AA7 18       */ clc
+    /* 8AA8 65 C1    */ adc zUnkC1
+    /* 8AAA 85 C1    */ sta zUnkC1
+
+    /* 8AAC AA       */ tax
+
+    /* 8AAD 20 22 82 */ jsr GetMapRow3In6C
+
+    /* 8AB0 A4 C0    */ ldy zUnkC0
+    /* 8AB2 B1 6C    */ lda (zUnk6C), Y
+
+    /* 8AB4 C9 3D    */ cmp #$3D
+    /* 8AB6 F0 18    */ beq @finish
+
+    /* 8AB8 48       */ pha
+
+    /* 8AB9 29 C0    */ and #$C0
+    /* 8ABB 85 A3    */ sta zUnkA3
+    /* 8ABD A5 09    */ lda zR09
+    /* 8ABF 6A       */ ror A
+    /* 8AC0 6A       */ ror A
+    /* 8AC1 6A       */ ror A
+    /* 8AC2 29 C0    */ and #$C0
+    /* 8AC4 85 A4    */ sta zUnkA4
+
+    /* 8AC6 68       */ pla
+
+    /* 8AC7 29 3F    */ and #$3F
+    /* 8AC9 05 A4    */ ora zUnkA4
+    /* 8ACB 91 6C    */ sta (zUnk6C), Y
+
+    /* 8ACD 4C 91 8A */ jmp @lop
+
+@finish:
+    /* 8AD0 A5 09    */ lda zR09
+    /* 8AD2 6A       */ ror A
+    /* 8AD3 6A       */ ror A
+    /* 8AD4 6A       */ ror A
+    /* 8AD5 91 6C    */ sta (zUnk6C), Y
+
+    /* 8AD7 60       */ rts
+
+DATA_03_8AD8:
+    ;    x   y
+    .db  0, +1
+    .db -1,  0
+    .db  0, -1
+    .db +1,  0
+
+DATA_03_8AE0:
+    ;    x   y
+    .db  0, -1
+    .db +1,  0
+    .db  0, +1
+    .db -1,  0
+
+FUNC_03_8AE8:
+    /* 8AE8 AD 38 05 */ lda wUnk0538
+    /* 8AEB 85 C0    */ sta zUnkC0
+
+    /* 8AED AD 39 05 */ lda wUnk0539
+    /* 8AF0 85 C1    */ sta zUnkC1
+
+    /* 8AF2 A0 0D    */ ldy #Unit.mov
+    /* 8AF4 B1 9D    */ lda (zUnitPtr9D), Y
+    /* 8AF6 85 A3    */ sta zUnkA3
+
+    /* 8AF8 A9 00    */ lda #0
+    /* 8AFA 85 C4    */ sta zUnkC4
+
+@LOC_8AFC:
+    /* 8AFC A6 C1    */ ldx zUnkC1
+    /* 8AFE 86 C6    */ stx zUnkC6
+
+    /* 8B00 20 22 82 */ jsr GetMapRow3In6C
+
+    /* 8B03 A4 C0    */ ldy zUnkC0
+    /* 8B05 84 C7    */ sty zUnkC7
+
+    /* 8B07 B1 6C    */ lda (zUnk6C), Y
+    /* 8B09 2A       */ rol A
+    /* 8B0A 2A       */ rol A
+    /* 8B0B 2A       */ rol A
+    /* 8B0C 29 03    */ and #$3
+    /* 8B0E 85 09    */ sta zR09
+
+    /* 8B10 A4 C4    */ ldy zUnkC4
+    /* 8B12 99 20 05 */ sta wUnk0520, Y
+
+    /* 8B15 0A       */ asl A
+    /* 8B16 AA       */ tax
+
+    /* 8B17 BD E0 8A */ lda DATA_03_8AE0.w, X
+    /* 8B1A 18       */ clc
+    /* 8B1B 65 C0    */ adc zUnkC0
+    /* 8B1D 85 C0    */ sta zUnkC0
+
+    /* 8B1F BD E1 8A */ lda DATA_03_8AE0.w+1, X
+    /* 8B22 18       */ clc
+    /* 8B23 65 C1    */ adc zUnkC1
+    /* 8B25 85 C1    */ sta zUnkC1
+
+    /* 8B27 AA       */ tax
+    /* 8B28 20 22 82 */ jsr GetMapRow3In6C
+
+    /* 8B2B A4 C0    */ ldy zUnkC0
+    /* 8B2D B1 6C    */ lda (zUnk6C), Y
+
+    /* 8B2F 29 3F    */ and #$3F
+    /* 8B31 F0 16    */ beq @LOC_8B49
+
+    /* 8B33 85 A4    */ sta zUnkA4
+
+    /* 8B35 38       */ sec
+    /* 8B36 A5 A3    */ lda zUnkA3
+    /* 8B38 E5 A4    */ sbc zUnkA4
+
+    /* 8B3A 90 0D    */ bcc @LOC_8B49 ; blo
+
+    /* 8B3C C4 A1    */ cpy zUnkA1
+    /* 8B3E D0 04    */ bne @LOC_8B44
+
+    /* 8B40 E4 A2    */ cpx zUnkA2
+    /* 8B42 F0 0F    */ beq @LOC_8B53
+
+@LOC_8B44:
+    /* 8B44 E6 C4    */ inc zUnkC4
+
+    /* 8B46 4C FC 8A */ jmp @LOC_8AFC
+
+@LOC_8B49:
+    /* 8B49 C6 C4    */ dec zUnkC4
+
+    /* 8B4B A5 C7    */ lda zUnkC7
+    /* 8B4D 85 C0    */ sta zUnkC0
+
+    /* 8B4F A5 C6    */ lda zUnkC6
+    /* 8B51 85 C1    */ sta zUnkC1
+
+@LOC_8B53:
+    /* 8B53 A6 C1    */ ldx zUnkC1
+    /* 8B55 20 50 82 */ jsr GetMapRowInR04
+    /* 8B58 A4 C0    */ ldy zUnkC0
+    /* 8B5A B1 04    */ lda (zR04), Y
+
+    /* 8B5C A8       */ tay
+    /* 8B5D B9 F8 E8 */ lda DAT_E8F8, Y
+
+    /* 8B60 C9 1F    */ cmp #UNK_E8F8_1F
+    /* 8B62 F0 0F    */ beq @LOC_8B73
+
+    /* 8B64 C9 0E    */ cmp #UNK_E8F8_0E
+    /* 8B66 F0 0B    */ beq @LOC_8B73
+
+    /* 8B68 A5 AC    */ lda zUnkAC
+
+    /* 8B6A 29 02    */ and #$2
+    /* 8B6C F0 2D    */ beq @LOC_8B9B
+
+    /* 8B6E 20 B0 8B */ jsr FUNC_03_8BB0
+
+    /* 8B71 90 28    */ bcc @LOC_8B9B
+
+@LOC_8B73:
+    /* 8B73 A4 C4    */ ldy zUnkC4
+    /* 8B75 B9 20 05 */ lda wUnk0520, Y
+
+    /* 8B78 0A       */ asl A
+    /* 8B79 AA       */ tax
+
+    /* 8B7A BD D8 8A */ lda DATA_03_8AD8.w, X
+    /* 8B7D 18       */ clc
+    /* 8B7E 65 C0    */ adc zUnkC0
+    /* 8B80 85 C0    */ sta zUnkC0
+
+    /* 8B82 BD D9 8A */ lda DATA_03_8AD8.w+1, X
+    /* 8B85 18       */ clc
+    /* 8B86 65 C1    */ adc zUnkC1
+    /* 8B88 85 C1    */ sta zUnkC1
+
+    /* 8B8A C6 C4    */ dec zUnkC4
+    /* 8B8C 10 C5    */ bpl @LOC_8B53
+
+    /* 8B8E AD 3A 05 */ lda wUnk053A
+    /* 8B91 D0 08    */ bne @LOC_8B9B
+
+    /* 8B93 A9 01    */ lda #1
+    /* 8B95 8D 3A 05 */ sta wUnk053A
+
+    /* 8B98 4C AF 8B */ jmp @end
+
+@LOC_8B9B:
+    /* 8B9B A9 00    */ lda #0
+    /* 8B9D 8D 3A 05 */ sta wUnk053A
+
+    /* 8BA0 A5 C0    */ lda zUnkC0
+    /* 8BA2 8D C1 05 */ sta wUnk05C1
+
+    /* 8BA5 A5 C1    */ lda zUnkC1
+    /* 8BA7 8D C0 05 */ sta wUnk05C0
+
+    /* 8BAA A9 FF    */ lda #$FF
+    /* 8BAC 8D C2 05 */ sta wUnk05C2
+
+@end:
+    /* 8BAF 60       */ rts
+
+FUNC_03_8BB0:
+    ; Input:
+    ; - zUnitPtr9D = unit
+    ; - zUnkC0 = X map position
+    ; - zUnkC1 = Y map position
+    ; Output:
+    ; - C = set if unit def is higher or same to Map2 & $1F at given position
+
+    /* 8BB0 8A       */ txa
+    /* 8BB1 48       */ pha
+    /* 8BB2 98       */ tya
+    /* 8BB3 48       */ pha
+
+    /* 8BB4 A0 0C    */ ldy #Unit.def
+    /* 8BB6 B1 9D    */ lda (zUnitPtr9D), Y
+    /* 8BB8 85 A5    */ sta zUnkA5
+
+    /* 8BBA A6 C1    */ ldx zUnkC1
+    /* 8BBC 20 39 82 */ jsr GetMapRow2In9B
+    /* 8BBF A4 C0    */ ldy zUnkC0
+    /* 8BC1 B1 9B    */ lda (zUnk9B), Y
+    /* 8BC3 29 1F    */ and #$1F
+
+    /* 8BC5 C5 A5    */ cmp zUnkA5
+
+    /* 8BC7 68       */ pla
+    /* 8BC8 A8       */ tay
+    /* 8BC9 68       */ pla
+    /* 8BCA AA       */ tax
+
+    /* 8BCB 60       */ rts
+
+FUNC_03_8BCC:
+    /* 8BCC A5 AC    */ lda zUnkAC
+    /* 8BCE 29 02    */ and #$2
+    /* 8BD0 F0 0F    */ beq @LOC_8BE1
+
+    /* 8BD2 AD C1 05 */ lda wUnk05C1
+    /* 8BD5 85 C0    */ sta zUnkC0
+
+    /* 8BD7 AD C0 05 */ lda wUnk05C0
+    /* 8BDA 85 C1    */ sta zUnkC1
+
+    /* 8BDC 20 B0 8B */ jsr FUNC_03_8BB0
+
+    /* 8BDF B0 03    */ bcs @LOC_8BE4
+
+@LOC_8BE1:
+    /* 8BE1 4C 82 8C */ jmp @end
+
+@LOC_8BE4:
+    /* 8BE4 20 37 80 */ jsr FUNC_03_8037
+
+    /* 8BE7 A0 0D    */ ldy #Unit.mov
+    /* 8BE9 B1 9D    */ lda (zUnitPtr9D), Y
+    /* 8BEB 85 BF    */ sta zUnkBF
+
+    /* 8BED A9 00    */ lda #0
+    /* 8BEF 85 A4    */ sta zUnkA4
+
+    /* 8BF1 AE C0 05 */ ldx wUnk05C0
+    /* 8BF4 AC C1 05 */ ldy wUnk05C1
+
+    /* 8BF7 20 22 82 */ jsr GetMapRow3In6C
+
+    /* 8BFA A9 3D    */ lda #$3D
+    /* 8BFC 91 6C    */ sta (zUnk6C), Y
+
+    /* 8BFE A9 00    */ lda #0
+    /* 8C00 85 BE    */ sta zUnkBE
+
+    /* 8C02 86 C1    */ stx zUnkC1
+    /* 8C04 84 C0    */ sty zUnkC0
+
+    /* 8C06 20 80 90 */ jsr LOC_9080
+
+@lop:
+    /* 8C09 E6 BE    */ inc zUnkBE
+
+    /* 8C0B A2 01    */ ldx #1
+
+@lop_y:
+    /* 8C0D A0 01    */ ldy #1
+
+    /* 8C0F 8A       */ txa
+    /* 8C10 48       */ pha
+
+    /* 8C11 0A       */ asl A
+    /* 8C12 AA       */ tax
+
+    /* 8C13 BD 01 ED */ lda MapRows3.w, X
+    /* 8C16 85 6C    */ sta zUnk6C
+    /* 8C18 BD 02 ED */ lda MapRows3.w+1, X
+    /* 8C1B 85 6D    */ sta zUnk6C+1
+
+    /* 8C1D 68       */ pla
+    /* 8C1E AA       */ tax
+
+@lop_x:
+    /* 8C1F B1 6C    */ lda (zUnk6C), Y
+    /* 8C21 29 3F    */ and #$3F
+
+    /* 8C23 C5 BE    */ cmp zUnkBE
+    /* 8C25 D0 49    */ bne @continue
+
+    /* 8C27 86 C1    */ stx zUnkC1
+    /* 8C29 84 C0    */ sty zUnkC0
+
+    /* 8C2B 20 50 82 */ jsr GetMapRowInR04
+
+    /* 8C2E B1 04    */ lda (zR04), Y
+
+    /* 8C30 A8       */ tay
+    /* 8C31 B9 28 E8 */ lda DAT_E828.w, Y
+    /* 8C34 85 A3    */ sta zUnkA3
+
+    /* 8C36 A4 C0    */ ldy zUnkC0
+
+    /* 8C38 A5 A3    */ lda zUnkA3
+
+    /* 8C3A C9 1F    */ cmp #UNK_E828_1F
+    /* 8C3C F0 2F    */ beq @LOC_8C6D
+
+    /* 8C3E 20 B0 8B */ jsr FUNC_03_8BB0
+
+    /* 8C41 B0 0E    */ bcs @LOC_8C51
+
+    /* 8C43 8C C1 05 */ sty wUnk05C1
+    /* 8C46 8E C0 05 */ stx wUnk05C0
+
+    /* 8C49 A9 FF    */ lda #$FF
+    /* 8C4B 8D C2 05 */ sta wUnk05C2
+
+    /* 8C4E 4C 82 8C */ jmp @end
+
+@LOC_8C51:
+    /* 8C51 A4 A3    */ ldy zUnkA3
+    /* 8C53 B9 D8 EB */ lda DAT_EBD8.w, Y
+
+    /* 8C56 48       */ pha
+    /* 8C57 A4 C0    */ ldy zUnkC0
+    /* 8C59 68       */ pla
+
+    /* 8C5A C5 A4    */ cmp zUnkA4
+
+    /* 8C5C F0 0F    */ beq @LOC_8C6D
+    /* 8C5E 90 0D    */ bcc @LOC_8C6D ; blo
+
+    /* 8C60 8E C0 05 */ stx wUnk05C0
+    /* 8C63 8C C1 05 */ sty wUnk05C1
+
+    /* 8C66 85 A4    */ sta zUnkA4
+
+    /* 8C68 A9 FF    */ lda #$FF
+    /* 8C6A 8D C2 05 */ sta wUnk05C2
+
+@LOC_8C6D:
+    /* 8C6D 20 80 90 */ jsr LOC_9080
+
+@continue:
+    /* 8C70 C8       */ iny
+
+    /* 8C71 CC 77 76 */ cpy sMapWidth
+    /* 8C74 D0 A9    */ bne @lop_x
+
+    /* 8C76 E8       */ inx
+
+    /* 8C77 EC 76 76 */ cpx sMapHeight
+    /* 8C7A 90 91    */ bcc @lop_y
+
+    /* 8C7C A5 BE    */ lda zUnkBE
+    /* 8C7E C5 BF    */ cmp zUnkBF
+    /* 8C80 D0 87    */ bne @lop
+
+@end:
+    /* 8C82 60       */ rts
+
+FUNC_03_8C83:
+    /* 8C83 AE 76 76 */ ldx sMapHeight
+    /* 8C86 E8       */ inx
+    /* 8C87 86 0A    */ stx zR0A
+
+    /* 8C89 AE 77 76 */ ldx sMapWidth
+    /* 8C8C E8       */ inx
+    /* 8C8D 86 0B    */ stx zR0B
+
+    /* 8C8F A2 00    */ ldx #0
+
+@lop_y:
+    /* 8C91 20 22 82 */ jsr GetMapRow3In6C
+
+    /* 8C94 A0 00    */ ldy #$00
+
+@lop_x:
+    /* 8C96 C0 00    */ cpy #0
+    /* 8C98 F0 25    */ beq @LOC_8CBF
+
+    /* 8C9A CC 77 76 */ cpy sMapWidth
+    /* 8C9D F0 20    */ beq @LOC_8CBF
+
+    /* 8C9F E0 00    */ cpx #0
+    /* 8CA1 F0 1C    */ beq @LOC_8CBF
+
+    /* 8CA3 EC 76 76 */ cpx sMapHeight
+    /* 8CA6 F0 17    */ beq @LOC_8CBF
+
+    /* 8CA8 84 A3    */ sty zUnkA3
+
+    /* 8CAA 20 50 82 */ jsr GetMapRowInR04
+
+    /* 8CAD B1 04    */ lda (zR04), Y
+    /* 8CAF A8       */ tay
+    /* 8CB0 B9 F8 E8 */ lda DAT_E8F8.w, Y
+
+    /* 8CB3 48       */ pha
+    /* 8CB4 A4 A3    */ ldy zUnkA3
+    /* 8CB6 68       */ pla
+
+    /* 8CB7 C9 1F    */ cmp #$1F
+    /* 8CB9 F0 04    */ beq @LOC_8CBF
+
+    /* 8CBB A9 00    */ lda #$00
+    /* 8CBD F0 02    */ beq @LOC_8CC1
+
+@LOC_8CBF:
+    /* 8CBF A9 FF    */ lda #$FF
+
+@LOC_8CC1:
+    /* 8CC1 91 6C    */ sta (zUnk6C), Y
+
+    /* 8CC3 C8       */ iny
+
+    /* 8CC4 C4 0B    */ cpy zR0B
+    /* 8CC6 D0 CE    */ bne @lop_x
+
+    /* 8CC8 E8       */ inx
+
+    /* 8CC9 E4 0A    */ cpx zR0A
+    /* 8CCB 90 C4    */ bcc @lop_y
+
+    /* 8CCD 60       */ rts
+
+FUNC_03_8CCE:
+    /* 8CCE AD 42 05 */ lda wUnk0542
+    /* 8CD1 20 4C C3 */ jsr Switch
+
+    .dw @case_0
+    .dw @case_1
+    .dw @case_2
+    .dw @case_3
+    .dw @case_4
+    .dw CaseRet
+
+@case_0:
+    /* 8CE0 A0 12    */ ldy #Unit.unk_12
+    /* 8CE2 B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 8CE4 C9 FF    */ cmp #$FF
+    /* 8CE6 D0 06    */ bne @LOC_8CEE
+
+    /* 8CE8 A9 04    */ lda #4
+    /* 8CEA 8D 42 05 */ sta wUnk0542
+
+    /* 8CED 60       */ rts
+
+@LOC_8CEE:
+    /* 8CEE A0 00    */ ldy #Unit.pid
+    /* 8CF0 B1 9D    */ lda (zUnitPtr9D), Y
+    /* 8CF2 85 A3    */ sta zUnkA3
+
+    /* 8CF4 AC 74 76 */ ldy sMapNum
+    /* 8CF7 88       */ dey
+    /* 8CF8 B9 C1 A3 */ lda DAT_A3C1, Y
+
+    /* 8CFB F0 6A    */ beq @LOC_8D67
+
+    /* 8CFD 18       */ clc
+    /* 8CFE 69 FF    */ adc #$FF
+    /* 8D00 0A       */ asl A
+    /* 8D01 A8       */ tay
+
+    /* 8D02 B9 DA A3 */ lda DAT_A3DA, Y
+    /* 8D05 85 02    */ sta zR02
+    /* 8D07 B9 DB A3 */ lda DAT_A3DA+1, Y
+    /* 8D0A 85 03    */ sta zR02+1
+
+@LOC_8D0C:
+    /* 8D0C A0 00    */ ldy #Unk_03_A3DA.unk_00
+    /* 8D0E B1 02    */ lda (zR02), Y
+
+    /* 8D10 F0 55    */ beq @LOC_8D67
+
+    /* 8D12 C5 A3    */ cmp zUnkA3
+    /* 8D14 D0 16    */ bne @LOC_8D2C
+
+    /* 8D16 A0 16    */ ldy #Unit.item+3
+    /* 8D18 B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 8D1A 29 01    */ and #$1
+    /* 8D1C D0 0E    */ bne @LOC_8D2C
+
+    /* 8D1E A0 03    */ ldy #Unk_03_A3DA.unk_03
+    /* 8D20 B1 02    */ lda (zR02), Y
+    /* 8D22 8D 45 05 */ sta wUnk0545
+
+    /* 8D25 F0 0D    */ beq @LOC_8D34
+
+    /* 8D27 20 6D 8D */ jsr @FUNC_03_8D6D
+
+    /* 8D2A 90 08    */ bcc @LOC_8D34
+
+@LOC_8D2C:
+    /* 8D2C A0 04    */ ldy #_sizeof_Unk_03_A3DA
+    /* 8D2E 20 83 C3 */ jsr IncR02ByY
+
+    /* 8D31 4C 0C 8D */ jmp @LOC_8D0C
+
+@LOC_8D34:
+    /* 8D34 A0 01    */ ldy #Unk_03_A3DA.unk_01
+    /* 8D36 B1 02    */ lda (zR02), Y
+    /* 8D38 8D 43 05 */ sta wUnk0543
+
+    /* 8D3B C8       */ iny ; Unk_03_A3DA.unk_02
+    /* 8D3C B1 02    */ lda (zR02), Y
+    /* 8D3E 8D 44 05 */ sta wUnk0544
+
+    /* 8D41 AC C1 05 */ ldy wUnk05C1
+    /* 8D44 AE C0 05 */ ldx wUnk05C0
+
+    /* 8D47 E8       */ inx
+
+    /* 8D48 20 C4 8E */ jsr @LOC_8EC4
+
+    /* 8D4B F0 15    */ beq @LOC_8D62
+
+    /* 8D4D CA       */ dex
+    /* 8D4E CA       */ dex
+
+    /* 8D4F 20 C4 8E */ jsr @LOC_8EC4
+
+    /* 8D52 F0 0E    */ beq @LOC_8D62
+
+    /* 8D54 E8       */ inx
+    /* 8D55 C8       */ iny
+
+    /* 8D56 20 C4 8E */ jsr @LOC_8EC4
+
+    /* 8D59 F0 07    */ beq @LOC_8D62
+
+    /* 8D5B 88       */ dey
+    /* 8D5C 88       */ dey
+
+    /* 8D5D 20 C4 8E */ jsr @LOC_8EC4
+
+    /* 8D60 D0 05    */ bne @LOC_8D67
+
+@LOC_8D62:
+    /* 8D62 EE 42 05 */ inc wUnk0542
+    /* 8D65 D0 05    */ bne @LOC_8D6C
+
+@LOC_8D67:
+    /* 8D67 A9 04    */ lda #4
+    /* 8D69 8D 42 05 */ sta wUnk0542
+
+@LOC_8D6C:
+    /* 8D6C 60       */ rts
+
+@FUNC_03_8D6D:
+    /* 8D6D A5 66    */ lda zUnk65+1
+    /* 8D6F F0 0B    */ beq @LOC_8D7C
+
+    /* 8D71 20 B4 8D */ jsr @LOC_8DB4
+
+    /* 8D74 A0 11    */ ldy #Unit.x
+    /* 8D76 B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 8D78 A0 00    */ ldy #Unit.pid
+    /* 8D7A 91 9F    */ sta (zUnitPtr9F), Y
+
+@LOC_8D7C:
+    /* 8D7C 20 67 82 */ jsr GetPlayerUnitsIn9F
+
+    /* 8D7F A2 00    */ ldx #0
+
+@LOC_8D81:
+    /* 8D81 A0 00    */ ldy #Unit.pid
+    /* 8D83 B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 8D85 CD 45 05 */ cmp wUnk0545
+    /* 8D88 D0 0D    */ bne @LOC_8D97
+
+    /* 8D8A A0 12    */ ldy #Unit.unk_12
+    /* 8D8C B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 8D8E C9 FF    */ cmp #$FF
+    /* 8D90 F0 0A    */ beq @LOC_8D9C
+
+    /* 8D92 18       */ clc
+    /* 8D93 08       */ php
+
+    /* 8D94 4C 9E 8D */ jmp @LOC_8D9E
+
+@LOC_8D97:
+    /* 8D97 E8       */ inx
+    /* 8D98 E0 37    */ cpx #$37
+    /* 8D9A 90 10    */ bcc @LOC_8DAC
+
+@LOC_8D9C:
+    /* 8D9C 38       */ sec
+    /* 8D9D 08       */ php
+
+@LOC_8D9E:
+    /* 8D9E A5 66    */ lda zUnk65+1
+    /* 8DA0 F0 08    */ beq @LOC_8DAA
+
+    /* 8DA2 20 B4 8D */ jsr @LOC_8DB4
+
+    /* 8DA5 A9 00    */ lda #0
+    /* 8DA7 A8       */ tay ; Unit.pid
+    /* 8DA8 91 9F    */ sta (zUnitPtr9F), Y
+
+@LOC_8DAA:
+    /* 8DAA 28       */ plp
+    /* 8DAB 60       */ rts
+
+@LOC_8DAC:
+    /* 8DAC A9 1B    */ lda #_sizeof_Unit
+    /* 8DAE 20 BC 91 */ jsr LOC_91BC
+
+    /* 8DB1 4C 81 8D */ jmp @LOC_8D81
+
+@LOC_8DB4:
+    /* 8DB4 85 A0    */ sta zUnitPtr9F+1
+
+    /* 8DB6 A5 65    */ lda zUnk65
+    /* 8DB8 85 9F    */ sta zUnitPtr9F
+
+    /* 8DBA A9 36    */ lda #_sizeof_Unit*2
+    /* 8DBC 20 BC 91 */ jsr LOC_91BC
+
+    /* 8DBF 60       */ rts
+
+@case_2:
+    /* 8DC0 A9 20    */ lda #$20
+    /* 8DC2 8D 3D 05 */ sta wUnk053D
+
+    /* 8DC5 AD 44 05 */ lda wUnk0544
+
+@LOC_8DC8:
+    /* 8DC8 8D F1 77 */ sta sUnk77F1
+
+    /* 8DCB A9 00    */ lda #0
+    /* 8DCD 8D F0 77 */ sta sUnk77F0
+
+    /* 8DD0 A9 01    */ lda #1
+    /* 8DD2 8D F7 77 */ sta sUnk77F7
+
+    /* 8DD5 AD 7A 76 */ lda sUnk767A
+    /* 8DD8 D0 13    */ bne @LOC_8DED
+
+    /* 8DDA AD 3D 05 */ lda wUnk053D
+
+    /* 8DDD AC 42 05 */ ldy wUnk0542
+
+    /* 8DE0 C0 02    */ cpy #2
+    /* 8DE2 F0 06    */ beq @LOC_8DEA
+
+    /* 8DE4 8D F2 06 */ sta wUnk06F2
+
+    /* 8DE7 4C ED 8D */ jmp @LOC_8DED
+
+@LOC_8DEA:
+    /* 8DEA 8D F6 06 */ sta wUnk06F6
+
+@LOC_8DED:
+    /* 8DED A9 03    */ lda #3
+    /* 8DEF 8D 42 05 */ sta wUnk0542
+
+    /* 8DF2 60       */ rts
+
+@case_3:
+    /* 8DF3 A9 01    */ lda #1
+    /* 8DF5 85 97    */ sta zUnk97
+
+    /* 8DF7 A9 71    */ lda #$71
+
+    /* 8DF9 20 81 9A */ jsr LOC_9A81
+
+    /* 8DFC F0 35    */ beq @LOC_8E33
+
+    /* 8DFE A9 D8    */ lda #<wUnk04D8
+    /* 8E00 85 00    */ sta zR00
+    /* 8E02 A9 04    */ lda #>wUnk04D8
+    /* 8E04 85 01    */ sta zR00+1
+
+    /* 8E06 A0 00    */ ldy #0
+
+@LOC_8E08:
+    /* 8E08 B9 34 8E */ lda @DAT_8E34.w, Y
+    /* 8E0B 91 00    */ sta (zR00), Y
+
+    /* 8E0D C8       */ iny
+
+    /* 8E0E C0 14    */ cpy #$14
+    /* 8E10 D0 F6    */ bne @LOC_8E08
+
+    /* 8E12 A9 80    */ lda #$80
+    /* 8E14 85 22    */ sta zUnk22
+
+    /* 8E16 AD 7A 76 */ lda sUnk767A
+    /* 8E19 D0 13    */ bne @LOC_8E2E
+
+    /* 8E1B AD 74 76 */ lda sMapNum
+
+    /* 8E1E C9 19    */ cmp #MAP_19
+    /* 8E20 D0 07    */ bne @LOC_8E29
+
+    /* 8E22 A9 08    */ lda #8
+    /* 8E24 8D F6 06 */ sta wUnk06F6
+
+    /* 8E27 D0 05    */ bne @LOC_8E2E
+
+@LOC_8E29:
+    /* 8E29 A9 01    */ lda #1
+    /* 8E2B 8D F5 06 */ sta wUnk06F5
+
+@LOC_8E2E:
+    /* 8E2E A9 00    */ lda #0
+    /* 8E30 8D 42 05 */ sta wUnk0542
+
+@LOC_8E33:
+    /* 8E33 60       */ rts
+
+@DAT_8E34:
+    /* 8E34 ...      */ .db $3F, $10, $10, $0F, $36, $12, $0F, $0F
+    /* 8E3C ...      */ .db $36, $26, $0F, $0F, $3C, $33, $0F, $0F
+    /* 8E44 ...      */ .db $35, $15, $0F, $00
+
+@case_1:
+    /* 8E48 20 52 8E */ jsr @LOC_8E52
+    /* 8E4B 20 AF 8E */ jsr @LOC_8EAF
+
+    /* 8E4E EE 42 05 */ inc wUnk0542
+
+    /* 8E51 60       */ rts
+
+@LOC_8E52:
+    /* 8E52 20 67 82 */ jsr GetPlayerUnitsIn9F
+
+@LOC_8E55:
+    /* 8E55 A0 00    */ ldy #Unit.pid
+    /* 8E57 B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 8E59 F0 08    */ beq @LOC_8E63
+
+    /* 8E5B A9 1B    */ lda #_sizeof_Unit
+    /* 8E5D 20 BC 91 */ jsr LOC_91BC
+
+    /* 8E60 4C 55 8E */ jmp @LOC_8E55
+
+@LOC_8E63:
+    /* 8E63 20 A0 9E */ jsr LOC_9EA0
+
+    /* 8E66 AD 43 05 */ lda wUnk0543
+
+    /* 8E69 A0 00    */ ldy #Unit.pid
+    /* 8E6B 91 9F    */ sta (zUnitPtr9F), Y
+
+    /* 8E6D A0 13    */ ldy #Unit.item+0
+    /* 8E6F B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 8E71 48       */ pha
+
+    /* 8E72 C8       */ iny ; Unit.item+1
+    /* 8E73 B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 8E75 48       */ pha
+
+    /* 8E76 A9 00    */ lda #0
+
+@LOC_8E78:
+    /* 8E78 C8       */ iny
+
+    /* 8E79 C0 1B    */ cpy #_sizeof_Unit
+    /* 8E7B F0 05    */ beq @LOC_8E82
+
+    /* 8E7D 91 9F    */ sta (zUnitPtr9F), Y
+    /* 8E7F 4C 78 8E */ jmp @LOC_8E78
+
+@LOC_8E82:
+    /* 8E82 68       */ pla
+    /* 8E83 F0 09    */ beq @LOC_8E8E
+
+    /* 8E85 A8       */ tay
+    /* 8E86 88       */ dey
+    /* 8E87 B9 7F D8 */ lda ItemInfo.uses, Y
+    /* 8E8A A0 18    */ ldy #Unit.uses+1
+    /* 8E8C 91 9F    */ sta (zUnitPtr9F), Y
+
+@LOC_8E8E:
+    /* 8E8E 68       */ pla
+
+    /* 8E8F A8       */ tay
+    /* 8E90 88       */ dey
+    /* 8E91 B9 7F D8 */ lda ItemInfo.uses, Y
+    /* 8E94 A0 17    */ ldy #Unit.uses+0
+    /* 8E96 91 9F    */ sta (zUnitPtr9F), Y
+
+    /* 8E98 A0 12    */ ldy #Unit.unk_12
+    /* 8E9A A9 FF    */ lda #$FF
+    /* 8E9C 91 9D    */ sta (zUnitPtr9D), Y
+
+    /* 8E9E A9 00    */ lda #0
+    /* 8EA0 91 9F    */ sta (zUnitPtr9F), Y
+
+    /* 8EA2 20 4E C0 */ jsr FUNC_C04E
+
+    /* 8EA5 29 07    */ and #$7 ; % 8
+
+    /* 8EA7 A0 0B    */ ldy #Unit.lck
+    /* 8EA9 91 9F    */ sta (zUnitPtr9F), Y
+
+    /* 8EAB 20 5D 9E */ jsr LOC_9E5D
+
+    /* 8EAE 60       */ rts
+
+@LOC_8EAF:
+    /* 8EAF AD FA 76 */ lda sUnitBuf+Unit.terrain
+    /* 8EB2 85 A6    */ sta zUnkA6
+
+    /* 8EB4 A9 0C    */ lda #$0C
+    /* 8EB6 85 44    */ sta zFarFuncId
+    /* 8EB8 A9 06    */ lda #$06
+    /* 8EBA 20 FA C9 */ jsr CallFarFunc
+
+    /* 8EBD A5 A6    */ lda zUnkA6
+    /* 8EBF A0 06    */ ldy #Unit.terrain
+    /* 8EC1 91 9F    */ sta (zUnitPtr9F), Y
+
+    /* 8EC3 60       */ rts
+
+@LOC_8EC4:
+    /* 8EC4 20 50 82 */ jsr GetMapRowInR04
+    /* 8EC7 B1 04    */ lda (zR04), Y
+
+    /* 8EC9 C9 2A    */ cmp #TERRAIN_2A
+
+    /* 8ECB 60       */ rts
+
+@case_4:
+    /* 8ECC AD 48 05 */ lda wUnk0548
+    /* 8ECF F0 15    */ beq @LOC_8EE6
+
+    /* 8ED1 A9 00    */ lda #0
+    /* 8ED3 8D 48 05 */ sta wUnk0548
+
+    /* 8ED6 8D F0 77 */ sta sUnk77F0
+
+    /* 8ED9 A9 6C    */ lda #$6C
+    /* 8EDB 8D F1 77 */ sta sUnk77F1
+
+    /* 8EDE A9 01    */ lda #$01
+    /* 8EE0 8D F7 77 */ sta sUnk77F7
+
+    /* 8EE3 4C ED 8D */ jmp @LOC_8DED
+
+@LOC_8EE6:
+    /* 8EE6 AD 7F 76 */ lda sUnk767F
+
+    /* 8EE9 29 01    */ and #$1
+    /* 8EEB D0 61    */ bne @LOC_8F4E
+
+    /* 8EED A0 00    */ ldy #Unit.pid
+    /* 8EEF B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 8EF1 C9 9C    */ cmp #PID_9C
+    /* 8EF3 D0 18    */ bne @LOC_8F0D
+
+    /* 8EF5 AD 74 76 */ lda sMapNum
+
+    /* 8EF8 C9 0F    */ cmp #MAP_0F
+    /* 8EFA D0 11    */ bne @LOC_8F0D
+
+    /* 8EFC A0 16    */ ldy #Unit.item+3
+    /* 8EFE B1 9D    */ lda (zUnitPtr9D), Y
+    /* 8F00 29 0C    */ and #%00001100
+    /* 8F02 4A       */ lsr A
+    /* 8F03 4A       */ lsr A
+
+    /* 8F04 C9 03    */ cmp #3
+    /* 8F06 D0 05    */ bne @LOC_8F0D
+
+    /* 8F08 20 50 85 */ jsr FUNC_03_8550
+
+    /* 8F0B F0 2F    */ beq @LOC_8F3C
+
+@LOC_8F0D:
+    /* 8F0D AD 7F 76 */ lda sUnk767F
+
+    /* 8F10 29 02    */ and #$2
+    /* 8F12 D0 3A    */ bne @LOC_8F4E
+
+    /* 8F14 A0 1B    */ ldy #_sizeof_Unit+Unit.pid
+    /* 8F16 B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 8F18 C9 A5    */ cmp #PID_A5
+    /* 8F1A D0 32    */ bne @LOC_8F4E
+
+    /* 8F1C AD 74 76 */ lda sMapNum
+
+    /* 8F1F C9 07    */ cmp #MAP_07
+    /* 8F21 D0 2B    */ bne @LOC_8F4E
+
+    /* 8F23 AD 75 76 */ lda sUnk7675
+
+    /* 8F26 C9 02    */ cmp #2
+    /* 8F28 D0 24    */ bne @LOC_8F4E
+
+    /* 8F2A AD 7F 76 */ lda sUnk767F
+    /* 8F2D 09 02    */ ora #$2
+    /* 8F2F 8D 7F 76 */ sta sUnk767F
+
+    /* 8F32 A9 01    */ lda #$01
+    /* 8F34 8D 3D 05 */ sta wUnk053D
+
+    /* 8F37 A9 08    */ lda #$08
+
+    /* 8F39 4C C8 8D */ jmp @LOC_8DC8
+
+@LOC_8F3C:
+    /* 8F3C AD 7F 76 */ lda sUnk767F
+    /* 8F3F 09 01    */ ora #$1
+    /* 8F41 8D 7F 76 */ sta sUnk767F
+
+    /* 8F44 A9 40    */ lda #$40
+    /* 8F46 8D 3D 05 */ sta wUnk053D
+
+    /* 8F49 A9 09    */ lda #$09
+
+    /* 8F4B 4C C8 8D */ jmp @LOC_8DC8
+
+@LOC_8F4E:
+    /* 8F4E A9 00    */ lda #0
+    /* 8F50 8D 42 05 */ sta wUnk0542
+
+    /* 8F53 60       */ rts

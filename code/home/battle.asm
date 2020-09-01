@@ -1469,7 +1469,7 @@ FUNC_D156:
     /* D25B C9 0B    */ cmp #11
     /* D25D B0 09    */ bcs @LOC_D268 ; bhs
 
-    /* D25F C0 44    */ cpy #IID_GEOSPHERE
+    /* D25F C0 44    */ cpy #IID_44
     /* D261 F0 05    */ beq @LOC_D268
 
     /* D263 AD 25 03 */ lda wFight0325

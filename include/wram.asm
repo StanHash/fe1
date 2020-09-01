@@ -125,16 +125,18 @@
     zUnk98       = $0098 ; map+unit anims cycle timer?
     zUnk99       = $0099 ; current map+unit anim frame?
 
-    zUnk9B       = $009B
+    zUnk9B       = $009B ; some map row ptr
+    zUnitPtr9D   = $009D ; some unit ptr
+    zUnitPtr9F   = $009F ; some unit ptr
 
-    zUnk9D       = $009D
-
-    zUnk9F       = $009F
-
-    zUnkA3       = $00A3
-
+    zUnkA1       = $00A1 ; some tmp?
+    zUnkA2       = $00A2 ; some tmp?
+    zUnkA3       = $00A3 ; some tmp?
+    zUnkA4       = $00A4 ; some tmp?
+    zUnkA5       = $00A5
+    zUnkA6       = $00A6
     zUnkA7       = $00A7
-
+    zUnkA8       = $00A8 ; some unit strength?
     zUnkA9       = $00A9
     zUnkAA       = $00AA
     zUnkAB       = $00AB
@@ -143,18 +145,29 @@
     zUnkAE       = $00AE
     zUnkAF       = $00AF
     zUnkB0       = $00B0
+    zUnkB1       = $00B1 ; some unit defense
+    zUnkB2       = $00B2 ; some map y
+    zUnkB3       = $00B3 ; some map x
 
-    zUnkB2       = $00B2
-    zUnkB3       = $00B3
+    zUnkB5       = $00B5 ; some unit strength
 
-    zUnkB5       = $00B5
-
+    zUnkB7       = $00B7
     zUnkB8       = $00B8
+    zUnkB9       = $00B9 ; best target some damage value?
+    zUnkBA       = $00BA ; some damage value?
+    zUnkBB       = $00BB ; some damage value
+    zUnkBC       = $00BC ; best target priority?
+    zUnkBD       = $00BD ; working target priority?
+    zUnkBE       = $00BE
+    zUnkBF       = $00BF ; some unit mov
+    zUnkC0       = $00C0 ; some map x
+    zUnkC1       = $00C1 ; some map y
+    zUnkC2       = $00C2 ; some map x
+    zUnkC3       = $00C3 ; some map y
+    zUnkC4       = $00C4
 
-    zUnkBF       = $00BF
-    zUnkC0       = $00C0
-    zUnkC1       = $00C1
-
+    zUnkC6       = $00C6 ; some map y?
+    zUnkC7       = $00C7 ; some map x?
     zMirrorC8    = $00C8
 
     zPPUSCROLLV  = $00CA
@@ -299,29 +312,38 @@
 
     wUnk048A   = $048A
 
-    wUnk04D8   = $04D8
+    wUnk04D8   = $04D8 ; array (20)
 
-    wUnk0500   = $0500
-    wUnk0501   = $0501
+    wUnk0500   = $0500 ; some x
+    wUnk0501   = $0501 ; some y
 
     wUnk050D   = $050D
 
+    wUnk0520   = $0520 ; array
+
+    wUnk052E   = $052E ; array (5)
+    wUnk0533   = $0533 ; array (5), some jids?
+
     wUnk0538   = $0538 ; some unit x
     wUnk0539   = $0539 ; some unit y
+    wUnk053A   = $053A
+
+    wUnk053D   = $053D
 
     wUnk053F   = $053F
 
     wUnk0542   = $0542
-
+    wUnk0543   = $0543
+    wUnk0544   = $0544
     wUnk0545   = $0545
 
     wUnk0548   = $0548
 
     wUnk0550   = $0550 ; array[100]
 
-    wUnk05C0   = $05C0 ; some x
-    wUnk05C1   = $05C1 ; some y
-    wUnk05C2   = $05C2
+    wUnk05C0   = $05C0 ; best target x
+    wUnk05C1   = $05C1 ; best target y
+    wUnk05C2   = $05C2 ; best target something
     wUnk05C3   = $05C3
 
     wUnk05C4   = $05C4
@@ -353,8 +375,11 @@
 
     wUnk06F0   = $06F0
     wUnk06F1   = $06F1
+    wUnk06F2   = $06F2
     wUnk06F3   = $06F3
     wUnk06F4   = $06F4
+    wUnk06F5   = $06F5
+    wUnk06F6   = $06F6
     wUnk06F7   = $06F7
     wUnk06F8   = $06F8
 

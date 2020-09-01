@@ -7,6 +7,7 @@
     sMapHeight   = $7676 ; map y size
     sMapWidth    = $7677 ; map x size
     sUnk767A     = $767A
+    sUnk767F     = $767F
     sUnk76ED     = $76ED ; orred to class of unit then written to map
     sUnitBuf     = $76F4 ; unit load buf
     sUnk7715     = $7715
@@ -21,6 +22,7 @@
     sUnk77F1     = $77F1
     sUnk77F2     = $77F2
     sUnk77F4     = $77F4
+    sUnk77F7     = $77F7
     sUnk7812     = $7812 ; 2 bytes
     sUnk7814     = $7814 ; 2 bytes
     sUnk7934     = $7934

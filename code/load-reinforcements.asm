@@ -3,8 +3,6 @@
     LOC_8D6D = $8D6D
 
     DAT_959C = $959C
-    DAT_A3C1 = $A3C1
-    DAT_A3DA = $A3DA
     DAT_A44E = $A44E
 
 LOC_91D0:
@@ -240,7 +238,7 @@ CopyUnitBufToResult:
 
 @lop:
     /* 9338 B1 02    */ lda (zR02), Y
-    /* 933A 91 9D    */ sta (zUnk9D), Y
+    /* 933A 91 9D    */ sta (zUnitPtr9D), Y
     /* 933C C8       */ iny
     /* 933D C0 1B    */ cpy #_sizeof_Unit
     /* 933F D0 F7    */ bne @lop

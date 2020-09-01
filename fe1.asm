@@ -10,6 +10,7 @@
     .include "include/constants/terrains.asm"
 
     .include "include/structs/unit.asm"
+    .include "include/structs/unk-03-A3DA.asm"
 
     .macro BASE_BANK args BANKID
 

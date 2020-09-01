@@ -62,6 +62,8 @@
     SCREEN_TILE_W = 32
     SCREEN_TILE_H = 30
 
+    UNK_E828_1F = $1F
+
     UNK_E8F8_0E = $0E
     UNK_E8F8_1F = $1F
 
