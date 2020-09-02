@@ -1,8 +1,14 @@
 
     TERRAIN_2A = $2A ; blue lord?
 
+    TERRAIN_3D = $3D ; closed gate? closed door?
+
+    TERRAIN_4A = $4A
+    TERRAIN_4B = $4B
+
     TERRAIN_VILLAGE_OPENED = $A5
     TERRAIN_VILLAGE_DESTROYED = $A9
     TERRAIN_CHEST_CLOSED = $AB
     TERRAIN_CHEST_OPENED = $AC
     TERRAIN_HOUSE_DESTROYED = $AD
+    TERRAIN_AE = $AE

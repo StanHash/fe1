@@ -100,7 +100,7 @@ FUNC_F28F:
 
 @LOC_F323:
     /* F323 A9 04    */ lda #$04
-    /* F325 85 44    */ sta zFarFuncId
+    /* F325 85 44    */ sta zFarFuncNum
     /* F327 4C FA C9 */ jmp CallFarFunc
 
 @LOC_F32A:
@@ -108,12 +108,12 @@ FUNC_F28F:
     /* F32D F0 09    */ beq @LOC_F338
 
     /* F32F A9 02    */ lda #$02
-    /* F331 85 44    */ sta zFarFuncId
+    /* F331 85 44    */ sta zFarFuncNum
     /* F333 A9 04    */ lda #$04
     /* F335 4C FA C9 */ jmp CallFarFunc
 
 @LOC_F338:
     /* F338 A9 0A    */ lda #$0A
-    /* F33A 85 44    */ sta zFarFuncId
+    /* F33A 85 44    */ sta zFarFuncNum
     /* F33C A9 0B    */ lda #$0B
     /* F33E 4C FA C9 */ jmp CallFarFunc

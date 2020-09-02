@@ -66,7 +66,7 @@
     zUnk40          dw ; 0040
     zUnk42          db ; 0042
     zUnk43          db ; 0043 ; scratch for sprite write?
-    zFarFuncId      db ; 0044
+    zFarFuncNum     db ; 0044
     zFarFuncPtr     dw ; 0045
     .               db ; 0047
     zRand48         db ; 0048

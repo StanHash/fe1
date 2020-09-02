@@ -36,14 +36,14 @@ FUNC_E684:
     /* E684 8D DE 05 */ sta wUnk05DE
 
     /* E687 A9 00    */ lda #$0
-    /* E689 85 44    */ sta zFarFuncId
+    /* E689 85 44    */ sta zFarFuncNum
     /* E68B A9 0B    */ lda #$B
     /* E68D 4C FA C9 */ jmp CallFarFunc
 
 FUNC_E690:
     /* E690 8D E8 05 */ sta wUnk05E8
     /* E693 A9 01    */ lda #$1
-    /* E695 85 44    */ sta zFarFuncId
+    /* E695 85 44    */ sta zFarFuncNum
     /* E697 A9 0B    */ lda #$B
     /* E699 4C FA C9 */ jmp CallFarFunc
 

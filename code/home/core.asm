@@ -1658,7 +1658,7 @@ CallFarFunc:
     /* CA05 A9 18    */ lda #<(@ret-1)
     /* CA07 48       */ pha
 
-    /* CA08 A5 44    */ lda zFarFuncId
+    /* CA08 A5 44    */ lda zFarFuncNum
     /* CA0A 0A       */ asl A
     /* CA0B AA       */ tax
 

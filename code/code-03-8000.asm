@@ -1,22 +1,15 @@
 
-    LOC_8F54 = $8F54
-    LOC_8FD2 = $8FD2
-    LOC_8FDB = $8FDB
-    LOC_8FE4 = $8FE4
-    LOC_9080 = $9080
-    LOC_9144 = $9144
-    LOC_914A = $914A
-    LOC_91BC = $91BC
-    LOC_91C6 = $91C6
-    LOC_91D0 = $91D0
     LOC_99E6 = $99E6
     LOC_9A81 = $9A81
     LOC_9E5D = $9E5D
     LOC_9EA0 = $9EA0
     LOC_9EEE = $9EEE
 
+    MapReinforcements = $959C
     DAT_A3C1 = $A3C1
     DAT_A3DA = $A3DA
+    DAT_A438 = $A438
+    MapFirstReinforcementTurn = $A44E
 
 CODE_03_8000:
     /* 8000 4C 0C 80 */ jmp FUNC_03_800C
@@ -34,26 +27,26 @@ FUNC_03_800C:
     /* 800C AD 3F 05 */ lda wUnk053F
     /* 800F 20 4C C3 */ jsr Switch
 
-    .dw CODE_03_8022
-    .dw $9346
-    .dw CODE_03_8026
+    .dw FUNC_03_8022
+    .dw HealEnemyUnitsFromTerrain
+    .dw FUNC_03_8026
     .dw FUNC_03_8270
-    .dw $939A
-    .dw $93EE
-    .dw CODE_03_802D
+    .dw HealPlayerUnitsFromTerrain
+    .dw FUNC_03_93EE
+    .dw FUNC_03_802D
     .dw CaseRet
 
-CODE_03_8022:
+FUNC_03_8022:
     /* 8022 EE 3F 05 */ inc wUnk053F
     /* 8025 60       */ rts
 
-CODE_03_8026:
+FUNC_03_8026:
     /* 8026 20 6F 80 */ jsr FUNC_03_806F
 
     /* 8029 EE 3F 05 */ inc wUnk053F
     /* 802C 60       */ rts
 
-CODE_03_802D:
+FUNC_03_802D:
     /* 802D A9 20    */ lda #$20
     /* 802F 85 84    */ sta zUnk84
 
@@ -111,6 +104,7 @@ FUNC_03_8037:
 
 FUNC_03_806F:
     /* 806F 20 A8 80 */ jsr ClearMap2
+
     /* 8072 20 67 82 */ jsr GetPlayerUnitsIn9F
 
     /* 8075 A2 00    */ ldx #0
@@ -124,8 +118,8 @@ FUNC_03_806F:
     /* 807F A0 12    */ ldy #Unit.unk_12
     /* 8081 B1 9F    */ lda (zUnitPtr9F), Y
 
-    /* 8083 C9 FF    */ cmp #-1
-    /* 8085 F0 13    */ beq @LOC_809A
+    /* 8083 C9 FF    */ cmp #$FF
+    /* 8085 F0 13    */ beq @continue
 
     /* 8087 A0 10    */ ldy #Unit.y
     /* 8089 B1 9F    */ lda (zUnitPtr9F), Y
@@ -139,13 +133,13 @@ FUNC_03_806F:
 
     /* 8097 20 2B 81 */ jsr FUNC_03_812B
 
-@LOC_809A:
+@continue:
     /* 809A A6 AD    */ ldx zUnkAD
     /* 809C E8       */ inx
     /* 809D 86 AD    */ stx zUnkAD
 
     /* 809F A9 1B    */ lda #_sizeof_Unit
-    /* 80A1 20 BC 91 */ jsr LOC_91BC
+    /* 80A1 20 BC 91 */ jsr AddToUnitPtr9F
 
     /* 80A4 4C 79 80 */ jmp @lop
 
@@ -183,18 +177,27 @@ ClearMap2:
     /* 80C9 60       */ rts
 
 FUNC_03_80CA:
-    /* 80CA AC 38 05 */ ldy wUnk0538
-    /* 80CD AE 39 05 */ ldx wUnk0539
+    /* 80CA AC 38 05 */ ldy wUnk0538 ; x map position
+    /* 80CD AE 39 05 */ ldx wUnk0539 ; y map position
+
     /* 80D0 88       */ dey
+
+    ; { -1,  0 }
 
     /* 80D1 20 17 81 */ jsr FUNC_03_8117
 
     /* 80D4 E8       */ inx
+
+    ; { -1, +1 }
+
     /* 80D5 20 21 81 */ jsr FUNC_03_8121
 
     /* 80D8 CA       */ dex
     /* 80D9 88       */ dey
+
     /* 80DA 30 03    */ bmi +
+
+    ; { -2,  0 }
 
     /* 80DC 20 21 81 */ jsr FUNC_03_8121
 
@@ -202,15 +205,24 @@ FUNC_03_80CA:
     /* 80DF C8       */ iny
     /* 80E0 C8       */ iny
     /* 80E1 C8       */ iny
+
+    ; { +1,  0 }
+
     /* 80E2 20 17 81 */ jsr FUNC_03_8117
 
     /* 80E5 CA       */ dex
+
+    ; { +1, -1 }
+
     /* 80E6 20 21 81 */ jsr FUNC_03_8121
 
     /* 80E9 E8       */ inx
     /* 80EA C8       */ iny
+
     /* 80EB C0 1F    */ cpy #MAP_ROW_MAX_LENGTH-1
     /* 80ED 10 03    */ bpl +
+
+    ; { +2,  0 }
 
     /* 80EF 20 21 81 */ jsr FUNC_03_8121
 
@@ -218,14 +230,23 @@ FUNC_03_80CA:
     /* 80F2 88       */ dey
     /* 80F3 88       */ dey
     /* 80F4 CA       */ dex
+
+    ; {  0, -1 }
+
     /* 80F5 20 17 81 */ jsr FUNC_03_8117
 
     /* 80F8 88       */ dey
+
+    ; { -1, -1 }
+
     /* 80F9 20 21 81 */ jsr FUNC_03_8121
 
     /* 80FC C8       */ iny
     /* 80FD CA       */ dex
+
     /* 80FE 30 03    */ bmi +
+
+    ; {  0, -2 }
 
     /* 8100 20 21 81 */ jsr FUNC_03_8121
 
@@ -233,15 +254,24 @@ FUNC_03_80CA:
     /* 8103 E8       */ inx
     /* 8104 E8       */ inx
     /* 8105 E8       */ inx
+
+    ; {  0, +1 }
+
     /* 8106 20 17 81 */ jsr FUNC_03_8117
 
     /* 8109 C8       */ iny
+
+    ; { +1, +1 }
+
     /* 810A 20 21 81 */ jsr FUNC_03_8121
 
     /* 810D 88       */ dey
     /* 810E E8       */ inx
+
     /* 810F E0 1D    */ cpx #MAP_ROW_COUNT-1
     /* 8111 10 03    */ bpl +
+
+    ; {  0, +2 }
 
     /* 8113 20 21 81 */ jsr FUNC_03_8121
 
@@ -249,6 +279,8 @@ FUNC_03_80CA:
     /* 8116 60       */ rts
 
 FUNC_03_8117:
+    ; 1 cell away
+
     /* 8117 20 39 82 */ jsr GetMapRow2In9B
 
     /* 811A B1 9B    */ lda (zUnk9B), Y
@@ -257,6 +289,8 @@ FUNC_03_8117:
     /* 8120 60       */ rts
 
 FUNC_03_8121:
+    ; 2 cells away
+
     /* 8121 20 39 82 */ jsr GetMapRow2In9B
 
     /* 8124 B1 9B    */ lda (zUnk9B), Y
@@ -273,10 +307,12 @@ FUNC_03_812B:
 
     /* 8134 A0 13    */ ldy #Unit.item
     /* 8136 B1 9F    */ lda (zUnitPtr9F), Y
+
     /* 8138 A8       */ tay
     /* 8139 88       */ dey
+
     /* 813A B9 C3 D9 */ lda ItemInfo.Unk_D9C3, Y
-    /* 813D 29 06    */ and #6
+    /* 813D 29 06    */ and #%00000110
     /* 813F 4A       */ lsr A
     /* 8140 85 AF    */ sta zUnkAF
 
@@ -285,10 +321,10 @@ FUNC_03_812B:
     /* 8146 65 B5    */ adc zUnkB5
     /* 8148 85 B5    */ sta zUnkB5
 
-    /* 814A C9 1F    */ cmp #31
+    /* 814A C9 1F    */ cmp #$1F
     /* 814C 30 02    */ bmi +
 
-    /* 814E A9 1F    */ lda #31
+    /* 814E A9 1F    */ lda #$1F
 
 +:
     /* 8150 85 A7    */ sta zUnkA7
@@ -308,7 +344,7 @@ FUNC_03_812B:
 
     /* 8168 20 37 80 */ jsr FUNC_03_8037
 
-    /* 816B 20 E4 8F */ jsr LOC_8FE4
+    /* 816B 20 E4 8F */ jsr FUNC_03_8FE4
 
     /* 816E 60       */ rts
 
@@ -319,7 +355,9 @@ FUNC_03_816F:
     /* 8172 48       */ pha
 
     /* 8173 E8       */ inx
+
     /* 8174 A5 AF    */ lda zUnkAF
+
     /* 8176 29 01    */ and #$01
     /* 8178 F0 03    */ beq +
 
@@ -327,6 +365,7 @@ FUNC_03_816F:
 
 +:
     /* 817D A5 AF    */ lda zUnkAF
+
     /* 817F 29 02    */ and #$02
     /* 8181 F0 16    */ beq @LOC_8199
 
@@ -532,6 +571,7 @@ GetPlayerUnitsIn9F:
     /* 8269 85 9F    */ sta zUnitPtr9F
     /* 826B A9 6A    */ lda #>sUnitsPlayer
     /* 826D 85 A0    */ sta zUnitPtr9F+1
+
     /* 826F 60       */ rts
 
 FUNC_03_8270:
@@ -543,7 +583,7 @@ FUNC_03_8270:
 +:
     /* 8278 20 34 83 */ jsr FUNC_03_8334
 
-    /* 827B 20 D2 8F */ jsr LOC_8FD2
+    /* 827B 20 D2 8F */ jsr GetEnemyUnitsIn9D
 
     /* 827E A2 00    */ ldx #0
     /* 8280 86 AD    */ stx zUnkAD
@@ -624,7 +664,7 @@ FUNC_03_82BD:
     /* 82EF 85 0B    */ sta zR0B
 
     /* 82F1 A9 0D    */ lda #$0D
-    /* 82F3 85 44    */ sta zFarFuncId
+    /* 82F3 85 44    */ sta zFarFuncNum
     /* 82F5 A9 06    */ lda #$06
     /* 82F7 20 FA C9 */ jsr CallFarFunc
 
@@ -662,7 +702,7 @@ CODE_03_831F:
     /* 8322 86 AD    */ stx zUnkAD
 
     /* 8324 A9 1B    */ lda #_sizeof_Unit
-    /* 8326 20 C6 91 */ jsr LOC_91C6
+    /* 8326 20 C6 91 */ jsr AddToUnitPtr9D
 
     /* 8329 4C 82 82 */ jmp CODE_03_8282
 
@@ -672,10 +712,11 @@ CODE_03_832C:
 CODE_03_832F:
     /* 832F A9 27    */ lda #$27
     /* 8331 85 84    */ sta zUnk84
+
     /* 8333 60       */ rts
 
 FUNC_03_8334:
-    /* 8334 20 D2 8F */ jsr LOC_8FD2
+    /* 8334 20 D2 8F */ jsr GetEnemyUnitsIn9D
 
     /* 8337 A2 00    */ ldx #0
     /* 8339 86 AD    */ stx zUnkAD
@@ -685,7 +726,8 @@ FUNC_03_8334:
 @lop:
     /* 833D A0 12    */ ldy #Unit.unk_12
     /* 833F B1 9D    */ lda (zUnitPtr9D), Y
-    /* 8341 C9 FF    */ cmp #-1
+
+    /* 8341 C9 FF    */ cmp #$FF
     /* 8343 F0 06    */ beq +
 
     /* 8345 A0 00    */ ldy #Unit.pid
@@ -693,7 +735,7 @@ FUNC_03_8334:
     /* 8349 D0 3B    */ bne @continue
 
 +:
-    /* 834B 20 D0 91 */ jsr LOC_91D0
+    /* 834B 20 D0 91 */ jsr SpawnEnemyReinforcement
 
     /* 834E C9 00    */ cmp #0
     /* 8350 F0 34    */ beq @continue
@@ -725,19 +767,20 @@ FUNC_03_8334:
     /* 837B 85 75    */ sta zUnitLoadDst+1
 
     /* 837D A9 0C    */ lda #$0C
-    /* 837F 85 44    */ sta zFarFuncId
+    /* 837F 85 44    */ sta zFarFuncNum
     /* 8381 A9 06    */ lda #$06
     /* 8383 20 FA C9 */ jsr CallFarFunc
 
 @continue:
     /* 8386 A6 AD    */ ldx zUnkAD
     /* 8388 E8       */ inx
+
     /* 8389 E0 14    */ cpx #20
     /* 838B B0 0A    */ bcs @end
 
     /* 838D 86 AD    */ stx zUnkAD
     /* 838F A9 1B    */ lda #_sizeof_Unit
-    /* 8391 20 C6 91 */ jsr LOC_91C6
+    /* 8391 20 C6 91 */ jsr AddToUnitPtr9D
 
     /* 8394 4C 3D 83 */ jmp @lop
 
@@ -806,11 +849,11 @@ FUNC_03_8398:
     /* 83ED C9 1F    */ cmp #UNK_E8F8_1F
     /* 83EF F0 E2    */ beq @LOC_83D3
 
-    /* 83F1 20 4A 91 */ jsr LOC_914A
+    /* 83F1 20 4A 91 */ jsr FindEnemyUnitAtTo9F
 
     /* 83F4 90 DD    */ bcc @LOC_83D3
 
-    /* 83F6 20 44 91 */ jsr LOC_9144
+    /* 83F6 20 44 91 */ jsr FindPlayerUnitAtTo9F
 
     /* 83F9 90 D8    */ bcc @LOC_83D3
 
@@ -899,7 +942,7 @@ FUNC_03_8400:
     /* 845B A0 18    */ ldy #Unit.uses+1
     /* 845D B1 9D    */ lda (zUnitPtr9D), Y
 
-    /* 845F CD 75 76 */ cmp sUnk7675
+    /* 845F CD 75 76 */ cmp sTurnNumber
     /* 8462 B0 0F    */ bcs @LOC_8473
 
     /* 8464 A9 03    */ lda #3
@@ -960,7 +1003,7 @@ FUNC_03_8400:
     /* 84AC E8       */ inx
 
     /* 84AD A9 1B    */ lda #_sizeof_Unit
-    /* 84AF 20 BC 91 */ jsr LOC_91BC
+    /* 84AF 20 BC 91 */ jsr AddToUnitPtr9F
 
     /* 84B2 4C 8B 84 */ jmp @CODE_03_848B
 
@@ -971,7 +1014,7 @@ FUNC_03_8400:
     /* 84B8 C9 04    */ cmp #$04
     /* 84BA D0 28    */ bne @CODE_03_84E4
 
-    /* 84BC 20 DB 8F */ jsr LOC_8FDB
+    /* 84BC 20 DB 8F */ jsr GetEnemyUnitsInR02
 
     /* 84BF A2 00    */ ldx #0
 
@@ -1002,7 +1045,7 @@ FUNC_03_8400:
     /* 84E1 4C C1 84 */ jmp @CODE_03_84C1
 
 @CODE_03_84E4:
-    /* 84E4 20 DB 8F */ jsr LOC_8FDB
+    /* 84E4 20 DB 8F */ jsr GetEnemyUnitsInR02
 
     /* 84E7 A2 00    */ ldx #0
     /* 84E9 86 A3    */ stx zUnkA3
@@ -1114,7 +1157,7 @@ FUNC_03_8550:
     /* 8574 86 04    */ stx zR04
 
     /* 8576 A9 0D    */ lda #$0D
-    /* 8578 85 44    */ sta zFarFuncId
+    /* 8578 85 44    */ sta zFarFuncNum
     /* 857A A9 06    */ lda #$06
     /* 857C 20 FA C9 */ jsr CallFarFunc
 
@@ -1129,7 +1172,7 @@ FUNC_03_8550:
     /* 8590 86 04    */ stx zR04
 
     /* 8592 A9 07    */ lda #$07
-    /* 8594 85 44    */ sta zFarFuncId
+    /* 8594 85 44    */ sta zFarFuncNum
     /* 8596 A9 06    */ lda #$06
     /* 8598 20 FA C9 */ jsr CallFarFunc
 
@@ -1151,7 +1194,7 @@ FUNC_03_85A4:
 
     /* 85AD 20 CC 8B */ jsr FUNC_03_8BCC
 
-    /* 85B0 20 54 8F */ jsr LOC_8F54
+    /* 85B0 20 54 8F */ jsr FUNC_03_8F54
 
     /* 85B3 60       */ rts
 
@@ -1226,7 +1269,7 @@ FUNC_03_85B4:
 
     /* 860E 20 37 80 */ jsr FUNC_03_8037
 
-    /* 8611 20 E4 8F */ jsr LOC_8FE4
+    /* 8611 20 E4 8F */ jsr FUNC_03_8FE4
 
     /* 8614 A5 BC    */ lda zUnkBC
     /* 8616 F0 0A    */ beq @LOC_8622
@@ -1481,7 +1524,7 @@ FUNC_03_871E:
     /* 8739 C9 0E    */ cmp #UNK_E8F8_0E
     /* 873B D0 05    */ bne @LOC_8742
 
-    /* 873D 20 44 91 */ jsr LOC_9144
+    /* 873D 20 44 91 */ jsr FindPlayerUnitAtTo9F
 
     /* 8740 90 03    */ bcc @LOC_8745
 
@@ -1808,7 +1851,7 @@ FUNC_03_8890:
     /* 88C0 CD 39 05 */ cmp wUnk0539
     /* 88C3 D0 14    */ bne @LOC_88D9
 
-    /* 88C5 A9 FF    */ lda #$FF
+    /* 88C5 A9 FF    */ lda #255
     /* 88C7 8D C2 05 */ sta wUnk05C2
 
     /* 88CA AD 38 05 */ lda wUnk0538
@@ -1837,7 +1880,7 @@ FUNC_03_8890:
     /* 88EC 20 37 80 */ jsr FUNC_03_8037
 
 @LOC_88EF:
-    /* 88EF 20 E4 8F */ jsr LOC_8FE4
+    /* 88EF 20 E4 8F */ jsr FUNC_03_8FE4
 
     /* 88F2 A5 BE    */ lda zUnkBE
     /* 88F4 F0 04    */ beq @LOC_88FA
@@ -1852,7 +1895,7 @@ FUNC_03_8890:
     /* 8900 AD 39 05 */ lda wUnk0539
     /* 8903 8D C0 05 */ sta wUnk05C0
 
-    /* 8906 A9 FF    */ lda #$FF
+    /* 8906 A9 FF    */ lda #255
     /* 8908 8D C2 05 */ sta wUnk05C2
 
     /* 890B 4C 1C 89 */ jmp @LOC_891C
@@ -1961,7 +2004,7 @@ FUNC_03_896B:
     /* 897D C9 0E    */ cmp #UNK_E8F8_0E
     /* 897F D0 18    */ bne @LOC_8999
 
-    /* 8981 20 44 91 */ jsr LOC_9144
+    /* 8981 20 44 91 */ jsr FindPlayerUnitAtTo9F
 
     /* 8984 A0 01    */ ldy #Unit.jid
     /* 8986 B1 9F    */ lda (zUnitPtr9F), Y
@@ -1986,7 +2029,7 @@ FUNC_03_896B:
 
     /* 89A1 8D 33 05 */ sta wUnk0533
 
-    /* 89A4 20 4A 91 */ jsr LOC_914A
+    /* 89A4 20 4A 91 */ jsr FindEnemyUnitAtTo9F
 
     /* 89A7 A0 06    */ ldy #Unit.terrain
     /* 89A9 B1 02    */ lda (zR02), Y
@@ -2390,7 +2433,7 @@ FUNC_03_8AE8:
     /* 8BA5 A5 C1    */ lda zUnkC1
     /* 8BA7 8D C0 05 */ sta wUnk05C0
 
-    /* 8BAA A9 FF    */ lda #$FF
+    /* 8BAA A9 FF    */ lda #255
     /* 8BAC 8D C2 05 */ sta wUnk05C2
 
 @end:
@@ -2470,7 +2513,7 @@ FUNC_03_8BCC:
     /* 8C02 86 C1    */ stx zUnkC1
     /* 8C04 84 C0    */ sty zUnkC0
 
-    /* 8C06 20 80 90 */ jsr LOC_9080
+    /* 8C06 20 80 90 */ jsr FUNC_03_9080
 
 @lop:
     /* 8C09 E6 BE    */ inc zUnkBE
@@ -2526,7 +2569,7 @@ FUNC_03_8BCC:
     /* 8C43 8C C1 05 */ sty wUnk05C1
     /* 8C46 8E C0 05 */ stx wUnk05C0
 
-    /* 8C49 A9 FF    */ lda #$FF
+    /* 8C49 A9 FF    */ lda #255
     /* 8C4B 8D C2 05 */ sta wUnk05C2
 
     /* 8C4E 4C 82 8C */ jmp @end
@@ -2549,11 +2592,11 @@ FUNC_03_8BCC:
 
     /* 8C66 85 A4    */ sta zUnkA4
 
-    /* 8C68 A9 FF    */ lda #$FF
+    /* 8C68 A9 FF    */ lda #255
     /* 8C6A 8D C2 05 */ sta wUnk05C2
 
 @LOC_8C6D:
-    /* 8C6D 20 80 90 */ jsr LOC_9080
+    /* 8C6D 20 80 90 */ jsr FUNC_03_9080
 
 @continue:
     /* 8C70 C8       */ iny
@@ -2567,6 +2610,7 @@ FUNC_03_8BCC:
     /* 8C7A 90 91    */ bcc @lop_y
 
     /* 8C7C A5 BE    */ lda zUnkBE
+
     /* 8C7E C5 BF    */ cmp zUnkBF
     /* 8C80 D0 87    */ bne @lop
 
@@ -2642,14 +2686,14 @@ FUNC_03_8CCE:
     /* 8CCE AD 42 05 */ lda wUnk0542
     /* 8CD1 20 4C C3 */ jsr Switch
 
-    .dw @case_0
-    .dw @case_1
-    .dw @case_2
-    .dw @case_3
-    .dw @case_4
+    .dw FUNC_03_8CCE_case_0
+    .dw FUNC_03_8CCE_case_1
+    .dw FUNC_03_8CCE_case_2
+    .dw FUNC_03_8CCE_case_3
+    .dw FUNC_03_8CCE_case_4
     .dw CaseRet
 
-@case_0:
+FUNC_03_8CCE_case_0:
     /* 8CE0 A0 12    */ ldy #Unit.unk_12
     /* 8CE2 B1 9D    */ lda (zUnitPtr9D), Y
 
@@ -2703,7 +2747,7 @@ FUNC_03_8CCE:
 
     /* 8D25 F0 0D    */ beq @LOC_8D34
 
-    /* 8D27 20 6D 8D */ jsr @FUNC_03_8D6D
+    /* 8D27 20 6D 8D */ jsr FUNC_03_8D6D
 
     /* 8D2A 90 08    */ bcc @LOC_8D34
 
@@ -2727,28 +2771,28 @@ FUNC_03_8CCE:
 
     /* 8D47 E8       */ inx
 
-    /* 8D48 20 C4 8E */ jsr @LOC_8EC4
+    /* 8D48 20 C4 8E */ jsr FUNC_03_8EC4
 
     /* 8D4B F0 15    */ beq @LOC_8D62
 
     /* 8D4D CA       */ dex
     /* 8D4E CA       */ dex
 
-    /* 8D4F 20 C4 8E */ jsr @LOC_8EC4
+    /* 8D4F 20 C4 8E */ jsr FUNC_03_8EC4
 
     /* 8D52 F0 0E    */ beq @LOC_8D62
 
     /* 8D54 E8       */ inx
     /* 8D55 C8       */ iny
 
-    /* 8D56 20 C4 8E */ jsr @LOC_8EC4
+    /* 8D56 20 C4 8E */ jsr FUNC_03_8EC4
 
     /* 8D59 F0 07    */ beq @LOC_8D62
 
     /* 8D5B 88       */ dey
     /* 8D5C 88       */ dey
 
-    /* 8D5D 20 C4 8E */ jsr @LOC_8EC4
+    /* 8D5D 20 C4 8E */ jsr FUNC_03_8EC4
 
     /* 8D60 D0 05    */ bne @LOC_8D67
 
@@ -2763,7 +2807,7 @@ FUNC_03_8CCE:
 @LOC_8D6C:
     /* 8D6C 60       */ rts
 
-@FUNC_03_8D6D:
+FUNC_03_8D6D:
     /* 8D6D A5 66    */ lda zUnk65+1
     /* 8D6F F0 0B    */ beq @LOC_8D7C
 
@@ -2823,7 +2867,7 @@ FUNC_03_8CCE:
 
 @LOC_8DAC:
     /* 8DAC A9 1B    */ lda #_sizeof_Unit
-    /* 8DAE 20 BC 91 */ jsr LOC_91BC
+    /* 8DAE 20 BC 91 */ jsr AddToUnitPtr9F
 
     /* 8DB1 4C 81 8D */ jmp @LOC_8D81
 
@@ -2834,17 +2878,17 @@ FUNC_03_8CCE:
     /* 8DB8 85 9F    */ sta zUnitPtr9F
 
     /* 8DBA A9 36    */ lda #_sizeof_Unit*2
-    /* 8DBC 20 BC 91 */ jsr LOC_91BC
+    /* 8DBC 20 BC 91 */ jsr AddToUnitPtr9F
 
     /* 8DBF 60       */ rts
 
-@case_2:
+FUNC_03_8CCE_case_2:
     /* 8DC0 A9 20    */ lda #$20
     /* 8DC2 8D 3D 05 */ sta wUnk053D
 
     /* 8DC5 AD 44 05 */ lda wUnk0544
 
-@LOC_8DC8:
+FUNC_03_8DC8:
     /* 8DC8 8D F1 77 */ sta sUnk77F1
 
     /* 8DCB A9 00    */ lda #0
@@ -2854,7 +2898,7 @@ FUNC_03_8CCE:
     /* 8DD2 8D F7 77 */ sta sUnk77F7
 
     /* 8DD5 AD 7A 76 */ lda sUnk767A
-    /* 8DD8 D0 13    */ bne @LOC_8DED
+    /* 8DD8 D0 13    */ bne FUNC_03_8DED
 
     /* 8DDA AD 3D 05 */ lda wUnk053D
 
@@ -2865,18 +2909,18 @@ FUNC_03_8CCE:
 
     /* 8DE4 8D F2 06 */ sta wUnk06F2
 
-    /* 8DE7 4C ED 8D */ jmp @LOC_8DED
+    /* 8DE7 4C ED 8D */ jmp FUNC_03_8DED
 
 @LOC_8DEA:
     /* 8DEA 8D F6 06 */ sta wUnk06F6
 
-@LOC_8DED:
+FUNC_03_8DED:
     /* 8DED A9 03    */ lda #3
     /* 8DEF 8D 42 05 */ sta wUnk0542
 
     /* 8DF2 60       */ rts
 
-@case_3:
+FUNC_03_8CCE_case_3:
     /* 8DF3 A9 01    */ lda #1
     /* 8DF5 85 97    */ sta zUnk97
 
@@ -2934,7 +2978,7 @@ FUNC_03_8CCE:
     /* 8E3C ...      */ .db $36, $26, $0F, $0F, $3C, $33, $0F, $0F
     /* 8E44 ...      */ .db $35, $15, $0F, $00
 
-@case_1:
+FUNC_03_8CCE_case_1:
     /* 8E48 20 52 8E */ jsr @LOC_8E52
     /* 8E4B 20 AF 8E */ jsr @LOC_8EAF
 
@@ -2952,7 +2996,7 @@ FUNC_03_8CCE:
     /* 8E59 F0 08    */ beq @LOC_8E63
 
     /* 8E5B A9 1B    */ lda #_sizeof_Unit
-    /* 8E5D 20 BC 91 */ jsr LOC_91BC
+    /* 8E5D 20 BC 91 */ jsr AddToUnitPtr9F
 
     /* 8E60 4C 55 8E */ jmp @LOC_8E55
 
@@ -3027,7 +3071,7 @@ FUNC_03_8CCE:
     /* 8EB2 85 A6    */ sta zUnkA6
 
     /* 8EB4 A9 0C    */ lda #$0C
-    /* 8EB6 85 44    */ sta zFarFuncId
+    /* 8EB6 85 44    */ sta zFarFuncNum
     /* 8EB8 A9 06    */ lda #$06
     /* 8EBA 20 FA C9 */ jsr CallFarFunc
 
@@ -3037,7 +3081,7 @@ FUNC_03_8CCE:
 
     /* 8EC3 60       */ rts
 
-@LOC_8EC4:
+FUNC_03_8EC4:
     /* 8EC4 20 50 82 */ jsr GetMapRowInR04
     /* 8EC7 B1 04    */ lda (zR04), Y
 
@@ -3045,7 +3089,7 @@ FUNC_03_8CCE:
 
     /* 8ECB 60       */ rts
 
-@case_4:
+FUNC_03_8CCE_case_4:
     /* 8ECC AD 48 05 */ lda wUnk0548
     /* 8ECF F0 15    */ beq @LOC_8EE6
 
@@ -3060,7 +3104,7 @@ FUNC_03_8CCE:
     /* 8EDE A9 01    */ lda #$01
     /* 8EE0 8D F7 77 */ sta sUnk77F7
 
-    /* 8EE3 4C ED 8D */ jmp @LOC_8DED
+    /* 8EE3 4C ED 8D */ jmp FUNC_03_8DED
 
 @LOC_8EE6:
     /* 8EE6 AD 7F 76 */ lda sUnk767F
@@ -3109,7 +3153,7 @@ FUNC_03_8CCE:
     /* 8F1F C9 07    */ cmp #MAP_07
     /* 8F21 D0 2B    */ bne @LOC_8F4E
 
-    /* 8F23 AD 75 76 */ lda sUnk7675
+    /* 8F23 AD 75 76 */ lda sTurnNumber
 
     /* 8F26 C9 02    */ cmp #2
     /* 8F28 D0 24    */ bne @LOC_8F4E
@@ -3123,7 +3167,7 @@ FUNC_03_8CCE:
 
     /* 8F37 A9 08    */ lda #$08
 
-    /* 8F39 4C C8 8D */ jmp @LOC_8DC8
+    /* 8F39 4C C8 8D */ jmp FUNC_03_8DC8
 
 @LOC_8F3C:
     /* 8F3C AD 7F 76 */ lda sUnk767F
@@ -3135,10 +3179,1094 @@ FUNC_03_8CCE:
 
     /* 8F49 A9 09    */ lda #$09
 
-    /* 8F4B 4C C8 8D */ jmp @LOC_8DC8
+    /* 8F4B 4C C8 8D */ jmp FUNC_03_8DC8
 
 @LOC_8F4E:
     /* 8F4E A9 00    */ lda #0
     /* 8F50 8D 42 05 */ sta wUnk0542
 
     /* 8F53 60       */ rts
+
+FUNC_03_8F54:
+    /* 8F54 A0 01    */ ldy #Unit.jid
+    /* 8F56 B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 8F58 C9 13    */ cmp #JID_PRIEST
+    /* 8F5A D0 3F    */ bne @end
+
+    /* 8F5C A0 13    */ ldy #Unit.item+0
+    /* 8F5E B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 8F60 C9 3E    */ cmp #IID_FORTIFY+1
+    /* 8F62 F0 2B    */ beq @fortify_staff
+
+    /* 8F64 C9 36    */ cmp #IID_HEAL+1
+    /* 8F66 F0 0B    */ beq @heal_staff
+
+    /* 8F68 C9 37    */ cmp #IID_MEND+1
+    /* 8F6A F0 07    */ beq @heal_staff
+
+    /* 8F6C C9 38    */ cmp #IID_RECOVER+1
+    /* 8F6E F0 03    */ beq @heal_staff
+
+    /* 8F70 4C 9B 8F */ jmp @end
+
+@heal_staff:
+    /* 8F73 AC C1 05 */ ldy wUnk05C1
+    /* 8F76 AE C0 05 */ ldx wUnk05C0
+
+    /* 8F79 E8       */ inx
+
+    /* 8F7A 20 9C 8F */ jsr FUNC_03_8F9C
+
+    /* 8F7D CA       */ dex
+    /* 8F7E CA       */ dex
+
+    /* 8F7F 20 9C 8F */ jsr FUNC_03_8F9C
+
+    /* 8F82 E8       */ inx
+    /* 8F83 C8       */ iny
+
+    /* 8F84 20 9C 8F */ jsr FUNC_03_8F9C
+
+    /* 8F87 88       */ dey
+    /* 8F88 88       */ dey
+
+    /* 8F89 20 9C 8F */ jsr FUNC_03_8F9C
+
+    /* 8F8C 4C 9B 8F */ jmp @end
+
+@fortify_staff:
+    /* 8F8F 20 4E C0 */ jsr FUNC_C04E
+
+    /* 8F92 C9 30    */ cmp #$30
+    /* 8F94 B0 05    */ bcs @end ; bhs
+
+    /* 8F96 A9 FD    */ lda #253
+    /* 8F98 8D C2 05 */ sta wUnk05C2
+
+@end:
+    /* 8F9B 60       */ rts
+
+FUNC_03_8F9C:
+    /* 8F9C 86 B3    */ stx zUnkB3
+    /* 8F9E 84 B2    */ sty zUnkB2
+
+    /* 8FA0 98       */ tya
+    /* 8FA1 48       */ pha
+    /* 8FA2 8A       */ txa
+    /* 8FA3 48       */ pha
+
+    /* 8FA4 20 50 82 */ jsr GetMapRowInR04
+    /* 8FA7 B1 04    */ lda (zR04), Y
+    /* 8FA9 A8       */ tay
+
+    /* 8FAA B9 F8 E8 */ lda DAT_E8F8, Y
+
+    /* 8FAD C9 1F    */ cmp #UNK_E8F8_1F
+    /* 8FAF D0 1C    */ bne @end
+
+    /* 8FB1 20 4A 91 */ jsr FindEnemyUnitAtTo9F
+
+    /* 8FB4 B0 17    */ bcs @end
+
+    /* 8FB6 A0 03    */ ldy #Unit.hp_cur
+    /* 8FB8 B1 02    */ lda (zR02), Y
+
+    /* 8FBA 85 A3    */ sta zUnkA3
+
+    /* 8FBC C8       */ iny ; Unit.hp_max
+    /* 8FBD B1 02    */ lda (zR02), Y
+
+    /* 8FBF C5 A3    */ cmp zUnkA3
+    /* 8FC1 F0 0A    */ beq @end
+
+    /* 8FC3 A5 AE    */ lda zUnkAE
+
+    /* 8FC5 CD C3 05 */ cmp wUnk05C3
+    /* 8FC8 F0 03    */ beq @end
+
+    /* 8FCA 8D C2 05 */ sta wUnk05C2
+
+@end:
+    /* 8FCD 68       */ pla
+    /* 8FCE AA       */ tax
+    /* 8FCF 68       */ pla
+    /* 8FD0 A8       */ tay
+
+    /* 8FD1 60       */ rts
+
+GetEnemyUnitsIn9D:
+    /* 8FD2 A9 78    */ lda #<sUnitsEnemy
+    /* 8FD4 85 9D    */ sta zUnitPtr9D
+    /* 8FD6 A9 70    */ lda #>sUnitsEnemy
+    /* 8FD8 85 9E    */ sta zUnitPtr9D+1
+
+    /* 8FDA 60       */ rts
+
+GetEnemyUnitsInR02:
+    /* 8FDB A9 78    */ lda #<sUnitsEnemy
+    /* 8FDD 85 02    */ sta zR02
+    /* 8FDF A9 70    */ lda #>sUnitsEnemy
+    /* 8FE1 85 03    */ sta zR02+1
+
+    /* 8FE3 60       */ rts
+
+FUNC_03_8FE4:
+    /* 8FE4 AE 39 05 */ ldx wUnk0539
+    /* 8FE7 AC 38 05 */ ldy wUnk0538
+
+    /* 8FEA 20 22 82 */ jsr GetMapRow3In6C
+
+    /* 8FED A9 3D    */ lda #$3D
+    /* 8FEF 91 6C    */ sta (zUnk6C), Y
+
+    /* 8FF1 A9 00    */ lda #0
+    /* 8FF3 85 BE    */ sta zUnkBE
+
+    /* 8FF5 86 C1    */ stx zUnkC1
+    /* 8FF7 84 C0    */ sty zUnkC0
+
+    /* 8FF9 A5 B8    */ lda zUnkB8
+
+    /* 8FFB F0 17    */ beq @case_0
+
+    /* 8FFD C9 01    */ cmp #1
+    /* 8FFF F0 0D    */ beq @case_1
+
+    /* 9001 C9 02    */ cmp #2
+    /* 9003 F0 03    */ beq @case_2
+
+    /* 9005 4C 7F 90 */ jmp @end
+
+@case_2:
+    /* 9008 20 26 86 */ jsr FUNC_03_8626
+
+    /* 900B 4C 17 90 */ jmp @common
+
+@case_1:
+    /* 900E 20 6F 81 */ jsr FUNC_03_816F
+
+    /* 9011 4C 17 90 */ jmp @common
+
+@case_0:
+    /* 9014 20 1D 89 */ jsr FUNC_03_891D
+
+@common:
+    /* 9017 A5 B8    */ lda zUnkB8
+
+    /* 9019 C9 FF    */ cmp #$FF
+    /* 901B F0 62    */ beq @end
+
+    /* 901D A5 BF    */ lda $BF
+    /* 901F F0 5E    */ beq @end
+
+    /* 9021 20 80 90 */ jsr FUNC_03_9080
+
+@lop:
+    /* 9024 E6 BE    */ inc zUnkBE
+
+    /* 9026 A2 01    */ ldx #1
+
+@lop_y:
+    /* 9028 A0 01    */ ldy #1
+
+    /* 902A 8A       */ txa
+    /* 902B 48       */ pha
+
+    /* 902C 0A       */ asl A
+    /* 902D AA       */ tax
+
+    /* 902E BD 01 ED */ lda MapRows3.w, X
+    /* 9031 85 6C    */ sta zUnk6C
+    /* 9033 BD 02 ED */ lda MapRows3.w+1, X
+    /* 9036 85 6D    */ sta zUnk6C+1
+
+    /* 9038 68       */ pla
+    /* 9039 AA       */ tax
+
+@lop_x:
+    /* 903A B1 6C    */ lda (zUnk6C), Y
+    /* 903C 29 3F    */ and #$3F
+
+    /* 903E C5 BE    */ cmp zUnkBE
+    /* 9040 D0 2B    */ bne @LOC_906D
+
+    /* 9042 86 C1    */ stx zUnkC1
+    /* 9044 84 C0    */ sty zUnkC0
+
+    /* 9046 A5 B8    */ lda zUnkB8
+
+    /* 9048 F0 17    */ beq @LOC_9061
+
+    /* 904A C9 01    */ cmp #1
+    /* 904C F0 0D    */ beq @LOC_905B
+
+    /* 904E C9 02    */ cmp #2
+    /* 9050 F0 03    */ beq @LOC_9055
+
+    /* 9052 4C 7F 90 */ jmp @end
+
+@LOC_9055:
+    /* 9055 20 26 86 */ jsr FUNC_03_8626
+
+    /* 9058 4C 64 90 */ jmp @LOC_9064
+
+@LOC_905B:
+    /* 905B 20 6F 81 */ jsr FUNC_03_816F
+
+    /* 905E 4C 64 90 */ jmp @LOC_9064
+
+@LOC_9061:
+    /* 9061 20 1D 89 */ jsr FUNC_03_891D
+
+@LOC_9064:
+    /* 9064 A5 B8    */ lda zUnkB8
+
+    /* 9066 C9 FF    */ cmp #$FF
+    /* 9068 F0 15    */ beq @end
+
+    /* 906A 20 80 90 */ jsr FUNC_03_9080
+
+@LOC_906D:
+    /* 906D C8       */ iny
+
+    /* 906E CC 77 76 */ cpy sMapWidth
+    /* 9071 D0 C7    */ bne @lop_x
+
+    /* 9073 E8       */ inx
+
+    /* 9074 EC 76 76 */ cpx sMapHeight
+    /* 9077 90 AF    */ bcc @lop_y
+
+    /* 9079 A5 BE    */ lda zUnkBE
+
+    /* 907B C5 BF    */ cmp zUnkBF
+    /* 907D D0 A5    */ bne @lop
+
+@end:
+    /* 907F 60       */ rts
+
+FUNC_03_9080:
+    /* 9080 8A       */ txa
+    /* 9081 48       */ pha
+    /* 9082 98       */ tya
+    /* 9083 48       */ pha
+
+    /* 9084 A2 00    */ ldx #0
+
+@lop:
+    /* 9086 8A       */ txa
+    /* 9087 48       */ pha
+
+    /* 9088 0A       */ asl A
+    /* 9089 A8       */ tay
+
+    /* 908A B9 3C 91 */ lda @adjacent_coord_lut.w, Y
+    /* 908D 65 C0    */ adc zUnkC0
+    /* 908F 85 B2    */ sta zUnkB2
+
+    /* 9091 B9 3D 91 */ lda @adjacent_coord_lut.w+1, Y
+    /* 9094 18       */ clc
+    /* 9095 65 C1    */ adc zUnkC1
+    /* 9097 85 B3    */ sta zUnkB3
+
+    ; zUnkB2 = x coord
+    ; zUnkB3 = y coord (= A)
+
+    /* 9099 0A       */ asl A
+    /* 909A A8       */ tay
+
+    /* 909B B9 3D ED */ lda MapRows, Y
+    /* 909E 85 04    */ sta zR04
+    /* 90A0 B9 3E ED */ lda MapRows+1, Y
+    /* 90A3 85 05    */ sta zR04+1
+
+    /* 90A5 A4 B2    */ ldy zUnkB2
+    /* 90A7 B1 04    */ lda (zR04), Y
+    /* 90A9 AA       */ tax
+
+    ; X = terrain
+
+    /* 90AA A4 B8    */ ldy zUnkB8
+
+    /* 90AC 88       */ dey
+    /* 90AD D0 0C    */ bne @LOC_90BB
+
+    /* 90AF A0 01    */ ldy #Unit.jid
+    /* 90B1 B1 9F    */ lda (zUnitPtr9F), Y
+    /* 90B3 85 A5    */ sta zUnkA5
+
+    /* 90B5 BD 28 E8 */ lda DAT_E828.w, X
+
+    /* 90B8 4C C4 90 */ jmp @LOC_90C4
+
+@LOC_90BB:
+    /* 90BB A0 01    */ ldy #Unit.jid
+    /* 90BD B1 9D    */ lda (zUnitPtr9D), Y
+    /* 90BF 85 A5    */ sta zUnkA5
+
+    /* 90C1 BD F8 E8 */ lda DAT_E8F8.w, X
+
+@LOC_90C4:
+    /* 90C4 48       */ pha
+
+    /* 90C5 C9 1F    */ cmp #UNK_E8F8_1F
+    /* 90C7 D0 0D    */ bne @LOC_90D6
+
+    /* 90C9 68       */ pla
+
+    /* 90CA 20 4A 91 */ jsr FindEnemyUnitAtTo9F
+
+    /* 90CD A0 06    */ ldy #Unit.terrain
+    /* 90CF B1 02    */ lda (zR02), Y
+
+    /* 90D1 AA       */ tax
+    /* 90D2 BD 28 E8 */ lda DAT_E828.w, X
+
+    /* 90D5 48       */ pha
+
+@LOC_90D6:
+    /* 90D6 A4 A5    */ ldy zUnkA5
+
+    /* 90D8 88       */ dey
+    /* 90D9 98       */ tya
+    /* 90DA 0A       */ asl A
+    /* 90DB A8       */ tay
+
+    /* 90DC B9 C8 E9 */ lda DAT_E9C8.w, Y
+    /* 90DF 85 06    */ sta zR06
+    /* 90E1 B9 C9 E9 */ lda DAT_E9C8.w+1, Y
+    /* 90E4 85 07    */ sta zR06+1
+
+    /* 90E6 68       */ pla
+
+    /* 90E7 A8       */ tay
+    /* 90E8 B1 06    */ lda (zR06), Y
+
+    /* 90EA 18       */ clc
+    /* 90EB 65 BE    */ adc zUnkBE
+
+    /* 90ED 90 04    */ bcc @LOC_90F3
+
+@LOC_90EF:
+    /* 90EF A9 3E    */ lda #$3E
+    /* 90F1 D0 04    */ bne @LOC_90F7
+
+@LOC_90F3:
+    /* 90F3 C9 3D    */ cmp #$3D
+    /* 90F5 B0 F8    */ bcs @LOC_90EF
+
+@LOC_90F7:
+    /* 90F7 85 09    */ sta zR09
+
+    /* 90F9 68       */ pla
+    /* 90FA AA       */ tax
+
+    /* 90FB 18       */ clc
+    /* 90FC 6A       */ ror A
+    /* 90FD 6A       */ ror A
+    /* 90FE 6A       */ ror A
+    /* 90FF 05 09    */ ora zR09
+    /* 9101 85 0A    */ sta zR0A
+
+    /* 9103 A5 B3    */ lda zUnkB3
+    /* 9105 0A       */ asl A
+    /* 9106 A8       */ tay
+
+    /* 9107 B9 01 ED */ lda MapRows3.w, Y
+    /* 910A 85 6C    */ sta zUnk6C
+    /* 910C B9 02 ED */ lda MapRows3.w+1, Y
+    /* 910F 85 6D    */ sta zUnk6C+1
+
+    /* 9111 A4 B2    */ ldy zUnkB2
+    /* 9113 B1 6C    */ lda (zUnk6C), Y
+
+    /* 9115 29 3F    */ and #$3F
+    /* 9117 F0 12    */ beq @LOC_912B
+
+    /* 9119 C9 3C    */ cmp #$3C
+    /* 911B B0 12    */ bcs @LOC_912F
+
+    /* 911D C5 09    */ cmp zR09
+    /* 911F D0 0E    */ bne @LOC_912F
+
+    /* 9121 20 4E C0 */ jsr FUNC_C04E
+
+    /* 9124 C9 80    */ cmp #$80
+    /* 9126 90 03    */ bcc @LOC_912B
+
+    /* 9128 4C 2F 91 */ jmp @LOC_912F
+
+@LOC_912B:
+    /* 912B A5 0A    */ lda zR0A
+    /* 912D 91 6C    */ sta (zUnk6C), Y
+
+@LOC_912F:
+    /* 912F E8       */ inx
+
+    /* 9130 E0 04    */ cpx #4
+    /* 9132 F0 03    */ beq @end
+
+    /* 9134 4C 86 90 */ jmp @lop
+
+@end:
+    /* 9137 68       */ pla
+    /* 9138 A8       */ tay
+    /* 9139 68       */ pla
+    /* 913A AA       */ tax
+
+    /* 913B 60       */ rts
+
+@adjacent_coord_lut:
+    .db  0, -1
+    .db +1,  0
+    .db  0, +1
+    .db -1,  0
+
+FindPlayerUnitAtTo9F:
+    ; Input:
+    ; - zUnkB2 = x map position
+    ; - zUnkB3 = y map position
+    ; Output:
+    ; - zUnitPtr9F = unit at given position
+    ; - zUnkAE = id of unit at given position
+    ; - C = cleared if found
+
+    /* 9144 20 67 82 */ jsr GetPlayerUnitsIn9F
+
+    /* 9147 4C 86 91 */ jmp LOC_9186
+
+FindEnemyUnitAtTo9F:
+    ; Input:
+    ; - zUnkB2 = x map position
+    ; - zUnkB3 = y map position
+    ; Output:
+    ; - zR02 = unit at given position
+    ; - zUnkAE = id of unit at given position
+    ; - C = cleared if found
+
+    /* 914A 20 DB 8F */ jsr GetEnemyUnitsInR02
+
+    /* 914D 4C 50 91 */ jmp LOC_9150
+
+LOC_9150:
+    ; Input:
+    ; - zR02 = unit array to look through
+    ; - zUnkB2 = x map position
+    ; - zUnkB3 = y map position
+    ; Output:
+    ; - zUnkAE = id of unit at given position
+    ; - C = cleared if found
+
+    /* 9150 98       */ tya
+    /* 9151 48       */ pha
+    /* 9152 8A       */ txa
+    /* 9153 48       */ pha
+
+    /* 9154 A2 00    */ ldx #0
+
+    /* 9156 F0 06    */ beq @begin
+
+@lop:
+    /* 9158 E8       */ inx
+
+    /* 9159 A0 1B    */ ldy #_sizeof_Unit
+    /* 915B 20 83 C3 */ jsr IncR02ByY
+
+@begin:
+    /* 915E A0 00    */ ldy #Unit.pid
+    /* 9160 B1 02    */ lda (zR02), Y
+
+    /* 9162 C9 00    */ cmp #0
+    /* 9164 F0 1B    */ beq @end
+
+    /* 9166 A0 12    */ ldy #Unit.unk_12
+    /* 9168 B1 02    */ lda (zR02), Y
+
+    /* 916A C9 FF    */ cmp #$FF
+    /* 916C F0 EA    */ beq @lop
+
+    /* 916E A0 10    */ ldy #Unit.y
+    /* 9170 B1 02    */ lda (zR02), Y
+
+    /* 9172 C5 B3    */ cmp zUnkB3
+    /* 9174 D0 E2    */ bne @lop
+
+    /* 9176 A0 11    */ ldy #Unit.x
+    /* 9178 B1 02    */ lda (zR02), Y
+
+    /* 917A C5 B2    */ cmp zUnkB2
+    /* 917C D0 DA    */ bne @lop
+
+    /* 917E 18       */ clc
+    /* 917F 86 AE    */ stx zUnkAE
+
+@end:
+    /* 9181 68       */ pla
+    /* 9182 AA       */ tax
+    /* 9183 68       */ pla
+    /* 9184 A8       */ tay
+
+    /* 9185 60       */ rts
+
+LOC_9186:
+    ; Input:
+    ; - zUnitPtr9F = unit array to look through
+    ; - zUnkB2 = x map position
+    ; - zUnkB3 = y map position
+    ; Output:
+    ; - zUnkAE = id of unit at given position
+    ; - C = cleared if found
+
+    /* 9186 98       */ tya
+    /* 9187 48       */ pha
+    /* 9188 8A       */ txa
+    /* 9189 48       */ pha
+
+    /* 918A A2 00    */ ldx #0
+
+    /* 918C F0 06    */ beq @begin
+
+@lop:
+    /* 918E E8       */ inx
+
+    /* 918F A9 1B    */ lda #_sizeof_Unit
+    /* 9191 20 BC 91 */ jsr AddToUnitPtr9F
+
+@begin:
+    /* 9194 A0 00    */ ldy #Unit.pid
+    /* 9196 B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 9198 C9 00    */ cmp #0
+    /* 919A F0 19    */ beq @end
+
+    /* 919C A0 12    */ ldy #Unit.unk_12
+    /* 919E B1 9F    */ lda (zUnitPtr9F), Y
+    /* 91A0 C9 FF    */ cmp #$FF
+    /* 91A2 F0 EA    */ beq @lop
+
+    /* 91A4 A0 10    */ ldy #Unit.y
+    /* 91A6 B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 91A8 C5 B3    */ cmp zUnkB3
+    /* 91AA D0 E2    */ bne @lop
+
+    /* 91AC A0 11    */ ldy #Unit.x
+    /* 91AE B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 91B0 C5 B2    */ cmp zUnkB2
+    /* 91B2 D0 DA    */ bne @lop
+
+    /* 91B4 18       */ clc
+
+@end:
+    /* 91B5 86 AE    */ stx zUnkAE
+
+    /* 91B7 68       */ pla
+    /* 91B8 AA       */ tax
+    /* 91B9 68       */ pla
+    /* 91BA A8       */ tay
+
+    /* 91BB 60       */ rts
+
+AddToUnitPtr9F:
+    /* 91BC 18       */ clc
+    /* 91BD 65 9F    */ adc zUnitPtr9F
+    /* 91BF 85 9F    */ sta zUnitPtr9F
+    /* 91C1 90 02    */ bcc +
+
+    /* 91C3 E6 A0    */ inc zUnitPtr9F+1
+
++:
+    /* 91C5 60       */ rts
+
+AddToUnitPtr9D:
+    /* 91C6 18       */ clc
+    /* 91C7 65 9D    */ adc zUnitPtr9D
+    /* 91C9 85 9D    */ sta zUnitPtr9D
+    /* 91CB 90 02    */ bcc +
+
+    /* 91CD E6 9E    */ inc zUnitPtr9D+1
+
++:
+    /* 91CF 60       */ rts
+
+SpawnEnemyReinforcement:
+    /* 91D0 AC 74 76 */ ldy sMapNum
+    /* 91D3 88       */ dey
+    /* 91D4 98       */ tya
+    /* 91D5 0A       */ asl A
+    /* 91D6 A8       */ tay
+
+    /* 91D7 B9 9C 95 */ lda MapReinforcements, Y
+    /* 91DA 85 76    */ sta zUnitLoadSrc
+    /* 91DC B9 9D 95 */ lda MapReinforcements+1, Y
+    /* 91DF 85 77    */ sta zUnitLoadSrc+1
+
+@lop:
+    /* 91E1 A0 00    */ ldy #0
+    /* 91E3 B1 76    */ lda (zUnitLoadSrc), Y
+    /* 91E5 D0 03    */ bne +
+
+    /* 91E7 4C 70 92 */ jmp @end
+
++:
+    /* 91EA 85 A3    */ sta zUnkA3
+    /* 91EC AC 74 76 */ ldy sMapNum
+    /* 91EF 88       */ dey
+
+    /* 91F0 B9 C1 A3 */ lda DAT_A3C1, Y
+    /* 91F3 F0 2E    */ beq @LOC_9223
+
+    /* 91F5 18       */ clc
+    /* 91F6 69 FF    */ adc #-1
+    /* 91F8 0A       */ asl A
+    /* 91F9 A8       */ tay
+    /* 91FA B9 DA A3 */ lda DAT_A3DA, Y
+    /* 91FD 85 02    */ sta zR02
+    /* 91FF B9 DB A3 */ lda DAT_A3DA+1, Y
+    /* 9202 85 03    */ sta zR02+1
+
+@lop_unk:
+    /* 9204 A0 00    */ ldy #0
+    /* 9206 B1 02    */ lda (zR02), Y
+    /* 9208 F0 19    */ beq @LOC_9223
+
+    /* 920A C5 A3    */ cmp zUnkA3
+    /* 920C F0 08    */ beq @LOC_9216
+
+    /* 920E A0 04    */ ldy #4
+    /* 9210 20 83 C3 */ jsr IncR02ByY
+
+    /* 9213 4C 04 92 */ jmp @lop_unk
+
+@LOC_9216:
+    /* 9216 C8       */ iny
+    /* 9217 C8       */ iny
+    /* 9218 C8       */ iny
+
+    /* 9219 B1 02    */ lda (zR02), Y
+    /* 921B 8D 45 05 */ sta wUnk0545
+
+    /* 921E 20 6D 8D */ jsr FUNC_03_8D6D
+
+    /* 9221 B0 37    */ bcs @continue
+
+@LOC_9223:
+    /* 9223 A0 08    */ ldy #EnemyInfo.unk_08
+    /* 9225 B1 76    */ lda (zUnitLoadSrc), Y
+    /* 9227 0A       */ asl A
+    /* 9228 B0 09    */ bcs @multiple_turns
+
+    /* 922A 4A       */ lsr A
+    /* 922B CD 75 76 */ cmp sTurnNumber
+    /* 922E F0 15    */ beq @on_turn
+
+    /* 9230 4C 5A 92 */ jmp @continue
+
+@multiple_turns:
+    /* 9233 4A       */ lsr A
+    /* 9234 CD 75 76 */ cmp sTurnNumber
+    /* 9237 B0 21    */ bcs @continue ; bhs
+
+    /* 9239 AC 74 76 */ ldy sMapNum
+    /* 923C 88       */ dey
+
+    /* 923D B9 4E A4 */ lda MapFirstReinforcementTurn, Y
+
+    /* 9240 CD 75 76 */ cmp sTurnNumber
+    /* 9243 90 15    */ bcc @continue ; blo
+
+@on_turn:
+    /* 9245 A0 05    */ ldy #EnemyInfo.y
+    /* 9247 B1 76    */ lda (zUnitLoadSrc), Y
+    /* 9249 85 B3    */ sta zUnkB3
+
+    /* 924B C8       */ iny ; EnemyInfo.x
+    /* 924C B1 76    */ lda (zUnitLoadSrc), Y
+    /* 924E 85 B2    */ sta zUnkB2
+
+    /* 9250 20 4A 91 */ jsr FindEnemyUnitAtTo9F
+
+    /* 9253 90 05    */ bcc @continue
+
+    /* 9255 20 44 91 */ jsr FindPlayerUnitAtTo9F
+
+    /* 9258 B0 0E    */ bcs @load_unit
+
+@continue:
+    /* 925A A9 0B    */ lda #_sizeof_EnemyInfo
+    /* 925C 18       */ clc
+    /* 925D 65 76    */ adc zUnitLoadSrc
+    /* 925F 85 76    */ sta zUnitLoadSrc
+    /* 9261 90 02    */ bcc +
+
+    /* 9263 E6 77    */ inc zUnitLoadSrc+1
+
++:
+    /* 9265 4C E1 91 */ jmp @lop
+
+@load_unit:
+    /* 9268 20 71 92 */ jsr InitEnemyUnitFromReinforcement
+
+    /* 926B 20 2A 93 */ jsr CopyUnitBufToResult
+
+    /* 926E A9 FF    */ lda #$FF
+
+@end:
+    /* 9270 60       */ rts
+
+InitEnemyUnitFromReinforcement:
+    /* 9271 A0 00    */ ldy #0
+    /* 9273 8C 06 77 */ sty sUnitBuf.w+Unit.unk_12 ; ????
+    /* 9276 B1 76    */ lda (zUnitLoadSrc), Y
+    /* 9278 8D F4 76 */ sta sUnitBuf+Unit.pid
+    /* 927B C8       */ iny
+    /* 927C B1 76    */ lda (zUnitLoadSrc), Y
+    /* 927E 8D F5 76 */ sta sUnitBuf+Unit.jid
+    /* 9281 C8       */ iny
+    /* 9282 B1 76    */ lda (zUnitLoadSrc), Y
+    /* 9284 8D F6 76 */ sta sUnitBuf+Unit.level
+    /* 9287 38       */ sec
+    /* 9288 E9 01    */ sbc #1
+    /* 928A 4A       */ lsr A
+    /* 928B 85 0B    */ sta zR0B
+    /* 928D C8       */ iny
+    /* 928E B1 76    */ lda (zUnitLoadSrc), Y
+    /* 9290 8D 07 77 */ sta sUnitBuf+Unit.item+0
+    /* 9293 C8       */ iny
+    /* 9294 B1 76    */ lda (zUnitLoadSrc), Y
+    /* 9296 8D 08 77 */ sta sUnitBuf+Unit.item+1
+    /* 9299 C8       */ iny
+    /* 929A B1 76    */ lda (zUnitLoadSrc), Y
+    /* 929C 8D 04 77 */ sta sUnitBuf+Unit.y
+    /* 929F C8       */ iny
+    /* 92A0 B1 76    */ lda (zUnitLoadSrc), Y
+    /* 92A2 8D 05 77 */ sta sUnitBuf+Unit.x
+    /* 92A5 C8       */ iny
+    /* 92A6 B1 76    */ lda (zUnitLoadSrc), Y
+    /* 92A8 8D 0B 77 */ sta sUnitBuf+Unit.uses+0
+    /* 92AB C8       */ iny
+    /* 92AC B1 76    */ lda (zUnitLoadSrc), Y
+    /* 92AE 8D 0C 77 */ sta sUnitBuf+Unit.uses+1
+    /* 92B1 C8       */ iny
+    /* 92B2 B1 76    */ lda (zUnitLoadSrc), Y
+    /* 92B4 8D 0D 77 */ sta sUnitBuf+Unit.uses+2
+    /* 92B7 C8       */ iny
+    /* 92B8 B1 76    */ lda (zUnitLoadSrc), Y
+    /* 92BA 8D 0E 77 */ sta sUnitBuf+Unit.uses+3
+    /* 92BD AD F5 76 */ lda sUnitBuf+Unit.jid
+    /* 92C0 38       */ sec
+    /* 92C1 E9 01    */ sbc #1
+    /* 92C3 0A       */ asl A
+    /* 92C4 A8       */ tay
+    /* 92C5 B9 04 EC */ lda JobStats, Y
+    /* 92C8 85 02    */ sta zR02
+    /* 92CA B9 05 EC */ lda JobStats+1, Y
+    /* 92CD 85 03    */ sta zR02+1
+    /* 92CF A0 00    */ ldy #0
+
+@lop_stats:
+    /* 92D1 B1 02    */ lda (zR02), Y
+    /* 92D3 C0 04    */ cpy #(Unit.lck - Unit.str)
+    /* 92D5 F0 03    */ beq @skip_lck
+
+    /* 92D7 18       */ clc
+    /* 92D8 65 0B    */ adc zR0B
+
+@skip_lck:
+    /* 92DA 99 FB 76 */ sta sUnitBuf+Unit.str, Y
+    /* 92DD C8       */ iny
+    /* 92DE C0 06    */ cpy #(Unit.mov - Unit.str)
+    /* 92E0 90 EF    */ bcc @lop_stats
+
+    /* 92E2 B1 02    */ lda (zR02), Y
+    /* 92E4 99 FB 76 */ sta sUnitBuf+Unit.str, Y
+    /* 92E7 C8       */ iny
+    /* 92E8 A5 0B    */ lda zR0B
+    /* 92EA 0A       */ asl A
+    /* 92EB 18       */ clc
+    /* 92EC 65 0B    */ adc zR0B
+    /* 92EE 71 02    */ adc (zR02), Y
+    /* 92F0 8D F7 76 */ sta sUnitBuf+Unit.hp_cur
+    /* 92F3 8D F8 76 */ sta sUnitBuf+Unit.hp_max
+    /* 92F6 C8       */ iny
+    /* 92F7 84 12    */ sty zUnk12
+    /* 92F9 AC F6 76 */ ldy sUnitBuf+Unit.level
+    /* 92FC A9 00    */ lda #0
+    /* 92FE 85 0A    */ sta zR0A
+
+@lop_unk:
+    /* 9300 A9 01    */ lda #1
+    /* 9302 18       */ clc
+    /* 9303 65 0A    */ adc zR0A
+    /* 9305 85 0A    */ sta zR0A
+    /* 9307 88       */ dey
+    /* 9308 D0 F6    */ bne @lop_unk
+
+    /* 930A A4 12    */ ldy zUnk12
+    /* 930C B1 02    */ lda (zR02), Y
+    /* 930E 18       */ clc
+    /* 930F 65 0A    */ adc zR0A
+    /* 9311 69 FF    */ adc #-1
+    /* 9313 8D F9 76 */ sta sUnitBuf+Unit.exp
+    /* 9316 AE 04 77 */ ldx sUnitBuf+Unit.y
+    /* 9319 AC 05 77 */ ldy sUnitBuf+Unit.x
+    /* 931C 20 50 82 */ jsr GetMapRowInR04
+    /* 931F B1 04    */ lda (zR04), Y
+    /* 9321 8D FA 76 */ sta sUnitBuf+Unit.terrain
+    /* 9324 A9 00    */ lda #0
+    /* 9326 8D 03 77 */ sta sUnitBuf+Unit.res
+    /* 9329 60       */ rts
+
+CopyUnitBufToResult:
+    /* 932A 8A       */ txa
+    /* 932B 48       */ pha
+    /* 932C 98       */ tya
+    /* 932D 48       */ pha
+    /* 932E A9 F4    */ lda #<sUnitBuf
+    /* 9330 85 02    */ sta zR02
+    /* 9332 A9 76    */ lda #>sUnitBuf
+    /* 9334 85 03    */ sta zR02+1
+    /* 9336 A0 00    */ ldy #0
+
+@lop:
+    /* 9338 B1 02    */ lda (zR02), Y
+    /* 933A 91 9D    */ sta (zUnitPtr9D), Y
+    /* 933C C8       */ iny
+    /* 933D C0 1B    */ cpy #_sizeof_Unit
+    /* 933F D0 F7    */ bne @lop
+
+    /* 9341 68       */ pla
+    /* 9342 A8       */ tay
+    /* 9343 68       */ pla
+    /* 9344 AA       */ tax
+
+    /* 9345 60       */ rts
+
+HealEnemyUnitsFromTerrain:
+    /* 9346 20 D2 8F */ jsr GetEnemyUnitsIn9D
+
+    /* 9349 A2 00    */ ldx #0
+    /* 934B 86 AD    */ stx zUnkAD
+
+@lop:
+    /* 934D A0 00    */ ldy #Unit.pid
+    /* 934F B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 9351 F0 43    */ beq @end
+
+    /* 9353 A0 12    */ ldy #Unit.unk_12
+    /* 9355 B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 9357 C9 FF    */ cmp #$FF
+    /* 9359 F0 2E    */ beq @continue
+
+    /* 935B A0 06    */ ldy #Unit.terrain
+    /* 935D B1 9D    */ lda (zUnitPtr9D), Y
+
+    /* 935F C9 4A    */ cmp #TERRAIN_4A
+    /* 9361 F0 08    */ beq @heal
+
+    /* 9363 C9 AE    */ cmp #TERRAIN_AE
+    /* 9365 F0 04    */ beq @heal
+
+    /* 9367 C9 4B    */ cmp #TERRAIN_4B
+    /* 9369 D0 1E    */ bne @continue
+
+@heal:
+    /* 936B A0 03    */ ldy #Unit.hp_cur
+    /* 936D B1 9D    */ lda (zUnitPtr9D), Y
+    /* 936F 85 A3    */ sta zUnkA3
+
+    /* 9371 C8       */ iny ; Unit.hp_max
+    /* 9372 B1 9D    */ lda (zUnitPtr9D), Y
+    /* 9374 85 A4    */ sta zUnkA4
+
+    /* 9376 20 4E C0 */ jsr FUNC_C04E
+
+    /* 9379 29 07    */ and #$7
+    /* 937B 18       */ clc
+    /* 937C 69 03    */ adc #3
+    /* 937E 65 A3    */ adc zUnkA3
+
+    /* 9380 C5 A4    */ cmp zUnkA4
+    /* 9382 90 02    */ bcc +
+
+    /* 9384 A5 A4    */ lda zUnkA4
+
++:
+    /* 9386 88       */ dey ; Unit.hp_cur
+    /* 9387 91 9D    */ sta (zUnitPtr9D), Y
+
+@continue:
+    /* 9389 A6 AD    */ ldx zUnkAD
+    /* 938B E8       */ inx
+    /* 938C 86 AD    */ stx zUnkAD
+
+    /* 938E A9 1B    */ lda #_sizeof_Unit
+    /* 9390 20 C6 91 */ jsr AddToUnitPtr9D
+
+    /* 9393 4C 4D 93 */ jmp @lop
+
+@end:
+    /* 9396 EE 3F 05 */ inc wUnk053F
+
+    /* 9399 60       */ rts
+
+HealPlayerUnitsFromTerrain:
+    /* 939A 20 67 82 */ jsr GetPlayerUnitsIn9F
+
+    /* 939D A2 00    */ ldx #0
+    /* 939F 86 AD    */ stx zUnkAD
+
+@lop:
+    /* 93A1 A0 00    */ ldy #Unit.pid
+    /* 93A3 B1 9F    */ lda (zUnitPtr9F), Y
+    /* 93A5 F0 43    */ beq @end
+
+    /* 93A7 A0 12    */ ldy #Unit.unk_12
+    /* 93A9 B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 93AB C9 FF    */ cmp #$FF
+    /* 93AD F0 2E    */ beq @continue
+
+    /* 93AF A0 06    */ ldy #Unit.terrain
+    /* 93B1 B1 9F    */ lda (zUnitPtr9F), Y
+
+    /* 93B3 C9 4A    */ cmp #TERRAIN_4A
+    /* 93B5 F0 08    */ beq @heal
+
+    /* 93B7 C9 AE    */ cmp #TERRAIN_AE
+    /* 93B9 F0 B0    */ beq HealEnemyUnitsFromTerrain@heal ; BUG
+
+    /* 93BB C9 4B    */ cmp #TERRAIN_4B
+    /* 93BD D0 1E    */ bne @continue
+
+@heal:
+    /* 93BF A0 03    */ ldy #Unit.hp_cur
+    /* 93C1 B1 9F    */ lda (zUnitPtr9F), Y
+    /* 93C3 85 A3    */ sta zUnkA3
+
+    /* 93C5 C8       */ iny ; Unit.hp_max
+    /* 93C6 B1 9F    */ lda (zUnitPtr9F), Y
+    /* 93C8 85 A4    */ sta zUnkA4
+
+    /* 93CA 20 4E C0 */ jsr FUNC_C04E
+
+    /* 93CD 29 07    */ and #7 ; % 8
+    /* 93CF 18       */ clc
+    /* 93D0 69 03    */ adc #3
+
+    /* 93D2 65 A3    */ adc zUnkA3
+
+    /* 93D4 C5 A4    */ cmp zUnkA4
+    /* 93D6 90 02    */ bcc +
+
+    /* 93D8 A5 A4    */ lda zUnkA4
+
++:
+    /* 93DA 88       */ dey ; Unit.hp_cur
+    /* 93DB 91 9F    */ sta (zUnitPtr9F), Y
+
+@continue:
+    /* 93DD A6 AD    */ ldx zUnkAD
+    /* 93DF E8       */ inx
+    /* 93E0 86 AD    */ stx zUnkAD
+
+    /* 93E2 A9 1B    */ lda #_sizeof_Unit
+    /* 93E4 20 BC 91 */ jsr AddToUnitPtr9F
+
+    /* 93E7 4C A1 93 */ jmp @lop
+
+@end:
+    /* 93EA EE 3F 05 */ inc wUnk053F
+
+    /* 93ED 60       */ rts
+
+FUNC_03_93EE:
+    /* 93EE AC 74 76 */ ldy sMapNum
+
+    /* 93F1 C0 19    */ cpy #MAP_19
+    /* 93F3 D0 32    */ bne @end
+
+    /* 93F5 A9 38    */ lda #<DAT_A438
+    /* 93F7 85 9D    */ sta zUnitPtr9D
+    /* 93F9 A9 A4    */ lda #>DAT_A438
+    /* 93FB 85 9E    */ sta zUnitPtr9D+1
+
+@lop:
+    /* 93FD A0 00    */ ldy #0
+    /* 93FF B1 9D    */ lda (zUnitPtr9D), Y
+    /* 9401 F0 24    */ beq @end
+
+    /* 9403 CD 75 76 */ cmp sTurnNumber
+    /* 9406 D0 17    */ bne @continue
+
+    /* 9408 C8       */ iny
+    /* 9409 B1 9D    */ lda (zUnitPtr9D), Y
+    /* 940B 85 B3    */ sta zUnkB3
+
+    /* 940D C8       */ iny
+    /* 940E B1 9D    */ lda (zUnitPtr9D), Y
+    /* 9410 85 B2    */ sta zUnkB2
+
+    /* 9412 20 44 91 */ jsr FindPlayerUnitAtTo9F
+
+    /* 9415 90 08    */ bcc @continue
+
+    /* 9417 20 4A 91 */ jsr FindEnemyUnitAtTo9F
+
+    /* 941A 90 03    */ bcc @continue
+
+    /* 941C 20 2B 94 */ jsr FUNC_03_942B
+
+@continue:
+    /* 941F A9 03    */ lda #3
+    /* 9421 20 C6 91 */ jsr AddToUnitPtr9D
+
+    /* 9424 4C FD 93 */ jmp @lop
+
+@end:
+    /* 9427 EE 3F 05 */ inc wUnk053F
+
+    /* 942A 60       */ rts
+
+FUNC_03_942B:
+    /* 942B A9 80    */ lda #$80
+    /* 942D 8D F0 06 */ sta wUnk06F0
+
+    /* 9430 A6 B3    */ ldx zUnkB3
+    /* 9432 20 50 82 */ jsr GetMapRowInR04
+
+    /* 9435 A4 B2    */ ldy zUnkB2
+
+    /* 9437 A9 3D    */ lda #TERRAIN_3D
+    /* 9439 91 04    */ sta (zR04), Y
+
+    /* 943B 85 0B    */ sta zR0B
+    /* 943D 85 A3    */ sta zUnkA3
+    /* 943F 84 05    */ sty zR05
+    /* 9441 84 A4    */ sty zUnkA4
+    /* 9443 86 04    */ stx zR04
+    /* 9445 86 A5    */ stx zUnkA5
+
+    /* 9447 A9 0D    */ lda #$0D
+    /* 9449 85 44    */ sta zFarFuncNum
+    /* 944B A9 06    */ lda #$06
+    /* 944D 20 FA C9 */ jsr CallFarFunc
+
+    /* 9450 A5 A3    */ lda zUnkA3
+    /* 9452 85 0B    */ sta zR0B
+    /* 9454 A4 A4    */ ldy zUnkA4
+    /* 9456 84 05    */ sty zR05
+    /* 9458 A6 A5    */ ldx zUnkA5
+    /* 945A 86 04    */ stx zR04
+
+    /* 945C A9 07    */ lda #$07
+    /* 945E 85 44    */ sta zFarFuncNum
+    /* 9460 A9 06    */ lda #$06
+    /* 9462 20 FA C9 */ jsr CallFarFunc
+
+    /* 9465 60       */ rts

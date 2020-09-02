@@ -13,6 +13,10 @@
 
     IID_STARLIGHT  = $34
     IID_HEAL       = $35
+    IID_MEND       = $36
+    IID_RECOVER    = $37
+
+    IID_FORTIFY    = $3D
 
     IID_VULNERARY  = $3F
 

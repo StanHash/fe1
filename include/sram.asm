@@ -3,7 +3,7 @@
     sUnitsEnemy  = $7078 ; dat[0237] (enemy units)
     sMapData     = $72AF ; map data
     sMapNum      = $7674 ; map number
-    sUnk7675     = $7675 ; turn number, maybe?
+    sTurnNumber  = $7675 ; turn number
     sMapHeight   = $7676 ; map y size
     sMapWidth    = $7677 ; map x size
     sUnk767A     = $767A
