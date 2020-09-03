@@ -123,17 +123,17 @@ BeginUnitSearchAt:
     /* F110 60       */ rts
 
 GetPlayerUnitsInR00:
-    /* F111 A9 90    */ lda #<sUnitsPlayer
+    /* F111 A9 90    */ lda #<sBlueUnits
     /* F113 85 00    */ sta zR00
-    /* F115 A9 6A    */ lda #>sUnitsPlayer
+    /* F115 A9 6A    */ lda #>sBlueUnits
     /* F117 85 01    */ sta zR00+1
 
     /* F119 60       */ rts
 
 GetEnemyUnitsInR00:
-    /* F11A A9 78    */ lda #<sUnitsEnemy
+    /* F11A A9 78    */ lda #<sRedUnits
     /* F11C 85 00    */ sta zR00
-    /* F11E A9 70    */ lda #>sUnitsEnemy
+    /* F11E A9 70    */ lda #>sRedUnits
     /* F120 85 01    */ sta zR00+1
 
     /* F122 60       */ rts

@@ -7,7 +7,7 @@
     .include "include/constants/jids.asm"
     .include "include/constants/iids.asm"
     .include "include/constants/maps.asm"
-    .include "include/constants/terrains.asm"
+    .include "include/constants/cells.asm"
 
     .include "include/structs/unit.asm"
     .include "include/structs/unk-03-A3DA.asm"
@@ -145,15 +145,6 @@
 
     .orga $8000
     /* 8000 */ .include "code/code-03-8000.asm"
-
-    .orga $8FDB
-    /* 8FDB */ .include "code/func-03-8FDB.asm"
-
-    .orga $9144
-    /* 9144 */ .include "code/func-03-9144.asm"
-
-    .orga $91D0
-    /* 91D0 */ .include "code/load-reinforcements.asm"
 
     .bank 6 slot "ROM-LO"
 

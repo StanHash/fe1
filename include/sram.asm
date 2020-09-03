@@ -1,7 +1,7 @@
 
-    sUnitsPlayer = $6A90 ; dat[081F] (units?)
-    sUnitsEnemy  = $7078 ; dat[0237] (enemy units)
-    sMapData     = $72AF ; map data
+    sBlueUnits   = $6A90 ; dat[081F]
+    sRedUnits    = $7078 ; dat[0237]
+    sMapCell     = $72AF ; map data
     sMapNum      = $7674 ; map number
     sTurnNumber  = $7675 ; turn number
     sMapHeight   = $7676 ; map y size
@@ -12,7 +12,7 @@
     sUnitBuf     = $76F4 ; unit load buf
     sUnk7715     = $7715
 
-    sMapData3    = $7730
+    sMapMovement = $7730
 
     ; ???
     sUnk7730     = $7730 ; BF bytes

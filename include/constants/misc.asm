@@ -64,8 +64,8 @@
 
     UNK_E828_1F = $1F
 
-    UNK_E8F8_0E = $0E
-    UNK_E8F8_1F = $1F
+    TERRAIN_ALLY = $0E
+    TERRAIN_ENEMY = $1F
 
     MAP_ROW_COUNT      = $1E
     MAP_ROW_MAX_LENGTH = $20

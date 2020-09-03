@@ -56,9 +56,9 @@ LoadMapPlayerUnits:
     /* BAC7 B9 91 84 */ lda PlayerUnits+1, Y
     /* BACA 85 77    */ sta zUnitLoadSrc+1
 
-    /* BACC A9 90    */ lda #<sUnitsPlayer
+    /* BACC A9 90    */ lda #<sBlueUnits
     /* BACE 85 74    */ sta zUnitLoadDst
-    /* BAD0 A9 6A    */ lda #>sUnitsPlayer
+    /* BAD0 A9 6A    */ lda #>sBlueUnits
     /* BAD2 85 75    */ sta zUnitLoadDst+1
 
     /* BAD4 D0 33    */ bne @begin
@@ -163,16 +163,16 @@ LoadUnit:
     /* BB58 B1 74    */ lda (zUnitLoadDst), Y
     /* BB5A 0A       */ asl A
     /* BB5B A8       */ tay
-    /* BB5C B9 3D ED */ lda MapRows, Y
+    /* BB5C B9 3D ED */ lda MapCellRows, Y
     /* BB5F 85 00    */ sta zR00
-    /* BB61 B9 3E ED */ lda MapRows+1, Y
+    /* BB61 B9 3E ED */ lda MapCellRows+1, Y
     /* BB64 85 01    */ sta zR00+1
     /* BB66 A5 05    */ lda zR05
     /* BB68 20 79 C3 */ jsr IncR00ByA
 
     /* BB6B A0 00    */ ldy #0
     /* BB6D B1 00    */ lda (zR00), Y
-    /* BB6F A0 06    */ ldy #Unit.terrain
+    /* BB6F A0 06    */ ldy #Unit.cell
     /* BB71 91 74    */ sta (zUnitLoadDst), Y
     /* BB73 A0 01    */ ldy #Unit.jid
     /* BB75 B1 74    */ lda (zUnitLoadDst), Y
@@ -190,13 +190,13 @@ LoadUnit:
     /* BB84 60       */ rts
 
 LoadMapEnemyUnits:
-    /* BB85 A9 78    */ lda #<sUnitsEnemy
+    /* BB85 A9 78    */ lda #<sRedUnits
     /* BB87 85 00    */ sta zR00
-    /* BB89 A9 70    */ lda #>sUnitsEnemy
+    /* BB89 A9 70    */ lda #>sRedUnits
     /* BB8B 85 01    */ sta zR00+1
-    /* BB8D A9 37    */ lda #$37 ; TODO: <sizeof sUnitsEnemy
+    /* BB8D A9 37    */ lda #$37 ; TODO: <sizeof sRedUnits
     /* BB8F 85 02    */ sta zR02
-    /* BB91 A9 02    */ lda #$02 ; TODO: >sizeof sUnitsEnemy
+    /* BB91 A9 02    */ lda #$02 ; TODO: >sizeof sRedUnits
     /* BB93 85 03    */ sta zR02+1
     /* BB95 A9 00    */ lda #0
     /* BB97 8D 06 77 */ sta sUnitBuf+Unit.unk_12
@@ -223,9 +223,9 @@ LoadMapEnemyUnits:
     /* BBBA 85 76    */ sta zUnitLoadSrc
     /* BBBC B9 A4 8A */ lda EnemyUnits+1, Y
     /* BBBF 85 77    */ sta zUnitLoadSrc+1
-    /* BBC1 A9 78    */ lda #<sUnitsEnemy
+    /* BBC1 A9 78    */ lda #<sRedUnits
     /* BBC3 85 74    */ sta zUnitLoadDst
-    /* BBC5 A9 70    */ lda #>sUnitsEnemy
+    /* BBC5 A9 70    */ lda #>sRedUnits
     /* BBC7 85 75    */ sta zUnitLoadDst+1
 
     /* BBC9 D0 17    */ bne @begin
@@ -254,10 +254,10 @@ LoadMapEnemyUnits:
     /* BBE6 D0 E9    */ bne @lop
 
     /* BBE8 A0 05    */ ldy #Unit.exp
-    /* BBEA B9 78 70 */ lda sUnitsEnemy, Y
+    /* BBEA B9 78 70 */ lda sRedUnits, Y
     /* BBED 18       */ clc
     /* BBEE 69 0A    */ adc #10
-    /* BBF0 99 78 70 */ sta sUnitsEnemy, Y
+    /* BBF0 99 78 70 */ sta sRedUnits, Y
     /* BBF3 60       */ rts
 
 EnemyInfoToUnit:

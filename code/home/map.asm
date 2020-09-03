@@ -68,9 +68,9 @@ UnpackMap:
     /* D3AA B9 01 80 */ lda $8000+1, Y
     /* D3AD 85 69    */ sta zUnk68+1
 
-    /* D3AF A9 AF    */ lda #<sMapData
+    /* D3AF A9 AF    */ lda #<sMapCell
     /* D3B1 85 6A    */ sta zUnk6A
-    /* D3B3 A9 72    */ lda #>sMapData
+    /* D3B3 A9 72    */ lda #>sMapCell
     /* D3B5 85 6B    */ sta zUnk6A+1
 
     /* D3B7 A0 00    */ ldy #0
@@ -287,9 +287,9 @@ GetMapRowIn6A:
     /* D4A0 0A       */ asl A
     /* D4A1 A8       */ tay
 
-    /* D4A2 B9 3D ED */ lda MapRows.w, Y
+    /* D4A2 B9 3D ED */ lda MapCellRows.w, Y
     /* D4A5 85 6A    */ sta zUnk6A
-    /* D4A7 B9 3E ED */ lda MapRows.w+1, Y
+    /* D4A7 B9 3E ED */ lda MapCellRows.w+1, Y
     /* D4AA 85 6B    */ sta zUnk6A+1
 
     /* D4AC 60       */ rts

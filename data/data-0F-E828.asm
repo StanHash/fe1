@@ -1,7 +1,7 @@
 
-    ; indexed by terrain
+    ; indexed by cell
 
-DAT_E828:
+Cell2TerrainBlue:
     /* E828 ...      */ .db $00, $00, $1F, $0E, $1F, $0E, $1F, $0E
     /* E830 ...      */ .db $1F, $0E, $1F, $0E, $1F, $0E, $1F, $0E
     /* E838 ...      */ .db $1F, $0E, $1F, $0E, $1F, $0E, $1F, $0E
@@ -29,9 +29,9 @@ DAT_E828:
     /* E8E8 ...      */ .db $00, $00, $0D, $0D, $0D, $0D, $0D, $0D
     /* E8F0 ...      */ .db $0D, $0D, $0D, $0D, $0D, $0D, $0D, $0D
 
-    ; indexed by terrain
+    ; indexed by cell
 
-DAT_E8F8:
+Cell2TerrainRed:
     /* E8F8 ...      */ .db $00, $00, $0E, $1F, $0E, $1F, $0E, $1F
     /* E900 ...      */ .db $0E, $1F, $0E, $1F, $0E, $1F, $0E, $1F
     /* E908 ...      */ .db $0E, $1F, $0E, $1F, $0E, $1F, $0E, $1F
@@ -60,14 +60,17 @@ DAT_E8F8:
     /* E9C0 ...      */ .db $0D, $0D, $0D, $0D, $0D, $0D, $0D, $0D
 
     ; indexed by jid (*2)
+    ; points to table indexed by terrain
 
-DAT_E9C8:
+JobMoveCosts:
     /* E9C8 ...      */ .db $F4, $E9, $0A, $EA, $20, $EA, $36, $EA
     /* E9D0 ...      */ .db $4C, $EA, $62, $EA, $78, $EA, $8E, $EA
     /* E9D8 ...      */ .db $A4, $EA, $BA, $EA, $D0, $EA, $E6, $EA
     /* E9E0 ...      */ .db $FC, $EA, $12, $EB, $28, $EB, $3E, $EB
     /* E9E8 ...      */ .db $54, $EB, $6A, $EB, $80, $EB, $96, $EB
-    /* E9F0 ...      */ .db $AC, $EB, $C2, $EB, $01, $01, $01, $02
+    /* E9F0 ...      */ .db $AC, $EB, $C2, $EB
+
+    /* E9F4 ...      */ .db $01, $01, $01, $02
     /* E9F8 ...      */ .db $02, $03, $04, $FF, $FF, $FF, $01, $FF
     /* EA00 ...      */ .db $01, $FF, $FF, $01, $03, $01, $01, $01
     /* EA08 ...      */ .db $FF, $FF, $01, $01, $01, $02, $02, $02
@@ -129,7 +132,7 @@ DAT_E9C8:
     /* EBC8 ...      */ .db $03, $FF, $FF, $FF, $01, $FF, $01, $FF
     /* EBD0 ...      */ .db $FF, $01, $02, $01, $01, $01, $FF, $FF
 
-    ; indexed by whatever DAT_E828/DAT_E8F8 values are
+    ; indexed by terrain
 
 DAT_EBD8:
     /* EBD8 ...      */ .db $05, $00, $00, $14, $1E, $0F, $00, $00

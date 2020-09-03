@@ -102,7 +102,7 @@
     zUnk67          db ; 0067
     zUnk68          dw ; 0068 ; map src ptr?
     zUnk6A          dw ; 006A ; map dst ptr?
-    zUnk6C          dw ; 006C
+    zMapMovementRow dw ; 006C
     zUnk6E          dw ; 006E
     zUnk70          db ; 0070
     zUnk71          db ; 0072
@@ -126,8 +126,8 @@
     zUnk99       = $0099 ; current map+unit anim frame?
 
     zUnk9B       = $009B ; some map row ptr
-    zUnitPtr9D   = $009D ; some unit ptr
-    zUnitPtr9F   = $009F ; some unit ptr
+    zUnitPtrRed  = $009D ; some unit ptr
+    zUnitPtrBlue = $009F ; some unit ptr
 
     zUnkA1       = $00A1 ; some tmp?
     zUnkA2       = $00A2 ; some tmp?
@@ -152,14 +152,14 @@
     zUnkB5       = $00B5 ; some unit strength
 
     zUnkB7       = $00B7
-    zUnkB8       = $00B8
+    zMapFloodAction = $00B8
     zUnkB9       = $00B9 ; best target some damage value?
     zUnkBA       = $00BA ; some damage value?
     zUnkBB       = $00BB ; some damage value
     zUnkBC       = $00BC ; best target priority?
     zUnkBD       = $00BD ; working target priority?
-    zUnkBE       = $00BE
-    zUnkBF       = $00BF ; some unit mov
+    zMapFloodRingNum = $00BE
+    zMapFloodRingCount = $00BF
     zUnkC0       = $00C0 ; some map x
     zUnkC1       = $00C1 ; some map y
     zUnkC2       = $00C2 ; some map x

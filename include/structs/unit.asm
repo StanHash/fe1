@@ -10,7 +10,7 @@
     hp_cur  db ; +03
     hp_max  db ; +04
     exp     db ; +05
-    terrain db ; +06
+    cell    db ; +06
     str     db ; +07
     skl     db ; +08
     wlv     db ; +09
