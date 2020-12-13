@@ -182,7 +182,7 @@
 
     .orga $C000
     .include "code/home/trampolines.asm"
-    .include "code/home/code-C04E.asm"
+    .include "code/home/rand.asm"
     .include "code/home/interrupt.asm"
     .include "code/home/core.asm"
     .include "code/home/battle.asm"

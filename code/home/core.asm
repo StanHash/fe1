@@ -1014,12 +1014,9 @@ FUNC_C6BA:
 
     /* C6C8 60       */ rts
 
-Rand_C6C9:
-    ; I'm really just assuming this is some rand function
-    ; It seems to be used that way
-
-    ; Input: R00:R01: some state
-    ; Output: R00:R01: updated state
+Mul:
+    ; Input: R00: left operand, R01: right operand
+    ; Output: R00:R01: result (16bit)
     ; Clobbers: R02
 
     /* C6C9 8A       */ txa
@@ -1057,32 +1054,35 @@ Rand_C6C9:
 
     /* C6EA 60       */ rts
 
-Rand_C6EB:
+Div:
+    ; Input: zDivRight:zDivRight+1: right operand (16bit), zDivLeft: left operand
+    ; Output: zDivResult: result
+
     /* C6EB 8A       */ txa
     /* C6EC 48       */ pha
 
     /* C6ED A9 00    */ lda #0
-    /* C6EF 85 4B    */ sta zRand4B
+    /* C6EF 85 4B    */ sta zDivResult
 
     /* C6F1 A2 10    */ ldx #16
 
-    /* C6F3 26 48    */ rol zRand48
-    /* C6F5 26 49    */ rol zRand49
+    /* C6F3 26 48    */ rol zDivLeft
+    /* C6F5 26 49    */ rol zDivLeft+1
 
 @lop:
-    /* C6F7 26 4B    */ rol zRand4B
+    /* C6F7 26 4B    */ rol zDivResult
 
-    /* C6F9 A5 4B    */ lda zRand4B
+    /* C6F9 A5 4B    */ lda zDivResult
 
-    /* C6FB C5 4A    */ cmp zRand4A
+    /* C6FB C5 4A    */ cmp zDivRight
     /* C6FD 90 04    */ bcc @LOC_C703
 
-    /* C6FF E5 4A    */ sbc zRand4A
-    /* C701 85 4B    */ sta zRand4B
+    /* C6FF E5 4A    */ sbc zDivRight
+    /* C701 85 4B    */ sta zDivResult
 
 @LOC_C703:
-    /* C703 26 48    */ rol zRand48
-    /* C705 26 49    */ rol zRand49
+    /* C703 26 48    */ rol zDivLeft
+    /* C705 26 49    */ rol zDivLeft+1
 
     /* C707 CA       */ dex
     /* C708 D0 ED    */ bne @lop
@@ -1221,7 +1221,7 @@ FUNC_C795:
     /* C79F A9 20    */ lda #$20
     /* C7A1 85 01    */ sta zR01
 
-    /* C7A3 20 C9 C6 */ jsr Rand_C6C9
+    /* C7A3 20 C9 C6 */ jsr Mul
 
     /* C7A6 86 03    */ stx zR03
 
@@ -1246,17 +1246,17 @@ FUNC_C7BA:
     /* C7BB 48       */ pha
 
     /* C7BC A5 00    */ lda zR00
-    /* C7BE 85 48    */ sta zRand48
-    /* C7C0 A5 01    */ lda zR01
-    /* C7C2 85 49    */ sta zRand49
+    /* C7BE 85 48    */ sta zDivLeft
+    /* C7C0 A5 01    */ lda zR00+1
+    /* C7C2 85 49    */ sta zDivLeft+1
     /* C7C4 A9 0A    */ lda #$0A
-    /* C7C6 85 4A    */ sta zRand4A
+    /* C7C6 85 4A    */ sta zDivRight
     /* C7C8 A0 04    */ ldy #$04
 
 @LOC_C7CA:
-    /* C7CA 20 EB C6 */ jsr Rand_C6EB
+    /* C7CA 20 EB C6 */ jsr Div
 
-    /* C7CD A5 4B    */ lda zRand4B
+    /* C7CD A5 4B    */ lda zDivResult
     /* C7CF 09 60    */ ora #$60
     /* C7D1 91 08    */ sta (zR08), Y
     /* C7D3 88       */ dey
@@ -1286,18 +1286,18 @@ FUNC_C7EA:
     /* C7EB 48       */ pha
 
     /* C7EC A5 00    */ lda zR00
-    /* C7EE 85 48    */ sta zRand48
+    /* C7EE 85 48    */ sta zDivLeft
     /* C7F0 A9 00    */ lda #0
-    /* C7F2 85 49    */ sta zRand49
+    /* C7F2 85 49    */ sta zDivLeft+1
     /* C7F4 C6 01    */ dec zR01
     /* C7F6 A9 0A    */ lda #$0A
-    /* C7F8 85 4A    */ sta zRand4A
+    /* C7F8 85 4A    */ sta zDivRight
     /* C7FA A4 01    */ ldy zR01
 
 @LOC_C7FC:
-    /* C7FC 20 EB C6 */ jsr Rand_C6EB
+    /* C7FC 20 EB C6 */ jsr Div
 
-    /* C7FF A5 4B    */ lda zRand4B
+    /* C7FF A5 4B    */ lda zDivResult
     /* C801 09 60    */ ora #$60
     /* C803 91 08    */ sta (zR08), Y
     /* C805 88       */ dey

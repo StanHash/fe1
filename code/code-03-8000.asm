@@ -3061,7 +3061,7 @@ FUNC_03_8CCE_case_1:
     /* 8E9E A9 00    */ lda #0
     /* 8EA0 91 9F    */ sta (zUnitPtrBlue), Y
 
-    /* 8EA2 20 4E C0 */ jsr FUNC_C04E
+    /* 8EA2 20 4E C0 */ jsr Rand
 
     /* 8EA5 29 07    */ and #$7 ; % 8
 
@@ -3243,7 +3243,7 @@ FUNC_03_8F54:
     /* 8F8C 4C 9B 8F */ jmp @end
 
 @fortify_staff:
-    /* 8F8F 20 4E C0 */ jsr FUNC_C04E
+    /* 8F8F 20 4E C0 */ jsr Rand
 
     /* 8F92 C9 30    */ cmp #$30
     /* 8F94 B0 05    */ bcs @end ; bhs
@@ -3604,7 +3604,7 @@ FUNC_03_9080:
     /* 911D C5 09    */ cmp zR09
     /* 911F D0 0E    */ bne @continue
 
-    /* 9121 20 4E C0 */ jsr FUNC_C04E
+    /* 9121 20 4E C0 */ jsr Rand
 
     /* 9124 C9 80    */ cmp #$80
     /* 9126 90 03    */ bcc @update_cell ; blo
@@ -4097,7 +4097,7 @@ HealEnemyUnitsFromTerrain:
     /* 9372 B1 9D    */ lda (zUnitPtrRed), Y
     /* 9374 85 A4    */ sta zUnkA4
 
-    /* 9376 20 4E C0 */ jsr FUNC_C04E
+    /* 9376 20 4E C0 */ jsr Rand
 
     /* 9379 29 07    */ and #$7
     /* 937B 18       */ clc
@@ -4166,7 +4166,7 @@ HealPlayerUnitsFromTerrain:
     /* 93C6 B1 9F    */ lda (zUnitPtrBlue), Y
     /* 93C8 85 A4    */ sta zUnkA4
 
-    /* 93CA 20 4E C0 */ jsr FUNC_C04E
+    /* 93CA 20 4E C0 */ jsr Rand
 
     /* 93CD 29 07    */ and #7 ; % 8
     /* 93CF 18       */ clc

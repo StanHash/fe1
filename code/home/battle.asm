@@ -155,14 +155,14 @@ FUNC_CB73:
     /* CB78 AD 03 03 */ lda wUnk0303
     /* CB7B D0 2F    */ bne @end
 
-    /* CB7D AD 44 03 */ lda wUnk0344
+    /* CB7D AD 44 03 */ lda wFightHitsFirst
 
     /* CB80 AE 48 03 */ ldx wUnk0348
     /* CB83 E0 01    */ cpx #1
     /* CB85 D0 04    */ bne @LOC_CB8B
 
     /* CB87 18       */ clc
-    /* CB88 6D 46 03 */ adc wUnk0346
+    /* CB88 6D 46 03 */ adc wFightHitsSecond
 
 @LOC_CB8B:
     /* CB8B 8D 79 04 */ sta wUnk0479
@@ -199,9 +199,9 @@ ComputeFightStats:
     /* CBB9 20 F0 CC */ jsr ComputeFightDefense
     /* CBBC 20 64 CC */ jsr ComputeFightDamage
     /* CBBF 20 16 CD */ jsr ComputeFightCrit
-    /* CBC2 20 3B CD */ jsr FUNC_CD3B
-    /* CBC5 20 D4 CD */ jsr FUNC_CDD4
-    /* CBC8 20 12 CE */ jsr FUNC_CE12
+    /* CBC2 20 3B CD */ jsr RollFightHits
+    /* CBC5 20 D4 CD */ jsr RollFightCrits
+    /* CBC8 20 12 CE */ jsr RollFightDevilEffect
     /* CBCB 20 62 CE */ jsr FUNC_CE62
 
     /* CBCE 60       */ rts
@@ -493,13 +493,13 @@ ComputeFightDodge:
 
     /* CD3A 60       */ rts
 
-FUNC_CD3B:
+RollFightHits:
     /* CD3B A0 01    */ ldy #1
 
 @lop_battler:
     /* CD3D A9 00    */ lda #0
-    /* CD3F 99 44 03 */ sta wUnk0344, Y
-    /* CD42 99 46 03 */ sta wUnk0346, Y
+    /* CD3F 99 44 03 */ sta wFightHitsFirst, Y
+    /* CD42 99 46 03 */ sta wFightHitsSecond, Y
 
     /* CD45 20 70 CE */ jsr SwapBattlerIdY
 
@@ -539,7 +539,7 @@ FUNC_CD3B:
 
     /* CD78 B0 0F    */ bcs @LOC_CD89
 
-    /* CD7A 20 7E CE */ jsr FightRand_perhaps
+    /* CD7A 20 7E CE */ jsr Rand100
 
     /* CD7D D9 3A 03 */ cmp wFightAttackHit, Y
     /* CD80 F0 02    */ beq @LOC_CD84
@@ -548,7 +548,7 @@ FUNC_CD3B:
 
 @LOC_CD84:
     /* CD84 A9 01    */ lda #1
-    /* CD86 99 44 03 */ sta wUnk0344, Y
+    /* CD86 99 44 03 */ sta wFightHitsFirst, Y
 
 @LOC_CD89:
     /* CD89 B9 3A 03 */ lda wFightAttackHit, Y
@@ -558,7 +558,7 @@ FUNC_CD3B:
 
     /* CD91 B0 0F    */ bcs @continue
 
-    /* CD93 20 7E CE */ jsr FightRand_perhaps
+    /* CD93 20 7E CE */ jsr Rand100
 
     /* CD96 D9 3A 03 */ cmp wFightAttackHit, Y
     /* CD99 F0 02    */ beq @LOC_CD9D
@@ -567,7 +567,7 @@ FUNC_CD3B:
 
 @LOC_CD9D:
     /* CD9D A9 01    */ lda #1
-    /* CD9F 99 46 03 */ sta wUnk0346, Y
+    /* CD9F 99 46 03 */ sta wFightHitsSecond, Y
 
 @continue:
     /* CDA2 88       */ dey
@@ -613,18 +613,18 @@ FUNC_CDA9:
 DAT_CDD0:
     .db $A5, $B0, $B1, $B2
 
-FUNC_CDD4:
+RollFightCrits:
     /* CDD4 A0 01    */ ldy #1
 
 @lop_battler:
     /* CDD6 A9 00    */ lda #0
-    /* CDD8 99 4B 03 */ sta wUnk034B, Y
-    /* CDDB 99 4D 03 */ sta wUnk034D, Y
+    /* CDD8 99 4B 03 */ sta wFightCritsFirst, Y
+    /* CDDB 99 4D 03 */ sta wFightCritsSecond, Y
 
     /* CDDE B9 40 03 */ lda wFightAttackCrit, Y
     /* CDE1 F0 1E    */ beq @continue
 
-    /* CDE3 20 7E CE */ jsr FightRand_perhaps
+    /* CDE3 20 7E CE */ jsr Rand100
 
     /* CDE6 D9 40 03 */ cmp wFightAttackCrit, Y
     /* CDE9 F0 02    */ beq @LOC_CDED
@@ -633,10 +633,10 @@ FUNC_CDD4:
 
 @LOC_CDED:
     /* CDED A9 01    */ lda #1
-    /* CDEF 99 4B 03 */ sta wUnk034B, Y
+    /* CDEF 99 4B 03 */ sta wFightCritsFirst, Y
 
 @LOC_CDF2:
-    /* CDF2 20 7E CE */ jsr FightRand_perhaps
+    /* CDF2 20 7E CE */ jsr Rand100
 
     /* CDF5 D9 40 03 */ cmp wFightAttackCrit, Y
     /* CDF8 F0 02    */ beq @LOC_CDFC
@@ -645,7 +645,7 @@ FUNC_CDD4:
 
 @LOC_CDFC:
     /* CDFC A9 01    */ lda #1
-    /* CDFE 99 4D 03 */ sta wUnk034D, Y
+    /* CDFE 99 4D 03 */ sta wFightCritsSecond, Y
 
 @continue:
     /* CE01 88       */ dey
@@ -655,13 +655,13 @@ FUNC_CDD4:
     /* CE07 F0 08    */ beq @end
 
     /* CE09 A9 01    */ lda #1
-    /* CE0B 8D 4B 03 */ sta wUnk034B
-    /* CE0E 8D 4D 03 */ sta wUnk034D
+    /* CE0B 8D 4B 03 */ sta wFightCritsFirst
+    /* CE0E 8D 4D 03 */ sta wFightCritsSecond
 
 @end:
     /* CE11 60       */ rts
 
-FUNC_CE12:
+RollFightDevilEffect:
     /* CE12 A9 00    */ lda #0
     /* CE14 8D 55 03 */ sta wUnk0355
 
@@ -675,22 +675,22 @@ FUNC_CE12:
     /* CE24 AD 20 03 */ lda wFightIid
 
     /* CE27 C9 09    */ cmp #IID_DEVILSWORD
-    /* CE29 F0 04    */ beq @LOC_CE2F
+    /* CE29 F0 04    */ beq @devil_weapon
 
     /* CE2B C9 1D    */ cmp #IID_DEVILAXE
     /* CE2D D0 32    */ bne @end
 
-@LOC_CE2F:
-    /* CE2F AD 44 03 */ lda wUnk0344
+@devil_weapon:
+    /* CE2F AD 44 03 */ lda wFightHitsFirst
     /* CE32 F0 2D    */ beq @end
 
-    /* CE34 A9 15    */ lda #$15
+    /* CE34 A9 15    */ lda #21
     /* CE36 38       */ sec
     /* CE37 ED 1A 03 */ sbc wFightLuck
 
     /* CE3A 48       */ pha
 
-    /* CE3B 20 7E CE */ jsr FightRand_perhaps
+    /* CE3B 20 7E CE */ jsr Rand100
     /* CE3E 85 00    */ sta zR00
 
     /* CE40 68       */ pla
@@ -724,8 +724,8 @@ FUNC_CE62:
     /* CE65 F0 08    */ beq @end
 
     /* CE67 A9 00    */ lda #0
-    /* CE69 8D 44 03 */ sta wUnk0344
-    /* CE6C 8D 46 03 */ sta wUnk0346
+    /* CE69 8D 44 03 */ sta wFightHitsFirst
+    /* CE6C 8D 46 03 */ sta wFightHitsSecond
 
 @end:
     /* CE6F 60       */ rts
@@ -746,27 +746,28 @@ SwapBattlerIdX:
     /* CE7C 68       */ pla
     /* CE7D 60       */ rts
 
-FightRand_perhaps:
-    /* CE7E 20 4E C0 */ jsr FUNC_C04E
+Rand100:
+    /* CE7E 20 4E C0 */ jsr Rand
     /* CE81 85 00    */ sta zR00
 
     /* CE83 A9 0A    */ lda #10
     /* CE85 85 01    */ sta zR01
 
-    /* CE87 20 C9 C6 */ jsr Rand_C6C9
+    /* CE87 20 C9 C6 */ jsr Mul
 
-    /* CE8A A5 01    */ lda zR01
-    /* CE8C 85 49    */ sta zRand49
-
+    /* CE8A A5 01    */ lda zR00+1
+    /* CE8C 85 49    */ sta zDivLeft+1
     /* CE8E A5 00    */ lda zR00
-    /* CE90 85 48    */ sta zRand48
+    /* CE90 85 48    */ sta zDivLeft
 
     /* CE92 A9 19    */ lda #25
-    /* CE94 85 4A    */ sta zRand4A
+    /* CE94 85 4A    */ sta zDivRight
 
-    /* CE96 20 EB C6 */ jsr Rand_C6EB
+    /* CE96 20 EB C6 */ jsr Div
 
-    /* CE99 A5 48    */ lda zRand48
+    /* CE99 A5 48    */ lda zDivLeft
+
+    ; A = (Rand * 10) / 25
 
     /* CE9B C9 64    */ cmp #100
     /* CE9D 90 02    */ bcc +
@@ -778,20 +779,20 @@ FightRand_perhaps:
 
 FUNC_CEA2:
     /* CEA2 A9 19    */ lda #$19
-    /* CEA4 85 4A    */ sta zRand4A
+    /* CEA4 85 4A    */ sta zDivRight
 
     /* CEA6 8C 72 03 */ sty wUnk0372
     /* CEA9 8E 71 03 */ stx wUnk0371
 
-    /* CEAC 20 4E C0 */ jsr FUNC_C04E
-    /* CEAF 85 48    */ sta zRand48
+    /* CEAC 20 4E C0 */ jsr Rand
 
+    /* CEAF 85 48    */ sta zDivLeft
     /* CEB1 A9 00    */ lda #0
-    /* CEB3 85 49    */ sta zRand49
+    /* CEB3 85 49    */ sta zDivLeft+1
 
-    /* CEB5 20 EB C6 */ jsr Rand_C6EB
+    /* CEB5 20 EB C6 */ jsr Div
 
-    /* CEB8 A5 48    */ lda zRand48
+    /* CEB8 A5 48    */ lda zDivLeft
 
     /* CEBA AC 72 03 */ ldy wUnk0372
     /* CEBD AE 71 03 */ ldx wUnk0371
@@ -811,13 +812,13 @@ FUNC_CEC1:
     /* CED0 AD 48 03 */ lda wUnk0348
     /* CED3 D0 07    */ bne @LOC_CEDC
 
-    /* CED5 AD 44 03 */ lda wUnk0344
+    /* CED5 AD 44 03 */ lda wFightHitsFirst
     /* CED8 F0 36    */ beq @end
 
     /* CEDA D0 05    */ bne @LOC_CEE1
 
 @LOC_CEDC:
-    /* CEDC AD 46 03 */ lda wUnk0346
+    /* CEDC AD 46 03 */ lda wFightHitsSecond
     /* CEDF F0 2F    */ beq @end
 
 @LOC_CEE1:
@@ -921,13 +922,13 @@ FUNC_CF4C:
     /* CF61 20 B2 CF */ jsr LOC_CFB2
 
 @LOC_CF64:
-    /* CF64 B9 44 03 */ lda wUnk0344, Y
+    /* CF64 B9 44 03 */ lda wFightHitsFirst, Y
     /* CF67 F0 37    */ beq @LOC_CFA0
 
     /* CF69 D0 05    */ bne @LOC_CF70
 
 @LOC_CF6B:
-    /* CF6B B9 46 03 */ lda wUnk0346, Y
+    /* CF6B B9 46 03 */ lda wFightHitsSecond, Y
     /* CF6E F0 30    */ beq @LOC_CFA0
 
 @LOC_CF70:
@@ -1003,13 +1004,13 @@ LOC_CFC6:
     /* CFCC AD 48 03 */ lda wUnk0348
     /* CFCF F0 07    */ beq @LOC_CFD8
 
-    /* CFD1 B9 4D 03 */ lda wUnk034D, Y
+    /* CFD1 B9 4D 03 */ lda wFightCritsSecond, Y
     /* CFD4 F0 18    */ beq @end
 
     /* CFD6 D0 05    */ bne @LOC_CFDD
 
 @LOC_CFD8:
-    /* CFD8 B9 4B 03 */ lda wUnk034B, Y
+    /* CFD8 B9 4B 03 */ lda wFightCritsFirst, Y
     /* CFDB F0 11    */ beq @end
 
 @LOC_CFDD:
@@ -1160,14 +1161,14 @@ FightCheckForLevelGain:
 
     /* D0C4 20 4E D0 */ jsr GetBattlerStatPointers
 
-    /* D0C7 20 4E C0 */ jsr FUNC_C04E
-    /* D0CA 85 48    */ sta zRand48
+    /* D0C7 20 4E C0 */ jsr Rand
+    /* D0CA 85 48    */ sta zDivLeft
     /* D0CC A9 19    */ lda #25
-    /* D0CE 85 4A    */ sta zRand4A
+    /* D0CE 85 4A    */ sta zDivRight
     /* D0D0 A9 00    */ lda #0
-    /* D0D2 85 49    */ sta zRand49
+    /* D0D2 85 49    */ sta zDivLeft+1
 
-    /* D0D4 20 EB C6 */ jsr Rand_C6EB
+    /* D0D4 20 EB C6 */ jsr Div
 
     /* D0D7 AC 04 03 */ ldy wFightPid
     /* D0DA 88       */ dey
@@ -1187,7 +1188,7 @@ FightCheckForLevelGain:
     /* D0EC C9 0A    */ cmp #10
     /* D0EE F0 06    */ beq @gain_stat
 
-    /* D0F0 C5 48    */ cmp zRand48
+    /* D0F0 C5 48    */ cmp zDivLeft
     /* D0F2 F0 1E    */ beq @continue
 
     /* D0F4 90 1C    */ bcc @continue
@@ -1650,19 +1651,19 @@ FUNC_D321:
 @lop:
     /* D341 B1 00    */ lda (zR00), Y
 
-    /* D343 C9 5B    */ cmp #IID_FIREEMBLEM
-    /* D345 D0 05    */ bne @not_fire_emblem
+    /* D343 C9 5B    */ cmp #IID_LIGHTSPHERE+1
+    /* D345 D0 05    */ bne @not_lightsphere
 
     /* D347 A9 00    */ lda #0
     /* D349 8D 11 03 */ sta wUnk0310+1
 
-@not_fire_emblem:
-    /* D34C C9 58    */ cmp #IID_DARKSPHERE
-    /* D34E D0 03    */ bne @not_dark_sphere
+@not_lightsphere:
+    /* D34C C9 58    */ cmp #IID_STARSPHERE+1
+    /* D34E D0 03    */ bne @not_starsphere
 
     /* D350 EE 82 04 */ inc wUnk0482
 
-@not_dark_sphere:
+@not_starsphere:
     /* D353 C8       */ iny
 
     /* D354 CA       */ dex

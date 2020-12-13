@@ -146,7 +146,7 @@ ENTRY_RESET:
     /* C15A 4C 56 C1 */ jmp @wait_frame
 
 @continue:
-    /* C15D 20 4E C0 */ jsr FUNC_C04E
+    /* C15D 20 4E C0 */ jsr Rand
 
     /* C160 4C 44 C1 */ jmp @lop
 

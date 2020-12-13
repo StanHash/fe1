@@ -49,8 +49,8 @@
     zUnk2E          db ; 002E
     .               db ; 002F
     zUnk30          db ; 0030
-    zUnk31          db ; 0031
-    zUnk32          db ; 0032
+    zRngA           db ; 0031
+    zRngB           db ; 0032
     .               db ; 0033
     zSpriteY        db ; 0034 ; some sprite y offset
     zSpriteX        db ; 0035 ; some sprite x offset
@@ -69,10 +69,9 @@
     zFarFuncNum     db ; 0044
     zFarFuncPtr     dw ; 0045
     .               db ; 0047
-    zRand48         db ; 0048
-    zRand49         db ; 0049
-    zRand4A         db ; 004A
-    zRand4B         db ; 004B
+    zDivLeft        dw ; 0048
+    zDivRight       db ; 004A
+    zDivResult      db ; 004B
     .               db ; 004C
     .               db ; 004D
     .               db ; 004E
@@ -224,15 +223,14 @@
     wFightAttackHit     = $033A
     wFightAttackDamage  = $033C ; battle unit attack?
     wFightAttackDefense = $033E ; battle unit defense?
-    wFightAttackCrit   = $0340 ; battle unit attack crit?
+    wFightAttackCrit    = $0340 ; battle unit attack crit?
     wFightAttackDodge   = $0342
-    wUnk0344   = $0344
-    wUnk0346   = $0346
-    wUnk0348   = $0348 ; 1 if attacker follow-up, 2 if defender follow-up, 0 if before/no follow-up
-    wFightMight = $0349 ; battle unit weapon might?
-
-    wUnk034B = $034B
-    wUnk034D = $034D
+    wFightHitsFirst     = $0344
+    wFightHitsSecond    = $0346
+    wUnk0348            = $0348 ; 1 if attacker follow-up, 2 if defender follow-up, 0 if before/no follow-up
+    wFightMight         = $0349 ; battle unit weapon might?
+    wFightCritsFirst    = $034B
+    wFightCritsSecond   = $034D
 
     wUnk034F   = $034F
     wUnk0350   = $0350
