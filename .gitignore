@@ -1,4 +1,4 @@
 
-*.o
+*.obj
 *.nes
 *.sym

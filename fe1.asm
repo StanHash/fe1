@@ -1,225 +1,168 @@
 
-    .include "include/layout.asm"
+    ; ===============
+    ; = iNES HEADER =
+    ; ===============
 
-    .include "include/constants/misc.asm"
+    .segment "HEADER"
 
-    .include "include/constants/pids.asm"
-    .include "include/constants/jids.asm"
-    .include "include/constants/iids.asm"
-    .include "include/constants/maps.asm"
-    .include "include/constants/cells.asm"
+    .byte "NES", $1A
+    .byte 16        ; 16 * 16KiB PRG ROM
+    .byte 16        ; 16 * 8KiB CHR ROM
+    .byte $A2       ; Mapper 10 (MMC4); horizontal or vertical mirroring respectively
+    .byte $00       ; Mapper 10 (MMC4); no NES 2.0
 
-    .include "include/structs/unit.asm"
-    .include "include/structs/unk-03-A3DA.asm"
+    ; ====================
+    ; = BASE ROM INCBINS =
+    ; ====================
 
-    .macro BASE_BANK args BANKID
+    .macro base_prg_bank id
+    .incbin "fe1-base.nes", $10+(id)*$4000, $4000
+    .endmacro
 
-        .if BANKID < 15
-            .bank BANKID slot "ROM-LO"
-        .endif
+    .segment "PRG_00"
+    base_prg_bank 0
 
-        .if BANKID == 15
-            .bank BANKID slot "ROM-HI"
-        .endif
+    .segment "PRG_01"
+    base_prg_bank 1
 
-        .if BANKID >= 16
-            .bank BANKID slot "CHR"
-        .endif
+    .segment "PRG_02"
+    base_prg_bank 2
 
-        .org 0
+    .segment "PRG_03"
+    base_prg_bank 3
 
-        .if BANKID < 16
-            .incbin "fe1-base.nes" skip 16 + BANKID*$4000 read $4000
-        .else
-            .incbin "fe1-base.nes" skip 16 + (16*$4000) + ((BANKID-16)*$1000) read $1000
-        .endif
+    .segment "PRG_04"
+    base_prg_bank 4
 
-    .endm
+    .segment "PRG_05"
+    base_prg_bank 5
 
-    ; WRAM
+    .segment "PRG_06"
+    base_prg_bank 6
 
-    .include "include/wram.asm"
-    .include "include/sram.asm"
+    .segment "PRG_07"
+    base_prg_bank 7
 
-    ; Base ROM data
+    .segment "PRG_08"
+    base_prg_bank 8
 
-    ; PRG banks
-    BASE_BANK 0
-    BASE_BANK 1
-    BASE_BANK 2
-    BASE_BANK 3
-    BASE_BANK 4
-    BASE_BANK 5
-    BASE_BANK 6
-    BASE_BANK 7
-    BASE_BANK 8
-    BASE_BANK 9
-    BASE_BANK 10
-    BASE_BANK 11
-    BASE_BANK 12
-    BASE_BANK 13
-    BASE_BANK 14
-    BASE_BANK 15
+    .segment "PRG_09"
+    base_prg_bank 9
 
-    ; CHR banks
-    BASE_BANK 16
-    BASE_BANK 17
-    BASE_BANK 18
-    BASE_BANK 19
-    BASE_BANK 20
-    BASE_BANK 21
-    BASE_BANK 22
-    BASE_BANK 23
-    BASE_BANK 24
-    BASE_BANK 25
-    BASE_BANK 26
-    BASE_BANK 27
-    BASE_BANK 28
-    BASE_BANK 29
-    BASE_BANK 30
-    BASE_BANK 31
-    BASE_BANK 32
-    BASE_BANK 33
-    BASE_BANK 34
-    BASE_BANK 35
-    BASE_BANK 36
-    BASE_BANK 37
-    BASE_BANK 38
-    BASE_BANK 39
-    BASE_BANK 40
-    BASE_BANK 41
-    BASE_BANK 42
-    BASE_BANK 43
-    BASE_BANK 44
-    BASE_BANK 45
-    BASE_BANK 46
-    BASE_BANK 47
+    .segment "PRG_0A"
+    base_prg_bank 10
 
-    ; DISASSEMBLED DATA
+    .segment "PRG_0B"
+    base_prg_bank 11
 
-    .bank 0 slot "ROM-LO"
+    .segment "PRG_0C"
+    base_prg_bank 12
 
-    .orga $8000
-    /* 8000 */ .include "data/data-00-8000.asm"
-    /* 9EF3 */ .include "code/code-00-9EF3.asm"
-    /* A728 */ .include "code/code-00-A728.asm"
-    /* ABC8 */ .include "code/code-00-ABC8.asm"
-    /* B422 */ .include "code/code-00-B422.asm"
+    .segment "PRG_0D"
+    base_prg_bank 13
 
-    .orga EVERYBANK_FARFUNCS
-    .dw FUNC_00_9EF3
-    .dw FUNC_00_A728
-    .dw FUNC_00_ABC8
-    .dw FUNC_00_B422
+    .segment "PRG_0E"
+    base_prg_bank 14
 
-    .orga EVERYBANK_BFC0 ; far ppu transfer scr array
-    .dw DATA_00_8E57
+    .segment "PRG_0F"
+    base_prg_bank 15
 
-    .orga EVERYBANK_SPRITEGROUPS ; far ?
-    .dw DATA_00_8000
-    .dw DATA_00_8000
-    .dw DATA_00_8000
-    .dw DATA_00_8004
-    .dw DATA_00_8000
-    .dw DATA_00_8000
-    .dw DATA_00_8000
-    .dw DATA_00_8000
-    .dw DATA_00_8012
-    .dw DATA_00_8084
-    .dw DATA_00_8000
-    .dw DATA_00_8000
+    .macro base_chr_bank id
+    .incbin "fe1-base.nes", $40010+(id)*$1000, $1000
+    .endmacro
 
-    .orga EVERYBANK_BFFA ; ?
-    .dw DATA_00_8F9F
+    .segment "CHR_00"
+    base_chr_bank 0
 
-    .orga EVERYBANK_BFFC
-    .dw DATA_00_8E57
-    .dw DATA_00_8E6F
+    .segment "CHR_01"
+    base_chr_bank 1
 
-    .bank 1 slot "ROM-LO"
+    .segment "CHR_02"
+    base_chr_bank 2
 
-    .orga $8000
-    /* 8000 */ .include "data/data-01-8000.asm"
+    .segment "CHR_03"
+    base_chr_bank 3
 
-    .bank 3 slot "ROM-LO"
+    .segment "CHR_04"
+    base_chr_bank 4
 
-    .orga $8000
-    /* 8000 */ .include "code/code-03-8000.asm"
+    .segment "CHR_05"
+    base_chr_bank 5
 
-    .bank 6 slot "ROM-LO"
+    .segment "CHR_06"
+    base_chr_bank 6
 
-    .orga $8000
+    .segment "CHR_07"
+    base_chr_bank 7
 
-    DAT_06_8000:
-    /* 8000 */ ; map related data, 4 bytes for each id
+    .segment "CHR_08"
+    base_chr_bank 8
 
-    .bank 8 slot "ROM-LO"
+    .segment "CHR_09"
+    base_chr_bank 9
 
-    .orga $BA7A
-    /* BA7A */ .include "code/load-units.asm"
+    .segment "CHR_0A"
+    base_chr_bank 10
 
-    .orga EVERYBANK_FARFUNCS
-    .dw FN0_BA7A
-    .dw FN1_BA93
-    .dw LoadMapPlayerUnits
-    .dw LoadMapEnemyUnits
+    .segment "CHR_0B"
+    base_chr_bank 11
 
-    .bank 11 slot "ROM-LO"
+    .segment "CHR_0C"
+    base_chr_bank 12
 
-    .orga EVERYBANK_FARFUNCS
-    /* BFA0 */ .dw $9251, $8000, $C7EA, $B039
-    /* BFA8 */ .dw $9858, $995F, $9F16, $9D25
-    /* BFB0 */ .dw $A291, $A3B0, $B369, $A01C
-    /* BFB8 */ .dw $9D52
+    .segment "CHR_0D"
+    base_chr_bank 13
 
-    .orga EVERYBANK_BFC0 ; far ppu transfer scr array
-    /* BFC0 */ .dw $9EF0
+    .segment "CHR_0E"
+    base_chr_bank 14
 
-    .orga EVERYBANK_BFE0 ; far ?
-    /* BFE0 */ .dw $9D85, $A766
+    .segment "CHR_0F"
+    base_chr_bank 15
 
-    .bank 15 slot "ROM-HI"
+    .segment "CHR_10"
+    base_chr_bank 16
 
-    .orga $C000
-    .include "code/home/trampolines.asm"
-    .include "code/home/rand.asm"
-    .include "code/home/interrupt.asm"
-    .include "code/home/core.asm"
-    .include "code/home/battle.asm"
-    .include "code/home/map.asm"
-    .include "data/item-data.asm"
-    .include "data/data-0F-DA1F.asm"
-    .include "code/home/code-E3CE.asm"
-    .include "data/data-0F-E5F1.asm"
-    .include "code/home/code-E65C.asm"
-    .include "code/home/code-E6F5.asm"
-    .include "data/data-0F-E828.asm"
-    .include "data/job/stats.asm"
-    .include "data/data-0F-ECF6.asm"
-    .include "data/map-rows.asm"
-    .include "data/data-0F-EDB5.asm"
-    .include "code/home/unit.asm"
-    .include "data/data-0F-F1BF.asm"
-    .include "code/home/code-F28F.asm"
+    .segment "CHR_11"
+    base_chr_bank 17
 
-    .orga $F807
-    .include "data/data-0F-F807.asm"
+    .segment "CHR_12"
+    base_chr_bank 18
 
-    .orga $FFA0
-    .dw $8000
-    .dw $8472
-    .dw $84BC
-    .dw $AA2B
+    .segment "CHR_13"
+    base_chr_bank 19
 
-    .orga $FFC0
-    .dw $B44C
-    .dw $FFF2
+    .segment "CHR_14"
+    base_chr_bank 20
 
-    .orga $FFE0
-    .dw $84E4
-    .dw $8853
+    .segment "CHR_15"
+    base_chr_bank 21
 
-    .orga $FFFA
-    .dw ENTRY_NMI
-    .dw ENTRY_RESET
-    .dw ENTRY_IRQ
+    .segment "CHR_16"
+    base_chr_bank 22
+
+    .segment "CHR_17"
+    base_chr_bank 23
+
+    .segment "CHR_18"
+    base_chr_bank 24
+
+    .segment "CHR_19"
+    base_chr_bank 25
+
+    .segment "CHR_1A"
+    base_chr_bank 26
+
+    .segment "CHR_1B"
+    base_chr_bank 27
+
+    .segment "CHR_1C"
+    base_chr_bank 28
+
+    .segment "CHR_1D"
+    base_chr_bank 29
+
+    .segment "CHR_1E"
+    base_chr_bank 30
+
+    .segment "CHR_1F"
+    base_chr_bank 31

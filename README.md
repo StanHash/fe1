@@ -10,15 +10,12 @@ It builds the following ROM:
 ## Setting up
 
 - You will need to be under some kind of Unix/Linux system (on Windows 10, try out WSL).
-- You will need to have a C++ compiler as well as CMake installed in order to build the assembler.
 - You will also need to have a copy of the original ROM in the repository directory, named `fe1-base.nes`.
 
-- Build and install the WLA-DX assembler using the provided script located in `tools/install-wla-dx.sh`.
+- install the CC65 suite. It is a package on Debian based systems (such as Ubuntu).
 - Once that is done, you should be able to build the project by using `make`.
 
 ## Notes
-
-I am currently using the WLA-DX assembler suite to build the project, but I'm somewhat unconvinced with it. I'm considering developing a new assembler to use as a replacement.
 
 Not all of the ROM has been dumped into ASM files yet, which is why the original ROM is still required for building the project.
 

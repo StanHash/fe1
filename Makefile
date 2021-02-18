@@ -1,16 +1,14 @@
 
-PATH := tools/bin:$(PATH)
+CA65 ?= ca65
+LD65 ?= ld65
 
-WLA6502 := wla-6502
-WLALINK := wlalink
-
-SHASUM := sha1sum
+SHASUM ?= sha1sum
 
 ROM := fe1.nes
-LINK := fe1.link
+CFG := fe1.cfg
 
 SOURCE := fe1.asm
-OBJECT := fe1.o
+OBJECT := fe1.obj
 
 DEPENDS := $(shell find code include data -type f -name '*.asm')
 
@@ -19,8 +17,8 @@ compare: $(ROM)
 
 .PHONY: compare
 
-$(ROM): $(OBJECT) header.bin
-	$(WLALINK) -S -v $(LINK) $(ROM)
+$(ROM): $(OBJECT) $(CFG)
+	$(LD65) -o $@ -C $(CFG) $(OBJECT)
 
 $(OBJECT): $(SOURCE) $(DEPENDS)
-	$(WLA6502) -o $@ $<
+	$(CA65) -o $@ -g $<
