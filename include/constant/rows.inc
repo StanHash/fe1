@@ -1,0 +1,3 @@
+
+    MAP_ROW_COUNT      = $1E
+    MAP_ROW_MAX_LENGTH = $20

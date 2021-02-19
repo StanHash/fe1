@@ -1,7 +1,11 @@
 
-FUNC_E3CE:
+    .include "include/global.inc"
+    .include "include/variables.inc"
+
+    .proc FUNC_E3CE
+
     /* E3CE AD 7A 04 */ lda wUnk047A
-    /* E3D1 F0 14    */ beq @end
+    /* E3D1 F0 14    */ beq end
 
     /* E3D3 A9 87    */ lda #$87 ; 135
     /* E3D5 8D 00 02 */ sta wOamBuf
@@ -12,29 +16,32 @@ FUNC_E3CE:
     /* E3E2 A9 E0    */ lda #$E0 ; 224
     /* E3E4 8D 03 02 */ sta wOamBuf+3
 
-@end:
+end:
     /* E3E7 60       */ rts
 
-FUNC_E3E8:
+    .endproc ; FUNC_E3CE
+
+    .proc FUNC_E3E8
+
     /* E3E8 A2 02    */ ldx #2
 
-@lop:
+lop:
     /* E3EA BD A7 03 */ lda wUnk03A7, X
-    /* E3ED F0 2E    */ beq @continue
+    /* E3ED F0 2E    */ beq continue
 
     /* E3EF E0 01    */ cpx #1
-    /* E3F1 D0 05    */ bne @LOC_E3F8
+    /* E3F1 D0 05    */ bne LOC_E3F8
 
     /* E3F3 AD 5A 03 */ lda wUnk035A
-    /* E3F6 D0 25    */ bne @continue
+    /* E3F6 D0 25    */ bne continue
 
-@LOC_E3F8:
+LOC_E3F8:
     /* E3F8 BD AA 03 */ lda wUnk03AA, X
-    /* E3FB F0 03    */ beq @LOC_E400
+    /* E3FB F0 03    */ beq LOC_E400
 
-    /* E3FD 4C B7 E4 */ jmp CODE_E4B7
+    /* E3FD 4C B7 E4 */ jmp code_E4B7
 
-@LOC_E400:
+LOC_E400:
     /* E400 20 26 E4 */ jsr SelectBank_E426
 
     /* E403 20 7B E4 */ jsr FUNC_E47B
@@ -52,21 +59,22 @@ FUNC_E3E8:
     /* E417 AD DC 03 */ lda wUnk03DC
     /* E41A 9D 87 04 */ sta wUnk0487, X
 
-@continue:
+continue:
     /* E41D CA       */ dex
-    /* E41E 10 CA    */ bpl @lop
+    /* E41E 10 CA    */ bpl lop
 
     /* E420 A9 05    */ lda #$05
     /* E422 8D 00 A0 */ sta MMC4BANK
 
     /* E425 60       */ rts
 
-SelectBank_E426:
+    .proc SelectBank_E426
+
     /* E426 BD 87 04 */ lda wUnk0487, X
     /* E429 8D DC 03 */ sta wUnk03DC
 
     /* E42C C9 0C    */ cmp #$0C
-    /* E42E 90 0C    */ bcc @bank_1 ; blo
+    /* E42E 90 0C    */ bcc bank_1 ; blo
 
     /* E430 BD 87 04 */ lda wUnk0487, X
     /* E433 E9 0C    */ sbc #$0C
@@ -74,18 +82,21 @@ SelectBank_E426:
 
     /* E438 A9 00    */ lda #0
 
-    /* E43A F0 02    */ beq +
+    /* E43A F0 02    */ beq :+
 
-@bank_1:
+bank_1:
     /* E43C A9 01    */ lda #1
 
-+:
+:
     /* E43E 8D 00 A0 */ sta MMC4BANK
     /* E441 60       */ rts
 
-FUNC_E442:
+    .endproc ; SelectBank_E426
+
+    .proc FUNC_E442
+
     /* E442 E0 02    */ cpx #2
-    /* E444 F0 30    */ beq @end
+    /* E444 F0 30    */ beq end
 
     /* E446 8E 73 03 */ stx wUnk0373_2
 
@@ -93,9 +104,9 @@ FUNC_E442:
     /* E44A 0A       */ asl A
     /* E44B AA       */ tax
 
-    /* E44C BD 77 E4 */ lda DAT_E477.w, X
+    /* E44C BD 77 E4 */ lda DAT_E477, X
     /* E44F 85 00    */ sta zR00
-    /* E451 BD 78 E4 */ lda DAT_E477.w+1, X
+    /* E451 BD 78 E4 */ lda DAT_E477+1, X
     /* E454 85 01    */ sta zR00+1
 
     /* E456 A0 00    */ ldy #0
@@ -105,11 +116,11 @@ FUNC_E442:
 
     /* E45C AE 73 03 */ ldx wUnk0373_2
 
-@lop:
+lop:
     /* E45F B1 00    */ lda (zR00), Y
-    /* E461 30 0E    */ bmi @continue
+    /* E461 30 0E    */ bmi continue
 
-    /* E463 85 36    */ sta zSpriteNum
+    /* E463 85 36    */ sta z:zSpriteNum
 
     /* E465 8C 74 03 */ sty wUnk0374_2
 
@@ -118,19 +129,22 @@ FUNC_E442:
 
     /* E46E AC 74 03 */ ldy wUnk0374_2
 
-@continue:
+continue:
     /* E471 C8       */ iny
     /* E472 C6 02    */ dec zR02
-    /* E474 D0 E9    */ bne @lop
+    /* E474 D0 E9    */ bne lop
 
-@end:
+end:
     /* E476 60       */ rts
 
 DAT_E477:
-    .dw wUnk03D2
-    .dw wUnk03D6
+    .word wUnk03D2
+    .word wUnk03D6
 
-FUNC_E47B:
+    .endproc ; FUNC_E442
+
+    .proc FUNC_E47B
+
     /* E47B BD 87 04 */ lda wUnk0487, X
     /* E47E 85 3C    */ sta zSpriteGroup
 
@@ -147,15 +161,15 @@ FUNC_E47B:
     /* E490 BD A1 03 */ lda wUnk03A1, X
 
     /* E493 E0 01    */ cpx #1
-    /* E495 D0 02    */ bne +
+    /* E495 D0 02    */ bne :+
 
     /* E497 49 01    */ eor #1
 
-+:
+:
     /* E499 85 3B    */ sta zUnk3B
 
     /* E49B E0 02    */ cpx #2
-    /* E49D D0 0B    */ bne +
+    /* E49D D0 0B    */ bne :+
 
     /* E49F A9 03    */ lda #$3
     /* E4A1 85 3A    */ sta zUnk3A
@@ -163,11 +177,11 @@ FUNC_E47B:
     /* E4A3 AD C2 03 */ lda wUnk03C2
     /* E4A6 85 39    */ sta zUnk39
 
-    /* E4A8 10 0C    */ bpl @end
+    /* E4A8 10 0C    */ bpl end
 
-+:
+:
     /* E4AA E0 01    */ cpx #1
-    /* E4AC D0 08    */ bne @end
+    /* E4AC D0 08    */ bne end
 
     /* E4AE A9 03    */ lda #$3
     /* E4B0 85 3A    */ sta zUnk3A
@@ -175,10 +189,12 @@ FUNC_E47B:
     /* E4B2 A9 01    */ lda #$1
     /* E4B4 85 39    */ sta zUnk39
 
-@end:
+end:
     /* E4B6 60       */ rts
 
-CODE_E4B7:
+    .endproc ; FUNC_E47B
+
+code_E4B7:
     /* E4B7 A5 21    */ lda zTransferEnable
     /* E4B9 D0 06    */ bne @LOC_E4C1
 
@@ -188,7 +204,7 @@ CODE_E4B7:
     /* E4BF F0 03    */ beq @LOC_E4C4
 
 @LOC_E4C1:
-    /* E4C1 4C 1D E4 */ jmp FUNC_E3E8@continue
+    /* E4C1 4C 1D E4 */ jmp continue
 
 @LOC_E4C4:
     /* E4C4 20 26 E4 */ jsr SelectBank_E426
@@ -231,7 +247,7 @@ CODE_E4B7:
     /* E502 B1 02    */ lda (zR02), Y
 
     /* E504 0A       */ asl A
-    /* E505 90 09    */ bcc +
+    /* E505 90 09    */ bcc :+
 
     /* E507 48       */ pha
 
@@ -242,7 +258,7 @@ CODE_E4B7:
 
     /* E50F 68       */ pla
 
-+:
+:
     /* E510 A8       */ tay
 
     /* E511 B1 08    */ lda (zR08), Y
@@ -257,12 +273,12 @@ CODE_E4B7:
     /* E51E 85 03    */ sta zR03
 
     /* E520 E6 00    */ inc zR00
-    /* E522 D0 02    */ bne +
+    /* E522 D0 02    */ bne :+
 
     /* E524 E6 01    */ inc zR00+1
 
-+:
-@lop
+:
+@lop:
     ; put lo ppu addr
     /* E526 B1 00    */ lda (zR00), Y
     /* E528 18       */ clc
@@ -317,9 +333,12 @@ CODE_E4B7:
     /* E563 AD DC 03 */ lda wUnk03DC
     /* E566 9D 87 04 */ sta wUnk0487, X
 
-    /* E569 4C 1D E4 */ jmp FUNC_E3E8@continue
+    /* E569 4C 1D E4 */ jmp continue
 
-FUNC_E56C:
+    .endproc ; FUNC_E3E8
+
+    .proc FUNC_E56C
+
     /* E56C 48       */ pha
     /* E56D 8A       */ txa
     /* E56E 48       */ pha
@@ -329,42 +348,42 @@ FUNC_E56C:
     /* E571 A9 FF    */ lda #$FF
     /* E573 A0 3B    */ ldy #$3B
 
--:
+:
     /* E575 99 E1 03 */ sta wUnk03E1, Y
     /* E578 88       */ dey
-    /* E579 10 FA    */ bpl -
+    /* E579 10 FA    */ bpl :-
 
     /* E57B A2 00    */ ldx #0
     /* E57D A0 00    */ ldy #0
 
-@lop:
+lop:
     /* E57F B1 00    */ lda (zR00), Y
 
     /* E581 C9 EF    */ cmp #$EF
-    /* E583 F0 16    */ beq @LOC_E59B
+    /* E583 F0 16    */ beq LOC_E59B
 
     /* E585 C9 1F    */ cmp #$1F
-    /* E587 F0 04    */ beq @LOC_E58D
+    /* E587 F0 04    */ beq LOC_E58D
 
     /* E589 C9 0F    */ cmp #$0F
-    /* E58B D0 07    */ bne @LOC_E594
+    /* E58B D0 07    */ bne LOC_E594
 
-@LOC_E58D:
+LOC_E58D:
     /* E58D CA       */ dex
     /* E58E 9D FF 03 */ sta wUnk03E1+30, X
     /* E591 E8       */ inx
 
-    /* E592 10 04    */ bpl @continue
+    /* E592 10 04    */ bpl continue
 
-@LOC_E594:
+LOC_E594:
     /* E594 9D E1 03 */ sta wUnk03E1, X
     /* E597 E8       */ inx
 
-@continue:
+continue:
     /* E598 C8       */ iny
-    /* E599 10 E4    */ bpl @lop
+    /* E599 10 E4    */ bpl lop
 
-@LOC_E59B:
+LOC_E59B:
     /* E59B A2 00    */ ldx #0
 
     /* E59D A9 03    */ lda #>wUnk03E1
@@ -403,7 +422,10 @@ FUNC_E56C:
 
     /* E5CE 60       */ rts
 
-FUNC_E5CF:
+    .endproc ; FUNC_E56C
+
+    .proc FUNC_E5CF
+
     ; put hi ppu addr
     /* E5CF A5 03    */ lda zR02+1
     /* E5D1 9D 81 07 */ sta wTransferScr, X
@@ -425,7 +447,7 @@ FUNC_E5CF:
 
     /* E5E3 A0 00    */ ldy #0
 
-@lop:
+lop:
     /* E5E5 B1 06    */ lda (zR06), Y
     /* E5E7 9D 81 07 */ sta wTransferScr, X
 
@@ -433,6 +455,8 @@ FUNC_E5CF:
     /* E5EB E8       */ inx
 
     /* E5EC C6 05    */ dec zR05
-    /* E5EE D0 F5    */ bne @lop
+    /* E5EE D0 F5    */ bne lop
 
     /* E5F0 60       */ rts
+
+    .endproc ; FUNC_E5CF

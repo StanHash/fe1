@@ -1,118 +1,97 @@
+    .ifndef VARIABLES_INC
+    VARIABLES_INC = 1
 
-    .ramsection "ZP" slot "RAM" orga $0000
-
-    zR00            db ; 0000
-    zR01            db ; 0001
-    zR02            db ; 0002
-    zR03            db ; 0003
-    zR04            db ; 0004
-    zR05            db ; 0005
-    zR06            db ; 0006
-    zR07            db ; 0007
-    zR08            db ; 0008
-    zR09            db ; 0009
-    zR0A            db ; 000A
-    zR0B            db ; 000B
-    zSwitchPtr      dw ; 000C
-    zSwitchX        db ; 000E
-    zSwitchY        db ; 000F
-    zUnk10          db ; 0010
-    zUnk11          db ; 0011
-    zUnk12          db ; 0012
-    zUnk13          db ; 0013
-    zInputNew       db ; 0014
-    .               db ; 0015
-    zInputHeld      db ; 0016
-    .               db ; 0017
-    zInputRepeat    db ; 0018
-    .               db ; 0019
-    zInputRepeatCnt db ; 001A
-    .               db ; 001B
-    zUnk1C          db ; 001C
-    zUnk1D          db ; 001D
-    zUnk1E          db ; 001E
-    zUnk1F          db ; 001F
-    zFrameEnded     db ; 0020
-    zTransferEnable db ; 0021
-    zUnk22          db ; 0022 ; pending transfer id?
-    zUnk23          db ; 0023
-    zUnk24          db ; 0024
-    zUnk25          db ; 0025 ; next game scene id?
-    zUnk26          db ; 0026
-    .               db ; 0027
-    .               db ; 0028
-    zBank29         db ; 0029
-    .               db ; 002A
-    .               db ; 002B
-    zUnk2C          db ; 002C
-    zUnk2D          db ; 002D
-    zUnk2E          db ; 002E
-    .               db ; 002F
-    zUnk30          db ; 0030
-    zRngA           db ; 0031
-    zRngB           db ; 0032
-    .               db ; 0033
-    zSpriteY        db ; 0034 ; some sprite y offset
-    zSpriteX        db ; 0035 ; some sprite x offset
-    zSpriteNum      db ; 0036
-    zSpriteIt       db ; 0037
-    zUnk38          db ; 0038 ; has to do with sprite attributes
-    zUnk39          db ; 0039 ; has to do with sprite attributes
-    zUnk3A          db ; 003A ; has to do with sprite attributes... palette? some mask?
-    zUnk3B          db ; 003B ; bool : mirror sprite?
-    zSpriteGroup    db ; 003C
-    zUnk3D          db ; 003D ; sprite write counter?
-    zUnk3E          dw ; 003E
-    zUnk40          dw ; 0040
-    zUnk42          db ; 0042
-    zUnk43          db ; 0043 ; scratch for sprite write?
-    zFarFuncNum     db ; 0044
-    zFarFuncPtr     dw ; 0045
-    .               db ; 0047
-    zDivLeft        dw ; 0048
-    zDivRight       db ; 004A
-    zDivResult      db ; 004B
-    .               db ; 004C
-    .               db ; 004D
-    .               db ; 004E
-    .               db ; 004F
-    .               db ; 0050
-    zBank51         db ; 0051
-    zChr52          db ; 0052
-    .               db ; 0053
-    zUnk54          db ; 0054
-    .               db ; 0055
-    .               db ; 0056
-    zUnk57          db ; 0057
-    zUnk58          db ; 0058
-    zChr59          db ; 0059
-    zChr5A          db ; 005A
-    zChr5B          db ; 005B
-    zChr5C          db ; 005C
-    zUnk5D          db ; 005D
-    zUnk5E          db ; 005E
-    zUnk5F          db ; 005F
-    zUnk60          db ; 0060
-    zUnk61          db ; 0061
-    zUnk62          db ; 0062
-    zUnk63          db ; 0063 ; cam x? y?
-    zUnk64          db ; 0064 ; cam y? x?
-    zUnk65          dw ; 0065
-    zUnk67          db ; 0067
-    zUnk68          dw ; 0068 ; map src ptr?
-    zUnk6A          dw ; 006A ; map dst ptr?
-    zMapMovementRow dw ; 006C
-    zUnk6E          dw ; 006E
-    zUnk70          db ; 0070
-    zUnk71          db ; 0072
-    zUnitPtr72      dw ; 0072 ; bank 8 : unit deployment ptr (lo)
-    zUnitLoadDst    dw ; 0074
-    zUnitLoadSrc    dw ; 0076
-    zUnk78          dw ; 0078
-    zUnk7A          db ; 007A
-    zUnk7B          db ; 007B ; y counter?
-
-    .ends
+    zR00            = $0000
+    zR01            = $0001
+    zR02            = $0002
+    zR03            = $0003
+    zR04            = $0004
+    zR05            = $0005
+    zR06            = $0006
+    zR07            = $0007
+    zR08            = $0008
+    zR09            = $0009
+    zR0A            = $000A
+    zR0B            = $000B
+    zSwitchPtr      = $000C
+    zSwitchX        = $000E
+    zSwitchY        = $000F
+    zUnk10          = $0010
+    zUnk11          = $0011
+    zUnk12          = $0012
+    zUnk13          = $0013
+    zInputNew       = $0014
+    zInputHeld      = $0016
+    zInputRepeat    = $0018
+    zInputRepeatCnt = $001A
+    zUnk1C          = $001C
+    zUnk1D          = $001D
+    zUnk1E          = $001E
+    zUnk1F          = $001F
+    zFrameEnded     = $0020
+    zTransferEnable = $0021
+    zUnk22          = $0022 ; pending transfer id?
+    zUnk23          = $0023
+    zUnk24          = $0024
+    zUnk25          = $0025 ; next game scene id?
+    zUnk26          = $0026
+    zBank29         = $0029
+    zUnk2C          = $002C
+    zUnk2D          = $002D
+    zUnk2E          = $002E
+    zUnk30          = $0030
+    zRngA           = $0031
+    zRngB           = $0032
+    zSpriteY        = $0034 ; some sprite y offset
+    zSpriteX        = $0035 ; some sprite x offset
+    zSpriteNum      = $0036
+    zSpriteIt       = $0037
+    zUnk38          = $0038 ; has to do with sprite attributes
+    zUnk39          = $0039 ; has to do with sprite attributes
+    zUnk3A          = $003A ; has to do with sprite attributes... palette? some mask?
+    zUnk3B          = $003B ; bool : mirror sprite?
+    zSpriteGroup    = $003C
+    zUnk3D          = $003D ; sprite write counter?
+    zUnk3E          = $003E
+    zUnk40          = $0040
+    zUnk42          = $0042
+    zUnk43          = $0043 ; scratch for sprite write?
+    zFarFuncNum     = $0044
+    zFarFuncPtr     = $0045
+    zDivLeft        = $0048
+    zDivRight       = $004A
+    zDivResult      = $004B
+    zBank51         = $0051
+    zChr52          = $0052
+    zUnk54          = $0054
+    zUnk57          = $0057
+    zUnk58          = $0058
+    zChr59          = $0059
+    zChr5A          = $005A
+    zChr5B          = $005B
+    zChr5C          = $005C
+    zUnk5D          = $005D
+    zUnk5E          = $005E
+    zUnk5F          = $005F
+    zUnk60          = $0060
+    zUnk61          = $0061
+    zUnk62          = $0062
+    zUnk63          = $0063 ; cam x? y?
+    zUnk64          = $0064 ; cam y? x?
+    zUnk65          = $0065
+    zUnk67          = $0067
+    zUnk68          = $0068 ; map src ptr?
+    zUnk6A          = $006A ; map dst ptr?
+    zMapMovementRow = $006C
+    zUnk6E          = $006E
+    zUnk70          = $0070
+    zUnk71          = $0072
+    zUnitPtr72      = $0072 ; bank 8 : unit deployment ptr (lo)
+    zUnitLoadDst    = $0074
+    zUnitLoadSrc    = $0076
+    zUnk78          = $0078
+    zUnk7A          = $007A
+    zUnk7B          = $007B ; y counter?
 
     zUnk84       = $0084
 
@@ -227,7 +206,7 @@
     wFightAttackDodge   = $0342
     wFightHitsFirst     = $0344
     wFightHitsSecond    = $0346
-    wUnk0348            = $0348 ; 1 if attacker follow-up, 2 if defender follow-up, 0 if before/no follow-up
+    wFightFollowUp      = $0348 ; 1 if attacker follow-up, 2 if defender follow-up, 0 if before/no follow-up
     wFightMight         = $0349 ; battle unit weapon might?
     wFightCritsFirst    = $034B
     wFightCritsSecond   = $034D
@@ -299,6 +278,7 @@
 
     wUnk0479   = $0479
     wUnk047A   = $047A
+    wUnk047B   = $047B
 
     wUnk047E   = $047E
 
@@ -371,7 +351,7 @@
 
     wUnk05F4   = $05F4
 
-    wUnk06F0   = $06F0
+    wUnk06F0   = $06F0 ; array?
     wUnk06F1   = $06F1
     wUnk06F2   = $06F2
     wUnk06F3   = $06F3
@@ -385,3 +365,35 @@
 
     wTransferCnt   = $0780
     wTransferScr   = $0781 ; array
+
+    sBlueUnits   = $6A90 ; dat[081F]
+    sRedUnits    = $7078 ; dat[0237]
+    sMapCell     = $72AF ; map data
+    sMapNum      = $7674 ; map number
+    sTurnNumber  = $7675 ; turn number
+    sMapHeight   = $7676 ; map y size
+    sMapWidth    = $7677 ; map x size
+    sUnk767A     = $767A
+    sUnk767F     = $767F
+    sUnk76ED     = $76ED ; orred to class of unit then written to map
+    sUnitBuf     = $76F4 ; unit load buf
+    sUnk7715     = $7715
+
+    sMapMovement = $7730
+
+    ; ???
+    sUnk7730     = $7730 ; BF bytes
+
+    ; ???
+    sUnk77F0     = $77F0
+    sUnk77F1     = $77F1
+    sUnk77F2     = $77F2
+    sUnk77F4     = $77F4
+    sUnk77F7     = $77F7
+    sUnk7812     = $7812 ; 2 bytes
+    sUnk7814     = $7814 ; 2 bytes
+    sUnk7934     = $7934
+
+    sMapData2    = $7AF0
+
+    .endif ; VARIABLES_INC

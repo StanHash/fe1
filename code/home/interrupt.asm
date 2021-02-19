@@ -1,6 +1,11 @@
 
-ENTRY_IRQ:
-ENTRY_RESET:
+    .include "include/variables.inc"
+    .include "include/global.inc"
+
+    .include "include/hardware.inc"
+
+    .proc Reset
+
     /* C075 78       */ sei
     /* C076 D8       */ cld
 
@@ -10,13 +15,13 @@ ENTRY_RESET:
     /* C079 8E 00 20 */ stx PPUCTRL
     /* C07C 8E 01 20 */ stx PPUMASK
 
--:
+:
     /* C07F AD 02 20 */ lda PPUSTATUS
-    /* C082 10 FB    */ bpl -
+    /* C082 10 FB    */ bpl :-
 
--:
+:
     /* C084 AD 02 20 */ lda PPUSTATUS
-    /* C087 10 FB    */ bpl -
+    /* C087 10 FB    */ bpl :-
 
     ; Initialize SP
 
@@ -40,13 +45,13 @@ ENTRY_RESET:
 
     /* C09D 98       */ tya ; lda #0
 
--:
+:
     /* C09E 91 00    */ sta (zR00), Y
     /* C0A0 C8       */ iny
-    /* C0A1 D0 FB    */ bne -
+    /* C0A1 D0 FB    */ bne :-
 
     /* C0A3 C6 01    */ dec zR00+1
-    /* C0A5 10 F7    */ bpl -
+    /* C0A5 10 F7    */ bpl :-
 
     /* C0A7 A0 00    */ ldy #0
     /* C0A9 84 CB    */ sty zPPUSCROLLH
@@ -117,17 +122,17 @@ ENTRY_RESET:
     /* C133 20 A6 C9 */ jsr SwapBank
 
     /* C136 A5 61    */ lda zUnk61
-    /* C138 F0 04    */ beq @LOC_C13E
+    /* C138 F0 04    */ beq LOC_C13E
 
     /* C13A A9 01    */ lda #1
     /* C13C 85 61    */ sta zUnk61
 
-@LOC_C13E:
+LOC_C13E:
     /* C13E 20 7D C7 */ jsr SetApplyEnableNmi
 
-    /* C141 4C 56 C1 */ jmp @wait_frame
+    /* C141 4C 56 C1 */ jmp wait_frame
 
-@lop:
+lop:
     /* C144 A9 00    */ lda #0
     /* C146 85 D0    */ sta zUnkD0
     /* C148 20 8F F2 */ jsr FUNC_F28F
@@ -139,18 +144,21 @@ ENTRY_RESET:
     /* C152 85 20    */ sta zFrameEnded
     /* C154 85 D0    */ sta zUnkD0
 
-@wait_frame:
+wait_frame:
     /* C156 A5 20    */ lda zFrameEnded
-    /* C158 D0 03    */ bne @continue
+    /* C158 D0 03    */ bne continue
 
-    /* C15A 4C 56 C1 */ jmp @wait_frame
+    /* C15A 4C 56 C1 */ jmp wait_frame
 
-@continue:
+continue:
     /* C15D 20 4E C0 */ jsr Rand
 
-    /* C160 4C 44 C1 */ jmp @lop
+    /* C160 4C 44 C1 */ jmp lop
 
-ENTRY_NMI:
+    .endproc ; Reset
+
+    .proc Nmi
+
     /* C163 08       */ php
     /* C164 48       */ pha
     /* C165 8A       */ txa
@@ -194,41 +202,45 @@ ENTRY_NMI:
     /* C19B 68       */ pla
     /* C19C 85 00    */ sta zR00
 
-    /* C19E A5 D0    */ lda $D0
-    /* C1A0 F0 1B    */ beq @end
+    /* C19E A5 D0    */ lda zUnkD0
+    /* C1A0 F0 1B    */ beq end
 
-    /* C1A2 AD 7B 04 */ lda $047B
-    /* C1A5 F0 16    */ beq @end
+    /* C1A2 AD 7B 04 */ lda wUnk047B
+    /* C1A5 F0 16    */ beq end
 
-@spr0_wait:
+spr0_wait:
     /* C1A7 AD 02 20 */ lda PPUSTATUS
-    /* C1AA 29 40    */ and #PPUSTATUS.spr0_hit
-    /* C1AC D0 F9    */ bne @spr0_wait
+    /* C1AA 29 40    */ and #$40 ; sprite 0 hit flag
+    /* C1AC D0 F9    */ bne spr0_wait
 
-@spr0_wait2:
+spr0_wait2:
     /* C1AE AD 02 20 */ lda PPUSTATUS
-    /* C1B1 29 40    */ and #PPUSTATUS.spr0_hit
-    /* C1B3 F0 F9    */ beq @spr0_wait2
+    /* C1B1 29 40    */ and #$40 ; sprite 0 hit flag
+    /* C1B3 F0 F9    */ beq spr0_wait2
 
     /* C1B5 A9 00    */ lda #0
     /* C1B7 8D 00 D0 */ sta MMC4CHRHI1
     /* C1BA 8D 00 E0 */ sta MMC4CHRHI2
 
-@end:
+end:
     /* C1BD 68       */ pla
     /* C1BE A8       */ tay
     /* C1BF 68       */ pla
     /* C1C0 AA       */ tax
     /* C1C1 68       */ pla
     /* C1C2 28       */ plp
+
     /* C1C3 40       */ rti
 
-FUNC_C1C4:
+    .endproc ; Nmi
+
+    .proc FUNC_C1C4
+
     /* C1C4 A5 97    */ lda zUnk97
-    /* C1C6 D0 1B    */ bne @end
+    /* C1C6 D0 1B    */ bne end
 
     /* C1C8 C6 98    */ dec zUnk98
-    /* C1CA D0 17    */ bne @end
+    /* C1CA D0 17    */ bne end
 
     /* C1CC A4 99    */ ldy zUnk99
     /* C1CE C8       */ iny
@@ -237,23 +249,26 @@ FUNC_C1C4:
     /* C1D2 A8       */ tay
     /* C1D3 84 99    */ sty zUnk99
 
-    /* C1D5 B9 E8 C1 */ lda @duration_lut.w, Y
+    /* C1D5 B9 E8 C1 */ lda duration_lut, Y
     /* C1D8 85 98    */ sta zUnk98
 
-    /* C1DA B9 E4 C1 */ lda @chr_bank_lut.w, Y
+    /* C1DA B9 E4 C1 */ lda chr_bank_lut, Y
 
     /* C1DD 20 BE C9 */ jsr SwapHiChrBankA
     /* C1E0 4C C6 C9 */ jmp SwapHiChrBankB
 
-@end:
+end:
     /* C1E3 60       */ rts
 
-@chr_bank_lut: .db $18, $19, $15, $19
-@duration_lut: .db  14,   8,  14,   8
+chr_bank_lut: .byte $18, $19, $15, $19
+duration_lut: .byte  14,   8,  14,   8
 
-FUNC_C1EC:
+    .endproc ; FUNC_C1C4
+
+    .proc FUNC_C1EC
+
     /* C1EC A5 5D    */ lda zUnk5D
-    /* C1EE F0 0A    */ beq @end
+    /* C1EE F0 0A    */ beq end
 
     /* C1F0 A5 5E    */ lda zUnk5E
     /* C1F2 8D 00 D0 */ sta MMC4CHRHI1
@@ -261,10 +276,13 @@ FUNC_C1EC:
     /* C1F5 A5 5F    */ lda zUnk5F
     /* C1F7 8D 00 E0 */ sta MMC4CHRHI2
 
-@end:
+end:
     /* C1FA 60       */ rts
 
-FUNC_C1FB:
+    .endproc ; FUNC_C1EC
+
+    .proc FUNC_C1FB
+
     /* C1FB A9 0E    */ lda #$0E
     /* C1FD 8D 00 A0 */ sta MMC4BANK
 
@@ -274,3 +292,5 @@ FUNC_C1FB:
     /* C205 8D 00 A0 */ sta MMC4BANK
 
     /* C208 60       */ rts
+
+    .endproc ; FUNC_C1FB

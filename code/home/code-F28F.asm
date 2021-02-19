@@ -1,28 +1,29 @@
 
-FUNC_F28F:
+    .proc FUNC_F28F
+
     /* F28F A9 00    */ lda #0
     /* F291 85 37    */ sta zSpriteIt
 
     /* F293 A5 23    */ lda zUnk23
-    /* F295 F0 03    */ beq @LOC_F29A
+    /* F295 F0 03    */ beq LOC_F29A
 
-    /* F297 4C 9D F2 */ jmp @LOC_F29D
+    /* F297 4C 9D F2 */ jmp LOC_F29D
 
-@LOC_F29A:
+LOC_F29A:
     /* F29A 4C 00 84 */ jmp $8400
 
-@LOC_F29D:
+LOC_F29D:
     /* F29D 20 88 C2 */ jsr ClearOamBuf
 
     /* F2A0 A5 25    */ lda zUnk25
     /* F2A2 20 4C C3 */ jsr Switch
 
-    /* F2A5 ...      */ .dw LOC_C034  ; 0
-    /* F2A7 ...      */ .dw @LOC_F2CB ; 1
-    /* F2A9 ...      */ .dw @LOC_F2D8 ; 2
-    /* F2AB ...      */ .dw CaseRet   ; 3
-    /* F2AD ...      */ .dw @LOC_F323 ; 4
-    /* F2AF ...      */ .dw @LOC_F32A ; 5
+    /* F2A5 ...      */ .word LOC_C034  ; 0
+    /* F2A7 ...      */ .word LOC_F2CB ; 1
+    /* F2A9 ...      */ .word LOC_F2D8 ; 2
+    /* F2AB ...      */ .word CaseRet   ; 3
+    /* F2AD ...      */ .word LOC_F323 ; 4
+    /* F2AF ...      */ .word LOC_F32A ; 5
 
     /* F2B1 4C 34 C0 */ jmp LOC_C034
 
@@ -43,7 +44,7 @@ FUNC_F28F:
 
     /* F2C8 4C 25 C2 */ jmp MemFill
 
-@LOC_F2CB:
+LOC_F2CB:
     /* F2CB A9 02    */ lda #$02
     /* F2CD 20 A6 C9 */ jsr SwapBank
 
@@ -52,7 +53,7 @@ FUNC_F28F:
     /* F2D3 A9 06    */ lda #$06
     /* F2D5 4C A6 C9 */ jmp SwapBank
 
-@LOC_F2D8:
+LOC_F2D8:
     /* F2D8 AE 80 07 */ ldx wTransferCnt
 
     /* F2DB A9 20    */ lda #>PPU_NT0
@@ -98,22 +99,24 @@ FUNC_F28F:
 
     /* F322 60       */ rts
 
-@LOC_F323:
+LOC_F323:
     /* F323 A9 04    */ lda #$04
     /* F325 85 44    */ sta zFarFuncNum
     /* F327 4C FA C9 */ jmp CallFarFunc
 
-@LOC_F32A:
+LOC_F32A:
     /* F32A AD F4 05 */ lda wUnk05F4
-    /* F32D F0 09    */ beq @LOC_F338
+    /* F32D F0 09    */ beq LOC_F338
 
     /* F32F A9 02    */ lda #$02
     /* F331 85 44    */ sta zFarFuncNum
     /* F333 A9 04    */ lda #$04
     /* F335 4C FA C9 */ jmp CallFarFunc
 
-@LOC_F338:
+LOC_F338:
     /* F338 A9 0A    */ lda #$0A
     /* F33A 85 44    */ sta zFarFuncNum
     /* F33C A9 0B    */ lda #$0B
     /* F33E 4C FA C9 */ jmp CallFarFunc
+
+    .endproc ; FUNC_F28F

@@ -1,5 +1,9 @@
 
-LOC_C000:
+    .include "include/variables.inc"
+    .include "include/global.inc"
+
+    .proc LOC_C000
+
     /* C000 A9 05    */ lda #$05
     /* C002 20 A6 C9 */ jsr SwapBank
 
@@ -8,8 +12,11 @@ LOC_C000:
     /* C008 A9 06    */ lda #$06
     /* C00A 4C A6 C9 */ jmp SwapBank
 
-LOC_C00D:
-    /* C00D A9 03    */ lda #:CODE_03_8000
+    .endproc ; LOC_C000
+
+    .proc LOC_C00D
+
+    /* C00D A9 03    */ lda #$03
     /* C00F 20 A6 C9 */ jsr SwapBank
 
     /* C012 20 00 80 */ jsr CODE_03_8000
@@ -17,8 +24,10 @@ LOC_C00D:
     /* C015 A9 06    */ lda #$06
     /* C017 4C A6 C9 */ jmp SwapBank
 
-LOC_C01A:
-    /* C01A A9 03    */ lda #:CODE_03_8003
+    .endproc ; LOC_C00D
+
+    .proc LOC_C01A
+    /* C01A A9 03    */ lda #$03
     /* C01C 20 A6 C9 */ jsr SwapBank
 
     /* C01F 20 03 80 */ jsr CODE_03_8003
@@ -26,8 +35,11 @@ LOC_C01A:
     /* C022 A9 06    */ lda #$06
     /* C024 4C A6 C9 */ jmp SwapBank
 
-LOC_C027:
-    /* C027 A9 03    */ lda #:CODE_03_8006
+    .endproc ; LOC_C01A
+
+    .proc LOC_C027
+
+    /* C027 A9 03    */ lda #$03
     /* C029 20 A6 C9 */ jsr SwapBank
 
     /* C02C 20 06 80 */ jsr CODE_03_8006
@@ -35,7 +47,10 @@ LOC_C027:
     /* C02F A9 06    */ lda #$06
     /* C031 4C A6 C9 */ jmp SwapBank
 
-LOC_C034:
+    .endproc ; LOC_C027
+
+    .proc LOC_C034
+
     /* C034 A9 0D    */ lda #$0D
     /* C036 20 A6 C9 */ jsr SwapBank
 
@@ -44,11 +59,16 @@ LOC_C034:
     /* C03C A9 06    */ lda #$06
     /* C03E 4C A6 C9 */ jmp SwapBank
 
-LOC_C041:
-    /* C041 A9 03    */ lda #:CODE_03_8009
+    .endproc ; LOC_C034
+
+    .proc LOC_C041
+
+    /* C041 A9 03    */ lda #$03
     /* C043 20 A6 C9 */ jsr SwapBank
 
     /* C046 20 09 80 */ jsr CODE_03_8009
 
     /* C049 A9 06    */ lda #$06
     /* C04B 4C A6 C9 */ jmp SwapBank
+
+    .endproc ; LOC_C041

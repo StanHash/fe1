@@ -64,9 +64,6 @@
     .segment "PRG_0E"
     base_prg_bank 14
 
-    .segment "PRG_0F"
-    base_prg_bank 15
-
     .macro base_chr_bank id
     .incbin "fe1-base.nes", $40010+(id)*$1000, $1000
     .endmacro

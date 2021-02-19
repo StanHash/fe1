@@ -1,11 +1,15 @@
 
-Rand:
+    .include "include/variables.inc"
+    .include "include/global.inc"
+
+    .proc Rand
+
     /* C04E 8A       */ txa
     /* C04F 48       */ pha
 
     /* C050 A2 0B    */ ldx #11
 
-@lop:
+lop:
     /* C052 A5 31    */ lda zRngA
     /* C054 18       */ clc
     /* C055 69 05    */ adc #5
@@ -17,7 +21,7 @@ Rand:
     /* C05E 85 32    */ sta zRngB
 
     /* C060 CA       */ dex
-    /* C061 D0 EF    */ bne @lop
+    /* C061 D0 EF    */ bne lop
 
     /* C063 68       */ pla
     /* C064 AA       */ tax
@@ -26,7 +30,10 @@ Rand:
 
     /* C067 60       */ rts
 
-RandBounded:
+    .endproc ; Rand
+
+    .proc RandBounded
+
     ; Input: A = upper bound
     ; Output: A = random number from 0 to upper bound
 
@@ -42,3 +49,5 @@ RandBounded:
     ; A = (Input * Rand8) / 256
 
     /* C074 60       */ rts
+
+    .endproc ; RandBounded

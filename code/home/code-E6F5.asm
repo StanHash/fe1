@@ -1,5 +1,9 @@
 
-FUNC_E6F5:
+    .include "include/global.inc"
+    .include "include/variables.inc"
+
+    .proc FUNC_E6F5
+
     /* E6F5 20 3A E7 */ jsr FUNC_E73A
 
     /* E6F8 A9 FE    */ lda #$FE
@@ -19,7 +23,10 @@ FUNC_E6F5:
 
     /* E70B 60       */ rts
 
-FUNC_E70C:
+    .endproc ; FUNC_E6F5
+
+    .proc FUNC_E70C
+
     /* E70C 20 3A E7 */ jsr FUNC_E73A
 
     /* E70F A5 63    */ lda zUnk63
@@ -54,7 +61,10 @@ FUNC_E70C:
 
     /* E739 60       */ rts
 
-FUNC_E73A:
+    .endproc ; FUNC_E70C
+
+    .proc FUNC_E73A
+
     /* E73A A9 01    */ lda #1
     /* E73C 85 00    */ sta zR00 ; y = 1
     /* E73E 85 01    */ sta zR01 ; x = 1
@@ -80,11 +90,14 @@ FUNC_E73A:
 
     /* E758 60       */ rts
 
-PutFarSprite:
+    .endproc ; FUNC_E73A
+
+    .proc PutFarSprite
+
     /* E759 85 42    */ sta zUnk42
 
     /* E75B AD C6 05 */ lda wUnk05C6
-    /* E75E 30 0B    */ bmi @no_force_bank
+    /* E75E 30 0B    */ bmi no_force_bank
 
     /* E760 A5 29    */ lda zBank29
     /* E762 8D C7 05 */ sta wUnk05C7
@@ -92,29 +105,29 @@ PutFarSprite:
     /* E765 AD C6 05 */ lda wUnk05C6
     /* E768 20 A6 C9 */ jsr SwapBank
 
-@no_force_bank:
+no_force_bank:
     /* E76B AD C8 05 */ lda wUnk05C8
     /* E76E 0A       */ asl A
     /* E76F A8       */ tay
 
-    /* E770 B9 D1 BF */ lda EVERYBANK_SPRITEGROUPS+1, Y
+    /* E770 B9 D1 BF */ lda FarSpriteGroups+1, Y
     /* E773 85 43    */ sta zUnk42+1
 
     /* E775 A5 42    */ lda zUnk42
     /* E777 0A       */ asl A
-    /* E778 90 02    */ bcc +
+    /* E778 90 02    */ bcc :+
 
     /* E77A E6 43    */ inc zUnk42+1
 
-+:
+:
     /* E77C 18       */ clc
-    /* E77D 79 D0 BF */ adc EVERYBANK_SPRITEGROUPS, Y
+    /* E77D 79 D0 BF */ adc FarSpriteGroups, Y
     /* E780 85 42    */ sta zUnk42
-    /* E782 90 02    */ bcc +
+    /* E782 90 02    */ bcc :+
 
     /* E784 E6 43    */ inc zUnk42+1
 
-+:
+:
     /* E786 A0 00    */ ldy #0
 
     /* E788 B1 42    */ lda (zUnk42), Y
@@ -141,14 +154,14 @@ PutFarSprite:
 
     /* E79E A0 00    */ ldy #0
 
-    /* E7A0 F0 5C    */ beq @begin
+    /* E7A0 F0 5C    */ beq begin
 
-@lop:
+lop:
     /* E7A2 B1 42    */ lda (zUnk42), Y
     /* E7A4 85 08    */ sta zR08
 
     /* E7A6 A5 3B    */ lda zUnk3B
-    /* E7A8 F0 10    */ beq @no_hflip
+    /* E7A8 F0 10    */ beq no_hflip
 
     ; flip sprite horizontally
 
@@ -164,7 +177,7 @@ PutFarSprite:
     /* E7B6 05 08    */ ora zR08
     /* E7B8 85 08    */ sta zR08
 
-@no_hflip:
+no_hflip:
     /* E7BA A5 08    */ lda zR08
     /* E7BC 05 39    */ ora zUnk39
     /* E7BE 05 38    */ ora zUnk38
@@ -200,19 +213,19 @@ PutFarSprite:
     /* E7E0 48       */ pha
 
     /* E7E1 A5 3B    */ lda zUnk3B
-    /* E7E3 F0 0A    */ beq @no_x_hflip
+    /* E7E3 F0 0A    */ beq no_x_hflip
 
     /* E7E5 68       */ pla
 
     /* E7E6 20 BA C5 */ jsr Neg
     /* E7E9 38       */ sec
     /* E7EA E9 08    */ sbc #8
-    /* E7EC 4C F0 E7 */ jmp +
+    /* E7EC 4C F0 E7 */ jmp :+
 
-@no_x_hflip:
+no_x_hflip:
     /* E7EF 68       */ pla
 
-+:
+:
     /* E7F0 18       */ clc
     /* E7F1 65 35    */ adc zSpriteX
     /* E7F3 9D 03 02 */ sta wOamBuf+3, X
@@ -224,20 +237,20 @@ PutFarSprite:
     /* E7FB E8       */ inx
     /* E7FC 86 37    */ stx zSpriteIt
 
-@begin:
+begin:
     /* E7FE A6 37    */ ldx zSpriteIt
 
     /* E800 E0 FC    */ cpx #$FC
-    /* E802 B0 08    */ bcs @break ; bhs
+    /* E802 B0 08    */ bcs break ; bhs
 
     /* E804 B1 42    */ lda (zUnk42), Y
     /* E806 29 F0    */ and #$F0
     /* E808 C9 F0    */ cmp #$F0
-    /* E80A D0 96    */ bne @lop
+    /* E80A D0 96    */ bne lop
 
-@break:
+break:
     /* E80C AD C6 05 */ lda wUnk05C6
-    /* E80F 30 0B    */ bmi @no_restore_bank
+    /* E80F 30 0B    */ bmi no_restore_bank
 
     /* E811 AD C7 05 */ lda wUnk05C7
     /* E814 20 A6 C9 */ jsr SwapBank
@@ -245,7 +258,7 @@ PutFarSprite:
     /* E817 A9 FF    */ lda #$FF
     /* E819 8D C6 05 */ sta wUnk05C6
 
-@no_restore_bank:
+no_restore_bank:
     /* E81C A9 00    */ lda #0
     /* E81E 85 3B    */ sta zUnk3B
     /* E820 85 39    */ sta zUnk39
@@ -253,3 +266,5 @@ PutFarSprite:
     /* E824 8D C8 05 */ sta wUnk05C8
 
     /* E827 60       */ rts
+
+    .endproc ; PutFarSprite
