@@ -193,6 +193,7 @@
 
     .global FUNC_E3CE
     .global FUNC_E3E8
+    .global DAT_E477
     .global FUNC_E56C
     .global FUNC_E5CF
 

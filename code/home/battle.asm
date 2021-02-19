@@ -635,7 +635,7 @@ end:
     /* CDB3 D0 0D    */ bne not_map_07
 
     /* CDB5 AD 05 03 */ lda wUnk0305
-    /* CDB8 A2 03    */ ldx #(DAT_CDD0_end - DAT_CDD0)-1
+    /* CDB8 A2 03    */ ldx #DAT_CDD0_length-1
 
 lop:
     /* CDBA DD D0 CD */ cmp DAT_CDD0, X
@@ -658,13 +658,9 @@ LOC_CDC9:
     /* CDCE 38       */ sec
     /* CDCF 60       */ rts
 
-    ; .sizeof doesn't seem to work with forward referenced labels
-    ; so as a work around we define a label immediately after
-    ; and get the "size" of the label by doing end - start.
-
 DAT_CDD0:
     .byte $A5, $B0, $B1, $B2
-DAT_CDD0_end:
+    DAT_CDD0_length = * - DAT_CDD0
 
     .endproc ; FUNC_CDA9
 

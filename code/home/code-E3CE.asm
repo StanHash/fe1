@@ -137,11 +137,11 @@ continue:
 end:
     /* E476 60       */ rts
 
+    .endproc ; FUNC_E442
+
 DAT_E477:
     .word wUnk03D2
     .word wUnk03D6
-
-    .endproc ; FUNC_E442
 
     .proc FUNC_E47B
 
@@ -336,6 +336,8 @@ code_E4B7:
     /* E569 4C 1D E4 */ jmp continue
 
     .endproc ; FUNC_E3E8
+
+    DAT_E477 := FUNC_E3E8::DAT_E477
 
     .proc FUNC_E56C
 

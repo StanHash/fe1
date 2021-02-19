@@ -11,8 +11,10 @@ SHASUM ?= sha1sum
 
 ROM := fe1.nes
 CFG := fe1.cfg
+MAP := fe1.map
+SYM := fe1.sym
 
-SOURCES := fe1.asm home.asm
+SOURCES := fe1.asm home.asm bank0.asm
 OBJECTS := $(SOURCES:.asm=.obj)
 
 DEPENDS := $(shell find code include data -type f -name '*.asm')
@@ -23,7 +25,7 @@ compare: $(ROM)
 .PHONY: compare
 
 $(ROM): $(OBJECTS) $(CFG)
-	$(LD65) -o $@ -C $(CFG) $(OBJECTS)
+	$(LD65) -o $@ -C $(CFG) $(OBJECTS) -m $(MAP) -Ln $(SYM)
 
 %.obj: %.asm $(DEPENDS)
 	$(CA65) -o $@ -g $<
