@@ -18,10 +18,10 @@ LOC_F29D:
     /* F2A0 A5 25    */ lda zUnk25
     /* F2A2 20 4C C3 */ jsr Switch
 
-    /* F2A5 ...      */ .word LOC_C034  ; 0
+    /* F2A5 ...      */ .word LOC_C034 ; 0
     /* F2A7 ...      */ .word LOC_F2CB ; 1
     /* F2A9 ...      */ .word LOC_F2D8 ; 2
-    /* F2AB ...      */ .word CaseRet   ; 3
+    /* F2AB ...      */ .word CaseRet  ; 3
     /* F2AD ...      */ .word LOC_F323 ; 4
     /* F2AF ...      */ .word LOC_F32A ; 5
 

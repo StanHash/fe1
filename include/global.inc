@@ -49,7 +49,7 @@
     .global MemFill
     .global ClearNameTables
     .global ClearOamBuf
-    .global FUNC_C296
+    .global RunQueuedPPUTransfer
     .global UpdateInput
     .global FUNC_C336
     .global Switch
@@ -66,7 +66,7 @@
     .global Asl5
     .global Asl4
     .global Asl3
-    .global FUNC_C3A5
+    .global RunPPUTransfer
     .global BatchPPUTransfer
     .global PutTransferWTsa
     .global PutTransferRTsa
@@ -195,7 +195,6 @@
     .global FUNC_E3E8
     .global DAT_E477
     .global FUNC_E56C
-    .global FUNC_E5CF
 
     .global FUNC_E65C
     .global FUNC_E66E

@@ -341,6 +341,8 @@ code_E4B7:
 
     .proc FUNC_E56C
 
+    ; does this put text on screen maybe?
+
     /* E56C 48       */ pha
     /* E56D 8A       */ txa
     /* E56E 48       */ pha
@@ -348,7 +350,8 @@ code_E4B7:
     /* E570 48       */ pha
 
     /* E571 A9 FF    */ lda #$FF
-    /* E573 A0 3B    */ ldy #$3B
+
+    /* E573 A0 3B    */ ldy #60-1
 
 :
     /* E575 99 E1 03 */ sta wUnk03E1, Y
@@ -393,12 +396,15 @@ LOC_E59B:
     /* E5A1 A9 E1    */ lda #<wUnk03E1
     /* E5A3 85 06    */ sta zR06
 
-    /* E5A5 20 CF E5 */ jsr FUNC_E5CF
+    /* E5A5 20 CF E5 */ jsr PutLine
 
     /* E5A8 A9 03    */ lda #>(wUnk03E1+30)
     /* E5AA 85 07    */ sta zR06+1
     /* E5AC A9 FF    */ lda #<(wUnk03E1+30)
     /* E5AE 85 06    */ sta zR06
+
+    ; zR02 -= $20
+    ; since zR02 is nt ppu addr, this means we point one row above
 
     /* E5B0 38       */ sec
     /* E5B1 A5 02    */ lda zR02
@@ -408,7 +414,7 @@ LOC_E59B:
     /* E5B9 E9 00    */ sbc #>$0020
     /* E5BB 85 03    */ sta zR02+1
 
-    /* E5BD 20 CF E5 */ jsr FUNC_E5CF
+    /* E5BD 20 CF E5 */ jsr PutLine
 
     /* E5C0 A9 00    */ lda #0
     /* E5C2 9D 81 07 */ sta wTransferScr, X
@@ -424,28 +430,34 @@ LOC_E59B:
 
     /* E5CE 60       */ rts
 
-    .endproc ; FUNC_E56C
+    .proc PutLine
 
-    .proc FUNC_E5CF
+    ; Input:
+    ; X: current offset within wTransferScr
+    ; zR02: ppu addr (16bit, little endian)
+    ; zR04: transfer length
+    ; zR06: source data ptr
 
     ; put hi ppu addr
-    /* E5CF A5 03    */ lda zR02+1
+    /* E5CF A5 03    */ lda z:zR02+1
     /* E5D1 9D 81 07 */ sta wTransferScr, X
 
     /* E5D4 E8       */ inx
 
     ; put lo ppu addr
-    /* E5D5 A5 02    */ lda zR02
+    /* E5D5 A5 02    */ lda z:zR02
     /* E5D7 9D 81 07 */ sta wTransferScr, X
 
     /* E5DA E8       */ inx
 
-    ; put transfer attributes
+    ; put length
     /* E5DB A5 04    */ lda zR04
     /* E5DD 9D 81 07 */ sta wTransferScr, X
     /* E5E0 85 05    */ sta zR05
 
     /* E5E2 E8       */ inx
+
+    ; put data
 
     /* E5E3 A0 00    */ ldy #0
 
@@ -461,4 +473,6 @@ lop:
 
     /* E5F0 60       */ rts
 
-    .endproc ; FUNC_E5CF
+    .endproc ; PutLine
+
+    .endproc ; FUNC_E56C

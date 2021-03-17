@@ -1206,12 +1206,12 @@ end:
     /* D068 60       */ rts
 
 battler_stat_before_addr_lut:
-    /* D069 ...      */ .word wFightStrength, wFightSkill, wFight0316, wFightSpeed
+    /* D069 ...      */ .word wFightStrength, wFightSkill, wFightWeaponLevel, wFightSpeed
     /* D071 ...      */ .word wFightLuck, wFightDefense, wFightMaxHp
 
 battler_stat_after_addr_lut:
-    /* D077 ...      */ .word wFight032C, wFight032D, wFight032E, wFight032F
-    /* D07F ...      */ .word wFight0330, wFight0331, wFight032A
+    /* D077 ...      */ .word wFightStrAfter, wFightSklAfter, wFightWlvAfter, wFightSpdAfter
+    /* D07F ...      */ .word wFightLckAfter, wFightDefAfter, wFightMaxHpAfter
 
     .endproc ; GetBattlerStatPointers
 

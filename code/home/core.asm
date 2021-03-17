@@ -55,6 +55,10 @@ lop:
 
     .proc ClearNameTables
 
+    ; always clears nt 0
+    ; if zUnk23 != 0 and zUnk25 = 0x1D; also clears nt 2
+    ; else; clears nt 1
+
     /* C23D 20 52 C2 */ jsr clear_nt_0
 
     /* C240 A5 23    */ lda zUnk23
@@ -130,12 +134,19 @@ end:
 
     .endproc ; ClearOamBuf
 
-    .proc FUNC_C296
+    .proc RunQueuedPPUTransfer
+
+    ; do not call this function directly, it is called on VBlank
+    ; instead, set zUnk22 to the id of the transfer, and wait for VBlank
+    ; zUnk22 = 0      | no transfer
+    ; zUnk22 positive | transfer from ROM script indexed in array at (EVERYBANK_BFC0)
+    ; zUnk22 negative | transfer from script at wUnk04D8
+    ; zUnk22 is set to 0 at the end of this function
 
     /* C296 A4 22    */ ldy zUnk22
     /* C298 F0 FB    */ beq ClearOamBuf::end
 
-    /* C29A 30 30    */ bmi LOC_C2CC
+    /* C29A 30 30    */ bmi from_04D8
 
     /* C29C 88       */ dey
     /* C29D 98       */ tya
@@ -151,32 +162,41 @@ end:
     /* C2AE B1 00    */ lda (zR00), Y
     /* C2B0 A8       */ tay
 
-LOC_C2B1:
+do_transfer:
     /* C2B1 A9 00    */ lda #0
     /* C2B3 85 22    */ sta zUnk22
-    /* C2B5 20 D2 C2 */ jsr LOC_C2D2
 
+    /* C2B5 20 D2 C2 */ jsr begin_transfer
+
+    ; reset PPUADDR flip-flop
     /* C2B8 AD 02 20 */ lda PPUSTATUS
+
+    ; set PPUADDR to $3F00 (background color)
     /* C2BB A9 3F    */ lda #$3F
     /* C2BD 8D 06 20 */ sta PPUADDR
     /* C2C0 A9 00    */ lda #$00
     /* C2C2 8D 06 20 */ sta PPUADDR
+
+    ; don't do anything with it?
+
+    ; set PPUADDR to $0000
     /* C2C5 8D 06 20 */ sta PPUADDR
     /* C2C8 8D 06 20 */ sta PPUADDR
+
     /* C2CB 60       */ rts
 
-LOC_C2CC:
+from_04D8:
     /* C2CC A2 D8    */ ldx #<wUnk04D8
     /* C2CE A0 04    */ ldy #>wUnk04D8
 
-    /* C2D0 D0 DF    */ bne LOC_C2B1
+    /* C2D0 D0 DF    */ bne do_transfer
 
-LOC_C2D2:
+begin_transfer:
     /* C2D2 86 00    */ stx zR00
     /* C2D4 84 01    */ sty zR00+1
     /* C2D6 4C E7 C3 */ jmp BatchPPUTransfer
 
-    .endproc ; FUNC_C296
+    .endproc ; RunQueuedPPUTransfer
 
     .proc UpdateInput
 
@@ -410,7 +430,11 @@ asl_3:
     Asl4 := AslLadder::asl_4
     Asl3 := AslLadder::asl_3
 
-    .proc FUNC_C3A5
+    .proc RunPPUTransfer
+
+    ; do not run this directly, it is called on VBlank
+    ; runs the transfer script at wTransferScr if zTransferEnable is set
+    ; clears the script when done
 
     /* C3A5 A5 21    */ lda zTransferEnable
     /* C3A7 F0 15    */ beq end
@@ -429,9 +453,21 @@ asl_3:
 end:
     /* C3BE 60       */ rts
 
-    .endproc ; FUNC_C3A5
+    .endproc ; RunPPUTransfer
 
     .scope BatchPPUTransfer
+
+    ; batch ppu transfer:
+    ; in zR00: ppu transfer scr addr
+
+    ; script format:
+    ; either:
+    ;   [+00] : ppu addr (16bit, big endian!, msb not 0)
+    ;   [+02] : config (bit 7 : H or V, bit 6 : fill or copy, bits 0-5: length)
+    ;   [+xx] : data (only one byte if fill, else <length> bytes)
+    ; or:
+    ;   [+00] : 0 (terminator)
+    ; repeated
 
 lop:
     /* C3BF 8D 06 20 */ sta PPUADDR

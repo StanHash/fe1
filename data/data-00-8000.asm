@@ -483,6 +483,7 @@ DATA_00_8E6F:
     /* 8E80 ...      */ .byte $8F, $79, $8F, $86, $8F, $8B, $8F
 
 DATA_00_8E87:
+    ; this is not correct format?
     /* 8E87 ...      */ .byte $29
     /* 8E88 ...      */ .byte $2A, $2B, $2C, $2D, $2E, $2F, $30, $31
     /* 8E90 ...      */ .byte $32, $65, $66, $67, $6B, $6B, $6C, $6D

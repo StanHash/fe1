@@ -175,10 +175,10 @@
     wUnk0310   = $0310 ; battle unit terrain avoid????
     wFightStrength = $0312 ; battle unit attacks?
     wFightSkill   = $0314 ; battle unit skills?
-    wFight0316    = $0316
+    wFightWeaponLevel = $0316
     wFightSpeed = $0318 ; battle unit speeds?
-    wFightLuck   = $031A ; battle unit lucks?
-    wFightDefense   = $031C ; battle unit defenses?
+    wFightLuck = $031A ; battle unit lucks?
+    wFightDefense = $031C ; battle unit defenses?
     wFight031E = $031E
     wFightIid  = $0320 ; Item ids?
     wFight0322 = $0322
@@ -186,15 +186,18 @@
     wFight0325 = $0325
     wFightResistance = $0326 ; battle unit reses?
     wUnk0328   = $0328
-    wFightLevelAfter   = $0329
-    wFight032A = $032A
+
+    wFightLevelAfter = $0329
+
+    ; note: these need to be in this order in memory. See FUNC_01_B8CB
+    wFightMaxHpAfter = $032A
     wFightExpAfter = $032B
-    wFight032C = $032C
-    wFight032D = $032D
-    wFight032E = $032E
-    wFight032F = $032F
-    wFight0330 = $0330
-    wFight0331 = $0331
+    wFightStrAfter = $032C
+    wFightSklAfter = $032D
+    wFightWlvAfter = $032E
+    wFightSpdAfter = $032F
+    wFightLckAfter = $0330
+    wFightDefAfter = $0331
 
     wFightCurrentHp     = $0334 ; battle unit new hps??
     wFight0336          = $0336
@@ -235,6 +238,7 @@
     wUnk0372   = $0372
     wUnk0373   = $0373
     wFightCurrentBattlerId = $0374
+    wUnk0375   = $0375
 
     wUnk0389   = $0389 ; 3 bytes
     wUnk038C   = $038C ; 3 bytes
@@ -272,8 +276,16 @@
     wUnk0432   = $0432 ; 6 bytes
     wUnk0438   = $0438 ; 6 bytes
 
+    wUnk043E   = $043E ; array[6]
+    wUnk0444   = $0444 ; array[6]
+
+    wUnk0457   = $0457
+    wUnk0458   = $0458
+    wUnk0459   = $0459
+
     wUnk0474   = $0474
 
+    wUnk0476   = $0476
     wUnk0477   = $0477
 
     wUnk0479   = $0479
@@ -289,6 +301,7 @@
     wUnk0487   = $0487 ; 3 bytes, sprite groups
 
     wUnk048A   = $048A
+    wUnk048B   = $048B
 
     wUnk04D8   = $04D8 ; array (20)
 
@@ -346,6 +359,8 @@
 
     wUnk05EA   = $05EA
 
+    wUnk05ED   = $05ED
+
     wInputDelayCnt = $05F1
     wInputRaw = $05F2
 
@@ -374,6 +389,7 @@
     sMapHeight   = $7676 ; map y size
     sMapWidth    = $7677 ; map x size
     sUnk767A     = $767A
+    sUnk767B     = $767B
     sUnk767F     = $767F
     sUnk76ED     = $76ED ; orred to class of unit then written to map
     sUnitBuf     = $76F4 ; unit load buf

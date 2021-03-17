@@ -176,9 +176,9 @@ continue:
     /* C176 A5 01    */ lda zR01
     /* C178 48       */ pha
 
-    /* C179 20 A5 C3 */ jsr FUNC_C3A5
+    /* C179 20 A5 C3 */ jsr RunPPUTransfer
 
-    /* C17C 20 96 C2 */ jsr FUNC_C296
+    /* C17C 20 96 C2 */ jsr RunQueuedPPUTransfer
 
     /* C17F 20 EC C1 */ jsr FUNC_C1EC
 
@@ -188,9 +188,9 @@ continue:
 
     /* C188 20 6A C3 */ jsr ApplyPPUScroll
 
-    /* C18B 20 C4 C1 */ jsr FUNC_C1C4
+    /* C18B 20 C4 C1 */ jsr UpdateMapAnimation
 
-    /* C18E 20 FB C1 */ jsr FUNC_C1FB
+    /* C18E 20 FB C1 */ jsr UpdateSound
 
     /* C191 20 D9 C2 */ jsr UpdateInput
 
@@ -234,7 +234,7 @@ end:
 
     .endproc ; Nmi
 
-    .proc FUNC_C1C4
+    .proc UpdateMapAnimation
 
     /* C1C4 A5 97    */ lda zUnk97
     /* C1C6 D0 1B    */ bne end
@@ -263,7 +263,7 @@ end:
 chr_bank_lut: .byte $18, $19, $15, $19
 duration_lut: .byte  14,   8,  14,   8
 
-    .endproc ; FUNC_C1C4
+    .endproc ; UpdateMapAnimation
 
     .proc FUNC_C1EC
 
@@ -281,7 +281,7 @@ end:
 
     .endproc ; FUNC_C1EC
 
-    .proc FUNC_C1FB
+    .proc UpdateSound
 
     /* C1FB A9 0E    */ lda #$0E
     /* C1FD 8D 00 A0 */ sta MMC4BANK
@@ -293,4 +293,4 @@ end:
 
     /* C208 60       */ rts
 
-    .endproc ; FUNC_C1FB
+    .endproc ; UpdateSound

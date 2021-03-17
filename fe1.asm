@@ -19,9 +19,6 @@
     .incbin "fe1-base.nes", $10+(id)*$4000, $4000
     .endmacro
 
-    .segment "PRG_01"
-    base_prg_bank 1
-
     .segment "PRG_02"
     base_prg_bank 2
 
